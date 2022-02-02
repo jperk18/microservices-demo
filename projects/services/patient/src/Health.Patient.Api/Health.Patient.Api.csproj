@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Health.Patient.Common\Health.Patient.Common.csproj" />
+      <ProjectReference Include="..\Health.Patient.Grpc\Health.Patient.Grpc.csproj" />
+    </ItemGroup>
+
+</Project>
