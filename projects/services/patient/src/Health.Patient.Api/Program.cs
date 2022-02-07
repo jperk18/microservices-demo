@@ -3,13 +3,21 @@ using Health.Patient.Api.Middleware;
 using Health.Patient.Domain.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Core.Registration;
 using Health.Patient.Grpc.Services;
-using IJsonSerializer = Health.Patient.Domain.Core.Serialization.IJsonSerializer;
-using JsonSerializer = Health.Patient.Domain.Core.Serialization.JsonSerializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// var preBuildConfig = new ConfigurationBuilder()
+//     .AddJsonFile("appsettings.json", optional: false)
+//     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+//     .AddEnvironmentVariables()
+//     .Build();
 
+// Add Configuration to the container
+builder.Configuration.AddJsonFile("appsettings.json", optional: false ,reloadOnChange: true);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
+
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
 builder.Services.AddDomainServices();
