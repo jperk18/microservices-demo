@@ -1,10 +1,21 @@
+using FluentValidation.AspNetCore;
+using Health.Patient.Api.Middleware;
+using Health.Patient.Domain.Commands.CreatePatientCommand;
+using Health.Patient.Domain.Core.Registration;
 using Health.Patient.Grpc.Services;
+using IJsonSerializer = Health.Patient.Domain.Core.Serialization.IJsonSerializer;
+using JsonSerializer = Health.Patient.Domain.Core.Serialization.JsonSerializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
+builder.Services.AddDomainServices();
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,7 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

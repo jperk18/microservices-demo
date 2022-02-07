@@ -1,8 +1,8 @@
-﻿namespace Health.Patient.Common.Requests;
+﻿namespace Health.Patient.Api.Requests.Interfaces;
 
 public interface IPatient
 {
-    Guid PatientId { get; }
     string FirstName { get; }
     string LastName { get; }
+    DateTime DateOfBirth { get; }
 }
