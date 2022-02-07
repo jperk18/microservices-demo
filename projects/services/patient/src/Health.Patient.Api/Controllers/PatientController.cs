@@ -27,7 +27,7 @@ public class PatientController : ControllerBase
         _getPatientHandler = getPatientHandler ?? throw new ArgumentNullException(nameof(getPatientHandler));
     }
 
-    [HttpPost("Register")]
+    [HttpPost()]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreatePatientApiResponse))]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericException))]

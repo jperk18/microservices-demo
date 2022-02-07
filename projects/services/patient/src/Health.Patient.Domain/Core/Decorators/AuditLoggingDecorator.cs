@@ -18,9 +18,9 @@ public sealed class AuditLoggingCommandDecorator<TCommand, TOutput> : ICommandHa
 
     public async Task<TOutput> Handle(TCommand command)
     {
-        _logger.LogInformation($"Staring command: {nameof(command)}");
+        _logger.LogInformation($"Staring command: {command.GetType().Name}");
         var response = await _handler.Handle(command);
-        _logger.LogInformation($"Finishing command: {nameof(command)}");
+        _logger.LogInformation($"Finishing command: {command.GetType().Name}");
         return response;
     }
 }
@@ -36,11 +36,11 @@ public sealed class AuditLoggingQueryDecorator<TQuery, TResult> : IQueryHandler<
         _handler = handler;
     }
 
-    public async Task<TResult> Handle(TQuery command)
+    public async Task<TResult> Handle(TQuery query)
     {
-        _logger.LogInformation($"Staring query: {nameof(command)}");
-        var response = await _handler.Handle(command);
-        _logger.LogInformation($"Finishing query: {nameof(command)}");
+        _logger.LogInformation($"Staring query: {query.GetType().Name}");
+        var response = await _handler.Handle(query);
+        _logger.LogInformation($"Finishing query: {query.GetType().Name}");
         return response;
     }
 }
