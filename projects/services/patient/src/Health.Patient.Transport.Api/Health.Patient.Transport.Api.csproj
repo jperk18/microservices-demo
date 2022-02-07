@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Health.Patient.Domain\Health.Patient.Domain.csproj" />
-      <ProjectReference Include="..\Health.Patient.Grpc\Health.Patient.Grpc.csproj" />
+      <ProjectReference Include="..\Health.Patient.Transport.Grpc\Health.Patient.Transport.Grpc.csproj" />
     </ItemGroup>
 
 </Project>
