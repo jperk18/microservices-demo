@@ -10,13 +10,14 @@ namespace Health.Patient.Domain.Core;
 
 public static class Register
 {
-    public static void AddDomainServices(this IServiceCollection services, DomainRegistrationConfiguration config)
+    public static void AddDomainServices(this IServiceCollection services, IDomainConfiguration config)
     {
         if (config == null || config.StorageConfiguration == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
-        services.AddHandlers(config.StorageConfiguration.DbType == StorageRegistrationConfiguration.DatabaseType.InMemory);
+        services.AddHandlers();
+        services.AddSingleton(config);
         services.AddSingleton<IJsonSerializer, JsonSerializer>();
         services.AddTransient<IRetrievalService, RetrievalService>();
         

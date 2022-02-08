@@ -1,6 +1,4 @@
-using FluentValidation.AspNetCore;
 using Health.Patient.Api.Middleware;
-using Health.Patient.Domain.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Core;
 using Health.Patient.Grpc.Services;
 using Health.Patient.Storage.Core;
@@ -24,7 +22,7 @@ builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
 
 // Add Services to Domain (and storage depandant service)
-builder.Services.AddDomainServices(new DomainRegistrationConfiguration(){ StorageConfiguration = new StorageRegistrationConfiguration(StorageRegistrationConfiguration.DatabaseType.InMemory)});
+builder.Services.AddDomainServices(new DomainConfiguration(){ StorageConfiguration = new StorageConfiguration(StorageConfiguration.DatabaseType.InMemory)});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

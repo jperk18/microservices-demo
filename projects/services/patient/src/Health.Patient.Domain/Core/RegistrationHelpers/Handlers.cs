@@ -8,7 +8,7 @@ namespace Health.Patient.Domain.Core.RegistrationHelpers;
 
 public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services, bool isInMemoryDbInUse = false)
+    public static void AddHandlers(this IServiceCollection services)
     {
         List<Type> handlerTypes = typeof(ICommand<>).Assembly.GetTypes()
             .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
@@ -17,14 +17,14 @@ public static class Handlers
 
         foreach (Type type in handlerTypes)
         {
-            AddHandler(services, type, isInMemoryDbInUse);
+            AddHandler(services, type);
         }
     }
 
-    private static void AddHandler(IServiceCollection services, Type type, bool isInMemoryDbInUse)
+    private static void AddHandler(IServiceCollection services, Type type)
     {
         object[] attributes = type.GetCustomAttributes(false)
-            .Where(x => Decorators.IsDecorator(x, isInMemoryDbInUse)).ToArray();
+            .Where(x => Decorators.IsDecorator(x)).ToArray();
         
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 

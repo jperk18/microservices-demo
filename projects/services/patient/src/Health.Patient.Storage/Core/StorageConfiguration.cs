@@ -1,8 +1,14 @@
 ﻿namespace Health.Patient.Storage.Core;
 
-public class StorageRegistrationConfiguration
+public interface IStorageConfiguration
 {
-    public StorageRegistrationConfiguration(DatabaseType dbtype, string? connectionString = null)
+    StorageConfiguration.DatabaseType DbType { get; set; }
+    string? ConnectionString { get; set; }
+}
+
+public class StorageConfiguration : IStorageConfiguration
+{
+    public StorageConfiguration(DatabaseType dbtype, string? connectionString = null)
     {
         DbType = dbtype;
         ConnectionString = connectionString;
