@@ -1,4 +1,4 @@
-﻿namespace Health.Patient.Api.Requests.Interfaces;
+﻿namespace Health.Patient.Domain.Core.Models.Interfaces;
 
 public interface IPatientRecord : IPatient, IPatientIdentifer
 {

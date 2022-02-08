@@ -2,7 +2,7 @@
 
 namespace Health.Patient.Api.Requests;
 
-public class GetPatientApiResponse : IPatientRecord
+public class GetPatientApiResponse : IPatient, IPatientIdentifer
 {
     public GetPatientApiResponse(Guid patientId, string firstName, string lastName, DateTime dateOfBirth)
     {

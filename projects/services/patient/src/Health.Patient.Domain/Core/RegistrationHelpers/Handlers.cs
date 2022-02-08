@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
 using Health.Patient.Domain.Commands.Core;
+using Health.Patient.Domain.Core.Decorators;
 using Health.Patient.Domain.Queries.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Health.Patient.Domain.Core.Registration;
+namespace Health.Patient.Domain.Core.RegistrationHelpers;
 
-public static class HandlerRegistration
+public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services)
+    public static void AddHandlers(this IServiceCollection services, bool isInMemoryDbUsage)
     {
         List<Type> handlerTypes = typeof(ICommand<>).Assembly.GetTypes()
             .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
@@ -16,18 +17,19 @@ public static class HandlerRegistration
 
         foreach (Type type in handlerTypes)
         {
-            AddHandler(services, type);
+            AddHandler(services, type, isInMemoryDbUsage);
         }
     }
 
-    private static void AddHandler(IServiceCollection services, Type type)
+    private static void AddHandler(IServiceCollection services, Type type, bool isInMemoryDbUsage)
     {
-        object[] attributes = type.GetCustomAttributes(false);
-
+        object[] attributes = type.GetCustomAttributes(false)
+            .Where(x => Decorators.IsDecorator(x, isInMemoryDbUsage)).ToArray();
+        
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 
         List<Type> pipeline = attributes
-            .Select(x => DecoratorRegistrationHelper.ToDecorator(x, interfaceType))
+            .Select(x => Decorators.ToDecorator(x, interfaceType))
             .Concat(new[] {type})
             .Reverse()
             .ToList();

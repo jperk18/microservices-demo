@@ -3,7 +3,9 @@ using Health.Patient.Api.Middleware;
 using Health.Patient.Api.Requests;
 using Health.Patient.Domain.Commands.Core;
 using Health.Patient.Domain.Commands.CreatePatientCommand;
+using Health.Patient.Domain.Core.Models;
 using Health.Patient.Domain.Queries.Core;
+using Health.Patient.Domain.Queries.GetAllPatientsQuery;
 using Health.Patient.Domain.Queries.GetPatientQuery;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,16 +17,19 @@ public class PatientController : ControllerBase
 {
     private readonly ILogger<PatientController> _logger;
     private readonly ICommandHandler<CreatePatientCommand, Guid> _createPatientHandler;
-    private readonly IQueryHandler<GetPatientQuery, string> _getPatientHandler;
+    private readonly IQueryHandler<GetPatientQuery, PatientRecord> _getPatientHandler;
+    private readonly IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>> _getAllPatientsHandler;
 
     public PatientController(ILogger<PatientController> logger,
         ICommandHandler<CreatePatientCommand, Guid> createPatientHandler,
-        IQueryHandler<GetPatientQuery, string> getPatientHandler
+        IQueryHandler<GetPatientQuery, PatientRecord> getPatientHandler,
+        IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>> getAllPatientsHandler
     )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _createPatientHandler = createPatientHandler ?? throw new ArgumentNullException(nameof(createPatientHandler));
         _getPatientHandler = getPatientHandler ?? throw new ArgumentNullException(nameof(getPatientHandler));
+        _getAllPatientsHandler = getAllPatientsHandler ?? throw new ArgumentNullException(nameof(getAllPatientsHandler));
     }
 
     [HttpPost()]
@@ -48,6 +53,16 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> GetPatient([FromQuery] GetPatientApiRequest request)
     {
         var response = await _getPatientHandler.Handle(new GetPatientQuery() {PatientId = request.PatientId});
-        return Ok(new GetPatientApiResponse(request.PatientId, response, response, DateTime.Now));
+        return Ok(new GetPatientApiResponse(response.Id, response.FirstName, response.LastName, response.DateOfBirth));
+    }
+    
+    [HttpGet("All")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetPatientApiResponse>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAllPatients()
+    {
+        var r = (await _getAllPatientsHandler.Handle(new GetAllPatientsQuery()))
+            .Select(response => new GetPatientApiResponse(response.Id, response.FirstName, response.LastName, response.DateOfBirth));
+        return Ok(r);
     }
 }

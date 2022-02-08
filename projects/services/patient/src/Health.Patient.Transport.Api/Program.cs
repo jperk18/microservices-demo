@@ -1,8 +1,9 @@
 using FluentValidation.AspNetCore;
 using Health.Patient.Api.Middleware;
 using Health.Patient.Domain.Commands.CreatePatientCommand;
-using Health.Patient.Domain.Core.Registration;
+using Health.Patient.Domain.Core;
 using Health.Patient.Grpc.Services;
+using Health.Patient.Storage.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,8 @@ builder.Configuration.AddEnvironmentVariables();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
-builder.Services.AddDomainServices();
+builder.Services.AddDomainServices(true);
+builder.Services.AddStorageServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
 

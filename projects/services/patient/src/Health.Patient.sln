@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Grpc", "Heal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Domain", "Health.Patient.Domain\Health.Patient.Domain.csproj", "{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Storage", "Health.Patient.Storage\Health.Patient.Storage.csproj", "{5819D630-20F5-4BFE-A271-9A2B236CFC9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5819D630-20F5-4BFE-A271-9A2B236CFC9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5819D630-20F5-4BFE-A271-9A2B236CFC9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5819D630-20F5-4BFE-A271-9A2B236CFC9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5819D630-20F5-4BFE-A271-9A2B236CFC9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
