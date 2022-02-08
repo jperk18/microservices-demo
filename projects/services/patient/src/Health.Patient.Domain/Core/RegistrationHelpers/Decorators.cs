@@ -4,9 +4,9 @@ namespace Health.Patient.Domain.Core.RegistrationHelpers;
 
 public static class Decorators
 {
-    public static bool IsDecorator(object x, bool isInMemoryDbUsage)
+    public static bool IsDecorator(object x, bool isInMemoryDbInUse)
     {
-        return x is AuditLogPipelineAttribute || x is ValidationPipelineAttribute || (x is TransactionPipelineAttribute && !isInMemoryDbUsage);
+        return x is AuditLogPipelineAttribute || x is ValidationPipelineAttribute || (x is TransactionPipelineAttribute && !isInMemoryDbInUse);
     }
     
     public static Type ToDecorator(object attribute, Type assigningInterfaceType)

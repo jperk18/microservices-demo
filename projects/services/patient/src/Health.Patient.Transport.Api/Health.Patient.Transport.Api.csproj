@@ -8,14 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Health.Patient.Domain\Health.Patient.Domain.csproj" />
-      <ProjectReference Include="..\Health.Patient.Storage\Health.Patient.Storage.csproj" />
       <ProjectReference Include="..\Health.Patient.Transport.Grpc\Health.Patient.Transport.Grpc.csproj" />
     </ItemGroup>
 

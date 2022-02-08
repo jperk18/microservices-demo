@@ -18,13 +18,13 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false ,reloadOnC
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
 
-// Add services to the container
+// Add services to the container for API
 builder.Services.AddControllers();
-builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
-builder.Services.AddDomainServices(new DomainRegistrationConfiguration(){isInMemoryDbUsage = true});
-builder.Services.AddStorageServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
+
+// Add Services to Domain (and storage depandant service)
+builder.Services.AddDomainServices(new DomainRegistrationConfiguration(){ StorageConfiguration = new StorageRegistrationConfiguration(StorageRegistrationConfiguration.DatabaseType.InMemory)});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
