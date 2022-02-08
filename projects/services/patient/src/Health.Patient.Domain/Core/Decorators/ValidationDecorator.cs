@@ -24,9 +24,12 @@ public sealed class ValidationCommandDecorator<TCommand, TOutput> : ICommandHand
     {
         if (!_validators.Any())
         {
+            _logger.LogInformation($"No validation for {command.GetType().Name}");
+
             return await _handler.Handle(command);
         }
 
+        _logger.LogInformation($"Running validation for {command.GetType().Name}");
         var context = new ValidationContext<TCommand>(command);
         var errors = _validators
             .Select(x => x.Validate(context))
@@ -36,9 +39,11 @@ public sealed class ValidationCommandDecorator<TCommand, TOutput> : ICommandHand
 
         if (errors.Any())
         {
+            _logger.LogInformation($"Validation error occured for {command.GetType().Name}");
             throw new ValidationException(errors);
         }
 
+        _logger.LogInformation($"Validation for {command.GetType().Name} successful");
         return await _handler.Handle(command);
     }
 }
@@ -61,9 +66,11 @@ public sealed class ValidationQueryDecorator<TQuery, TResult> : IQueryHandler<TQ
     {
         if (!_validators.Any())
         {
+            _logger.LogInformation($"No validation for {query.GetType().Name}");
             return await _handler.Handle(query);
         }
 
+        _logger.LogInformation($"Running validation for {query.GetType().Name}");
         var context = new ValidationContext<TQuery>(query);
         var errors = _validators
             .Select(x => x.Validate(context))
@@ -73,9 +80,11 @@ public sealed class ValidationQueryDecorator<TQuery, TResult> : IQueryHandler<TQ
 
         if (errors.Any())
         {
+            _logger.LogInformation($"Validation error occured for {query.GetType().Name}");
             throw new ValidationException(errors);
         }
 
+        _logger.LogInformation($"Validation for {query.GetType().Name} successful");
         return await _handler.Handle(query);
     }
 }

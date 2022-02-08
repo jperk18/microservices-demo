@@ -19,8 +19,14 @@ public sealed class AuditLoggingCommandDecorator<TCommand, TOutput> : ICommandHa
     public async Task<TOutput> Handle(TCommand command)
     {
         _logger.LogInformation($"Staring command: {command.GetType().Name}");
+        
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         var response = await _handler.Handle(command);
-        _logger.LogInformation($"Finishing command: {command.GetType().Name}");
+        watch.Stop();
+        
+        _logger.LogInformation($"Finished command: {command.GetType().Name}");
+        _logger.LogInformation($"Command {command.GetType().Name} runtime (ms): {watch.ElapsedMilliseconds}");
+        
         return response;
     }
 }
@@ -38,9 +44,15 @@ public sealed class AuditLoggingQueryDecorator<TQuery, TResult> : IQueryHandler<
 
     public async Task<TResult> Handle(TQuery query)
     {
-        _logger.LogInformation($"Staring query: {query.GetType().Name}");
+        _logger.LogInformation($"Starting query: {query.GetType().Name}");
+        
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         var response = await _handler.Handle(query);
-        _logger.LogInformation($"Finishing query: {query.GetType().Name}");
+        watch.Stop();
+        
+        _logger.LogInformation($"Finished query: {query.GetType().Name}");
+        _logger.LogInformation($"Query {query.GetType().Name} runtime (ms): {watch.ElapsedMilliseconds}");
+
         return response;
     }
 }
