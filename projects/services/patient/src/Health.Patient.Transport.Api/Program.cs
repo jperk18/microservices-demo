@@ -21,7 +21,7 @@ builder.Configuration.AddEnvironmentVariables();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
-builder.Services.AddDomainServices(true);
+builder.Services.AddDomainServices(new DomainRegistrationConfiguration(){isInMemoryDbUsage = true});
 builder.Services.AddStorageServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();

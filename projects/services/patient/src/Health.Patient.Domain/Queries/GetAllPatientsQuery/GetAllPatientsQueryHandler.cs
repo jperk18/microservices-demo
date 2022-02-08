@@ -17,6 +17,8 @@ public sealed class GetAllPatientsQueryHandler : IQueryHandler<GetAllPatientsQue
     
     public async Task<IEnumerable<PatientRecord>> Handle(GetAllPatientsQuery command)
     {
-        return _unitOfWork.Patients.GetAll().Select(i => new PatientRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id));
+        return await Task.FromResult(
+            _unitOfWork.Patients.GetAll().Select(i => new PatientRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id))
+            );
     }
 }

@@ -7,10 +7,15 @@ namespace Health.Patient.Domain.Core;
 
 public static class Register
 {
-    public static void AddDomainServices(this IServiceCollection services, bool isInMemoryDbUsage)
+    public static void AddDomainServices(this IServiceCollection services, DomainRegistrationConfiguration config)
     {
-        services.AddHandlers(isInMemoryDbUsage);
+        services.AddHandlers(config.isInMemoryDbUsage);
         services.AddSingleton<IJsonSerializer, JsonSerializer>();
         services.AddTransient<IRetrievalService, RetrievalService>();
     }
+}
+
+public class DomainRegistrationConfiguration
+{
+    public bool isInMemoryDbUsage { get; set; }
 }
