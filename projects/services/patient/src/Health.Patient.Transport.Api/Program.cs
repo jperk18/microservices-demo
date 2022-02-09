@@ -25,8 +25,8 @@ builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
 
 // Add Services to Domain (and storage dependant service)
-var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration").Get<StorageConfiguration>();
-builder.Services.AddDomainServices(new DomainConfiguration(storageSettings));
+var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();
+builder.Services.AddDomainServices(new DomainConfiguration(new StorageConfiguration(storageSettings)));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

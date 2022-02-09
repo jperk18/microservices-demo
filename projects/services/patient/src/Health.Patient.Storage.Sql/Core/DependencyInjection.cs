@@ -13,13 +13,13 @@ public static class DependencyInjection
         if (configuration == null)
             throw new ApplicationException("Database configuration is required for storage");
 
-        if (configuration.DbType == StorageConfiguration.DatabaseType.Sql)
+        if (configuration.PatientDatabase.DbType == SqlType.Sql)
         {
-            if (String.IsNullOrEmpty(configuration.ConnectionString))
+            if (String.IsNullOrEmpty(configuration.PatientDatabase.ConnectionString))
                 throw new ApplicationException("Database connection string is required for SQL database");
 
             services.AddDbContext<PatientDbContext>(options =>
-                options.UseInMemoryDatabase("PatientDb"));
+                options.UseSqlServer(configuration.PatientDatabase.ConnectionString));
         }
         else
         {

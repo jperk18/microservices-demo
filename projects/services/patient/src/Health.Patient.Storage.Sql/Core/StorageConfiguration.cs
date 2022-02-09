@@ -2,24 +2,28 @@
 
 public interface IStorageConfiguration
 {
-    StorageConfiguration.DatabaseType DbType { get; set; }
-    string? ConnectionString { get; set; }
+    SqlDatabaseConfiguration PatientDatabase { get; set; }
 }
 
 public class StorageConfiguration : IStorageConfiguration
 {
-    public StorageConfiguration() { }
-    public StorageConfiguration(DatabaseType dbtype, string? connectionString = null)
+    public StorageConfiguration(SqlDatabaseConfiguration patientDatabaseConfiguration)
     {
-        DbType = dbtype;
-        ConnectionString = connectionString;
+        PatientDatabase = patientDatabaseConfiguration ?? throw new ArgumentNullException(nameof(patientDatabaseConfiguration));
     }
-    public DatabaseType DbType { get; set; }
-    public string? ConnectionString { get; set; }
+    
+    public SqlDatabaseConfiguration PatientDatabase { get; set; }
+}
 
-    public enum DatabaseType
-    {
-        InMemory = 0,
-        Sql = 1
-    }
+public class SqlDatabaseConfiguration
+{
+    public SqlDatabaseConfiguration() { }
+    public SqlType DbType { get; set; }
+    public string? ConnectionString { get; set; }
+}
+
+public enum SqlType
+{
+    InMemory = 0,
+    Sql = 1
 }

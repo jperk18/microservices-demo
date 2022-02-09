@@ -24,7 +24,7 @@ public sealed class TransactionCommandDecorator<TCommand, TOutput> : ICommandHan
     public async Task<TOutput> Handle(TCommand command)
     {
         //Transactions not supported in in-memory databases.
-        if(_storageRegistrationConfiguration.DbType == StorageConfiguration.DatabaseType.InMemory)
+        if(_storageRegistrationConfiguration.PatientDatabase.DbType == SqlType.InMemory)
             return await _handler.Handle(command);
         
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
