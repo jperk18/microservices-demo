@@ -13,18 +13,26 @@ public static class DependencyInjection
         if (configuration == null)
             throw new ApplicationException("Database configuration is required for storage");
 
-        if (configuration.PatientDatabase.DbType == SqlType.Sql)
+        if (configuration.PatientDatabase.DbType == SqlType.InMemory)
+        {
+            services.AddDbContext<PatientDbContext>(options =>
+                options.UseInMemoryDatabase("PatientDb"));
+        }
+        else
         {
             if (String.IsNullOrEmpty(configuration.PatientDatabase.ConnectionString))
                 throw new ApplicationException("Database connection string is required for SQL database");
 
-            services.AddDbContext<PatientDbContext>(options =>
-                options.UseSqlServer(configuration.PatientDatabase.ConnectionString));
-        }
-        else
-        {
-            services.AddDbContext<PatientDbContext>(options =>
-                options.UseInMemoryDatabase("PatientDb"));
+            if (configuration.PatientDatabase.DbType == SqlType.Sql)
+            {
+                services.AddDbContext<PatientDbContext>(options =>
+                    options.UseSqlServer(configuration.PatientDatabase.ConnectionString));
+            }
+            else if (configuration.PatientDatabase.DbType == SqlType.Postgres)
+            {
+                services.AddDbContext<PatientDbContext>(options =>
+                    options.UseNpgsql(configuration.PatientDatabase.ConnectionString));
+            }
         }
 
         services.AddTransient(typeof(IGenericQueryRepository<>), typeof(GenericQueryRepository<>));
