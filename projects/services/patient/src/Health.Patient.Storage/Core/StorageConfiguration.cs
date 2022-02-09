@@ -8,6 +8,7 @@ public interface IStorageConfiguration
 
 public class StorageConfiguration : IStorageConfiguration
 {
+    public StorageConfiguration() { }
     public StorageConfiguration(DatabaseType dbtype, string? connectionString = null)
     {
         DbType = dbtype;

@@ -1,7 +1,7 @@
 using Health.Patient.Api.Middleware;
 using Health.Patient.Domain.Core;
 using Health.Patient.Grpc.Services;
-using Health.Patient.Storage.Core;
+using Health.Patient.Transport.Api.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +17,18 @@ builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.Environment
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container for API
+var _apiSettings = new ApiConfiguration();
+builder.Configuration.GetSection("ApiConfiguration").Bind(_apiSettings);
+builder.Services.AddSingleton<IApiConfiguration>(_apiSettings);
+
 builder.Services.AddControllers();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<Health.Patient.Api.Core.Serialization.IJsonSerializer, Health.Patient.Api.Core.Serialization.JsonSerializer>();
 
-// Add Services to Domain (and storage depandant service)
-builder.Services.AddDomainServices(new DomainConfiguration(){ StorageConfiguration = new StorageConfiguration(StorageConfiguration.DatabaseType.InMemory)});
+// Add Services to Domain (and storage dependant service)
+var _domainSettings = new DomainConfiguration();
+builder.Configuration.GetSection("DomainConfiguration").Bind(_domainSettings);
+builder.Services.AddDomainServices(_domainSettings);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
