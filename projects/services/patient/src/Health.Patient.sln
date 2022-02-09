@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Api", "Health.Patient.Transport.Api\Health.Patient.Transport.Api.csproj", "{1D3005E8-FAF3-40D7-A4E4-508FB0108D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Grpc", "Health.Patient.Transport.Grpc\Health.Patient.Transport.Grpc.csproj", "{40C47984-77C9-4C6F-96AE-3FAEA811A3A3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Domain", "Health.Patient.Domain\Health.Patient.Domain.csproj", "{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Storage", "Health.Patient.Storage\Health.Patient.Storage.csproj", "{5819D630-20F5-4BFE-A271-9A2B236CFC9B}"
@@ -18,10 +16,6 @@ Global
 		{1D3005E8-FAF3-40D7-A4E4-508FB0108D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D3005E8-FAF3-40D7-A4E4-508FB0108D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D3005E8-FAF3-40D7-A4E4-508FB0108D47}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40C47984-77C9-4C6F-96AE-3FAEA811A3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40C47984-77C9-4C6F-96AE-3FAEA811A3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40C47984-77C9-4C6F-96AE-3FAEA811A3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40C47984-77C9-4C6F-96AE-3FAEA811A3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDDFC89F-5195-4477-AE7F-21F4AC72AAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU

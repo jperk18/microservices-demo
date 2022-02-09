@@ -4,10 +4,14 @@ namespace Health.Patient.Domain.Core;
 
 public interface IDomainConfiguration
 {
-    StorageConfiguration StorageConfiguration { get; set; }
+    IStorageConfiguration StorageConfiguration { get; set; }
 }
 
 public class DomainConfiguration : IDomainConfiguration
 {
-    public StorageConfiguration StorageConfiguration { get; set; }
+    public DomainConfiguration(IStorageConfiguration storageConfiguration)
+    {
+        StorageConfiguration = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
+    }
+    public IStorageConfiguration StorageConfiguration { get; set; }
 }

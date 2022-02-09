@@ -2,10 +2,10 @@
 
 public interface IApiConfiguration
 {
-    string SomeValue { get; set; }
+    string? SomeValue { get; set; }
 }
 
 public class ApiConfiguration : IApiConfiguration
 {
-    public string SomeValue { get; set; }
+    public string? SomeValue { get; set; }
 }
