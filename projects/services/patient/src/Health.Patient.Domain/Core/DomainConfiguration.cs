@@ -1,4 +1,4 @@
-﻿using Health.Patient.Storage.Core;
+﻿using Health.Patient.Storage.Sql.Core;
 
 namespace Health.Patient.Domain.Core;
 

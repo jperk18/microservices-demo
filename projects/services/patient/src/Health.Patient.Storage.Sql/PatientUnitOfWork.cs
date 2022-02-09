@@ -1,15 +1,18 @@
-﻿using Health.Patient.Storage.Core.Database;
+﻿using Health.Patient.Storage.Sql.Core.Databases.PatientDb;
+using Health.Patient.Storage.Sql.Core.Repository;
+using Health.Patient.Storage.Sql.Core.Repository.PatientDb;
 
-namespace Health.Patient.Storage;
+namespace Health.Patient.Storage.Sql;
 
-public class UnitOfWork : IUnitOfWork
+public class PatientUnitOfWork : IPatientUnitOfWork
 {
     private readonly PatientDbContext _context;
 
-    public UnitOfWork(PatientDbContext context)
+    public PatientUnitOfWork(PatientDbContext context)
     {
         _context = context;
         Patients = new PatientRepository(_context);
+        //Add additional table repos here
     }
 
     public IPatientRepository Patients { get; private set; }

@@ -1,6 +1,6 @@
 using Health.Patient.Api.Middleware;
 using Health.Patient.Domain.Core;
-using Health.Patient.Storage.Core;
+using Health.Patient.Storage.Sql.Core;
 using Health.Patient.Transport.Api.Core;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,6 +1,6 @@
 ﻿using Health.Patient.Domain.Commands.Core;
 using Health.Patient.Domain.Core.Decorators;
-using Health.Patient.Storage;
+using Health.Patient.Storage.Sql;
 
 namespace Health.Patient.Domain.Commands.CreatePatientCommand;
 
@@ -9,8 +9,8 @@ namespace Health.Patient.Domain.Commands.CreatePatientCommand;
 [TransactionPipeline]
 public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientCommand, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    public CreatePatientCommandHandler(IUnitOfWork unitOfWork)
+    private readonly IPatientUnitOfWork _unitOfWork;
+    public CreatePatientCommandHandler(IPatientUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
@@ -18,10 +18,9 @@ public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientC
     public async Task<Guid> Handle(CreatePatientCommand command)
     {
         //TODO: More Business logic
-        var p = await _unitOfWork.Patients.Add(new Storage.Core.Database.Models.Patient()
-        {
-            Id = Guid.NewGuid(), FirstName = command.FirstName, LastName = command.LastName, DateOfBirth = command.DateOfBirth
-        });
+        var p = await _unitOfWork.Patients.Add(new Storage.Sql.Core.Databases.PatientDb.Models.Patient(
+            Guid.NewGuid(), command.FirstName, command.LastName, command.DateOfBirth
+        ));
 
         await _unitOfWork.Complete();
         return p.Id;

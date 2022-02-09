@@ -1,4 +1,4 @@
-﻿namespace Health.Patient.Storage.Core;
+﻿namespace Health.Patient.Storage.Sql.Core;
 
 public interface IStorageConfiguration
 {

@@ -2,6 +2,7 @@
 using Health.Patient.Domain.Core.Models;
 using Health.Patient.Domain.Queries.Core;
 using Health.Patient.Storage;
+using Health.Patient.Storage.Sql;
 
 namespace Health.Patient.Domain.Queries.GetAllPatientsQuery;
 
@@ -9,8 +10,8 @@ namespace Health.Patient.Domain.Queries.GetAllPatientsQuery;
 [ValidationPipeline]
 public sealed class GetAllPatientsQueryHandler : IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    public GetAllPatientsQueryHandler(IUnitOfWork unitOfWork)
+    private readonly IPatientUnitOfWork _unitOfWork;
+    public GetAllPatientsQueryHandler(IPatientUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }

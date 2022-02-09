@@ -1,4 +1,4 @@
-﻿namespace Health.Patient.Storage.Core.Repository.Generic;
+﻿namespace Health.Patient.Storage.Sql.Core.Repository.Core.Generic;
 
 public interface IGenericRepository<T> : IGenericQueryRepository<T> where T : class
 {

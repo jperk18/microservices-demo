@@ -1,6 +1,6 @@
 ﻿using Health.Patient.Domain.Commands.Core;
-using Health.Patient.Storage.Core;
-using Health.Patient.Storage.Core.Database;
+using Health.Patient.Storage.Sql.Core;
+using Health.Patient.Storage.Sql.Core.Databases.PatientDb;
 using Microsoft.Extensions.Logging;
 
 namespace Health.Patient.Domain.Core.Decorators;

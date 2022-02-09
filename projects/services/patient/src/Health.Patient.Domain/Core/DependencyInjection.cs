@@ -3,12 +3,12 @@ using Health.Patient.Domain.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Core.RegistrationHelpers;
 using Health.Patient.Domain.Core.Serialization;
 using Health.Patient.Domain.Core.Services;
-using Health.Patient.Storage.Core;
+using Health.Patient.Storage.Sql.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Health.Patient.Domain.Core;
 
-public static class Register
+public static class DependencyInjection
 {
     public static void AddDomainServices(this IServiceCollection services, IDomainConfiguration config)
     {
