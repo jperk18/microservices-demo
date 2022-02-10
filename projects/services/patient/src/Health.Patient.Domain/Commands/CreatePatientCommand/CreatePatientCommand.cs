@@ -1,8 +1,9 @@
 ﻿using Health.Patient.Domain.Commands.Core;
+using Health.Patient.Domain.Core.Models;
 
 namespace Health.Patient.Domain.Commands.CreatePatientCommand;
 
-public sealed class CreatePatientCommand: ICommand<Guid>
+public sealed class CreatePatientCommand: ICommand<PatientRecord>
 {
     public CreatePatientCommand(string firstName, string lastName, DateTime dateOfBirth)
     {

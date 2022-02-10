@@ -1,13 +1,15 @@
 ﻿using Health.Patient.Domain.Commands.Core;
 using Health.Patient.Domain.Core.Decorators;
+using Health.Patient.Domain.Core.Models;
 using Health.Patient.Storage.Sql;
 
 namespace Health.Patient.Domain.Commands.CreatePatientCommand;
 
 [AuditLogPipeline]
+[ExceptionPipeline]
 [ValidationPipeline]
 [TransactionPipeline]
-public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientCommand, Guid>
+public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientCommand, PatientRecord>
 {
     private readonly IPatientUnitOfWork _unitOfWork;
     public CreatePatientCommandHandler(IPatientUnitOfWork unitOfWork)
@@ -15,7 +17,7 @@ public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientC
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
     
-    public async Task<Guid> Handle(CreatePatientCommand command)
+    public async Task<PatientRecord> Handle(CreatePatientCommand command)
     {
         //TODO: More Business logic
         var p = await _unitOfWork.Patients.Add(new Storage.Sql.Core.Databases.PatientDb.Models.Patient(
@@ -23,6 +25,6 @@ public sealed class CreatePatientCommandHandler : ICommandHandler<CreatePatientC
         ));
 
         await _unitOfWork.Complete();
-        return p.Id;
+        return new PatientRecord(p.FirstName, p.LastName, p.DateOfBirth, p.Id);
     }
 }

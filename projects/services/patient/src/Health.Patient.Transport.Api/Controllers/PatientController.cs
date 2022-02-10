@@ -1,35 +1,39 @@
 using System.Net.Mime;
-using Health.Patient.Api.Middleware;
 using Health.Patient.Api.Requests;
 using Health.Patient.Domain.Commands.Core;
 using Health.Patient.Domain.Commands.CreatePatientCommand;
+using Health.Patient.Domain.Core.Exceptions.Models;
 using Health.Patient.Domain.Core.Models;
 using Health.Patient.Domain.Queries.Core;
 using Health.Patient.Domain.Queries.GetAllPatientsQuery;
 using Health.Patient.Domain.Queries.GetPatientQuery;
+using Health.Patient.Transport.Api.Middleware;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Health.Patient.Api.Controllers;
+namespace Health.Patient.Transport.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class PatientController : ControllerBase
 {
     private readonly ILogger<PatientController> _logger;
-    private readonly ICommandHandler<CreatePatientCommand, Guid> _createPatientHandler;
     private readonly IQueryHandler<GetPatientQuery, PatientRecord> _getPatientHandler;
     private readonly IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>> _getAllPatientsHandler;
+    private readonly IRequestClient<CreatePatientCommand> _createPatientRequestClient;
 
     public PatientController(ILogger<PatientController> logger,
-        ICommandHandler<CreatePatientCommand, Guid> createPatientHandler,
+        ICommandHandler<CreatePatientCommand, PatientRecord> createPatientHandler,
         IQueryHandler<GetPatientQuery, PatientRecord> getPatientHandler,
-        IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>> getAllPatientsHandler
-    )
+        IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>> getAllPatientsHandler,
+        IRequestClient<CreatePatientCommand> createPatientRequestClient)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _createPatientHandler = createPatientHandler ?? throw new ArgumentNullException(nameof(createPatientHandler));
         _getPatientHandler = getPatientHandler ?? throw new ArgumentNullException(nameof(getPatientHandler));
-        _getAllPatientsHandler = getAllPatientsHandler ?? throw new ArgumentNullException(nameof(getAllPatientsHandler));
+        _getAllPatientsHandler =
+            getAllPatientsHandler ?? throw new ArgumentNullException(nameof(getAllPatientsHandler));
+        _createPatientRequestClient = createPatientRequestClient ??
+                                      throw new ArgumentNullException(nameof(createPatientRequestClient));
     }
 
     [HttpPost()]
@@ -39,11 +43,20 @@ public class PatientController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] CreatePatientApiRequest request)
     {
-        var response =
-            await _createPatientHandler.Handle(new CreatePatientCommand(request.FirstName, request.LastName,
+        var (result, errors) = await _createPatientRequestClient.GetResponse<PatientRecord, DomainValidation>(
+            new CreatePatientCommand(
+                request.FirstName, request.LastName,
                 request.DateOfBirth));
-        return new ObjectResult(new CreatePatientApiResponse() {PatientId = response})
-            {StatusCode = StatusCodes.Status201Created};
+
+        if (result.IsCompletedSuccessfully)
+        {
+            var response = await result;
+            return new ObjectResult(new CreatePatientApiResponse() {PatientId = response.Message.Id})
+                {StatusCode = StatusCodes.Status201Created};
+        }
+
+        var domainError = await errors;
+        throw domainError.Message.ToDomainValidationException();
     }
 
     [HttpGet]
@@ -55,14 +68,15 @@ public class PatientController : ControllerBase
         var response = await _getPatientHandler.Handle(new GetPatientQuery() {PatientId = request.PatientId});
         return Ok(new GetPatientApiResponse(response.Id, response.FirstName, response.LastName, response.DateOfBirth));
     }
-    
+
     [HttpGet("All")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetPatientApiResponse>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllPatients()
     {
         var r = (await _getAllPatientsHandler.Handle(new GetAllPatientsQuery()))
-            .Select(response => new GetPatientApiResponse(response.Id, response.FirstName, response.LastName, response.DateOfBirth));
+            .Select(response =>
+                new GetPatientApiResponse(response.Id, response.FirstName, response.LastName, response.DateOfBirth));
         return Ok(r);
     }
 }
