@@ -7,6 +7,7 @@ using Health.Patient.Storage.Sql;
 namespace Health.Patient.Domain.Queries.GetAllPatientsQuery;
 
 [AuditLogPipeline]
+[ExceptionPipeline]
 public sealed class GetAllPatientsQueryHandler : IQueryHandler<GetAllPatientsQuery, IEnumerable<PatientRecord>>
 {
     private readonly IPatientUnitOfWork _unitOfWork;

@@ -1,8 +1,13 @@
-using Health.Patient.Domain.Core;
-using Health.Patient.Storage.Sql.Core;
+using Health.Patient.Domain.Commands.CreatePatientCommand;
+using Health.Patient.Domain.Queries.GetAllPatientsQuery;
+using Health.Patient.Domain.Queries.GetPatientQuery;
 using Health.Patient.Transport.Api.Core;
 using Health.Patient.Transport.Api.Core.Serialization;
 using Health.Patient.Transport.Api.Middleware;
+using MassTransit;
+using MassTransit.Definition;
+using MassTransit.RabbitMqTransport;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +30,18 @@ builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
 // Add Services to Domain (and storage dependant service)
-var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();
-builder.Services.AddDomainServices(new DomainConfiguration(new StorageConfiguration(storageSettings)));
+//var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();
+//builder.Services.AddDomainServices(new DomainConfiguration(new StorageConfiguration(storageSettings)));
+builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.UsingRabbitMq(ConfigureBus);
+    cfg.AddRequestClient<CreatePatientCommand>();
+    cfg.AddRequestClient<GetPatientQuery>();
+    cfg.AddRequestClient<GetAllPatientsQuery>();
+});
+
+builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddControllers();
 
@@ -50,3 +65,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator) {
+    configurator.ConfigureEndpoints(context);
+}

@@ -4,6 +4,8 @@ using Health.Patient.Domain.Consumer;
 using Health.Patient.Domain.Core.RegistrationHelpers;
 using Health.Patient.Domain.Core.Serialization;
 using Health.Patient.Domain.Core.Services;
+using Health.Patient.Domain.Queries.GetAllPatientsQuery;
+using Health.Patient.Domain.Queries.GetPatientQuery;
 using Health.Patient.Storage.Sql.Core;
 using MassTransit;
 using MassTransit.Definition;
@@ -31,8 +33,6 @@ public static class DependencyInjection
         {
             cfg.AddConsumersFromNamespaceContaining<CreatePatientCommandConsumer>();
             cfg.UsingRabbitMq(ConfigureBus);
-            
-            cfg.AddRequestClient<CreatePatientCommand>();
         });
 
         services.AddMassTransitHostedService();

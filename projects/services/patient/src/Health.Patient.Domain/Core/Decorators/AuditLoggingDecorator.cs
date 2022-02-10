@@ -47,13 +47,22 @@ public sealed class AuditLoggingQueryDecorator<TQuery, TResult> : IQueryHandler<
         _logger.LogInformation($"Starting query: {query.GetType().Name}");
         
         var watch = System.Diagnostics.Stopwatch.StartNew();
-        var response = await _handler.Handle(query);
-        watch.Stop();
-        
-        _logger.LogInformation($"Finished query: {query.GetType().Name}");
-        _logger.LogInformation($"Query {query.GetType().Name} runtime (ms): {watch.ElapsedMilliseconds}");
+        try
+        {
+            var response = await _handler.Handle(query);
 
-        return response;
+            watch.Stop();
+            _logger.LogInformation($"Finished query successfully: {query.GetType().Name}");
+            _logger.LogInformation($"Query {query.GetType().Name} runtime (ms): {watch.ElapsedMilliseconds}");
+            return response;
+        }
+        catch (Exception)
+        {
+            watch.Stop();
+            _logger.LogError($"Failed Query: {query.GetType().Name}");
+            _logger.LogInformation($"Failed query {query.GetType().Name} runtime (ms): {watch.ElapsedMilliseconds}");
+            throw;
+        }
     }
 }
 
