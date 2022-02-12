@@ -5,7 +5,7 @@ using Health.Patient.Domain.Storage.Sql;
 
 namespace Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 
-[AuditLogPipeline]
+[LoggingPipeline]
 [ExceptionPipeline]
 [ValidationPipeline]
 [TransactionPipeline]

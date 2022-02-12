@@ -6,7 +6,7 @@ using Health.Patient.Domain.Storage.Sql;
 
 namespace Health.Patient.Domain.Console.Queries.GetPatientQuery;
 
-[AuditLogPipeline]
+[LoggingPipeline]
 [ExceptionPipeline]
 [ValidationPipeline]
 public sealed class GetPatientQueryHandler : IQueryHandler<Console.Queries.GetPatientQuery.GetPatientQuery, PatientRecord>
