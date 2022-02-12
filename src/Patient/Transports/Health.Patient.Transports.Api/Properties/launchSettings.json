@@ -19,15 +19,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Health.Patient.Grpc": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5256;https://localhost:7256",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
