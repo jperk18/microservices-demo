@@ -9,10 +9,10 @@ namespace Health.Patient.Domain.Console.Queries.GetPatientQuery;
 [LoggingPipeline]
 [ExceptionPipeline]
 [ValidationPipeline]
-public sealed class GetPatientQueryHandler : IQueryHandler<Console.Queries.GetPatientQuery.GetPatientQuery, PatientRecord>
+public sealed class GetPatientAsyncQueryHandler : IAsyncQueryHandler<Console.Queries.GetPatientQuery.GetPatientQuery, PatientRecord>
 {
     private readonly IPatientUnitOfWork _unitOfWork;
-    public GetPatientQueryHandler(IPatientUnitOfWork unitOfWork)
+    public GetPatientAsyncQueryHandler(IPatientUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
