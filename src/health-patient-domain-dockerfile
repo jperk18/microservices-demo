@@ -1,0 +1,22 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY "./Patient/Domain/Health.Patient.Domain.Console" "./Patient/Domain/Health.Patient.Domain.Console"
+COPY "./Patient/Domain/Health.Patient.Domain.Storage.Sql" "./Patient/Domain/Health.Patient.Domain.Storage.Sql"
+COPY "./Workflow/Shared/Health.Workflow.Shared.Processes" "./Workflow/Shared/Health.Workflow.Shared.Processes"
+RUN dotnet restore "./Workflow/Shared/Health.Workflow.Shared.Processes/Health.Workflow.Shared.Processes.csproj"
+RUN dotnet restore "./Patient/Domain/Health.Patient.Domain.Storage.Sql/Health.Patient.Domain.Storage.Sql.csproj"
+RUN dotnet restore "./Patient/Domain/Health.Patient.Domain.Console/Health.Patient.Domain.Console.csproj"
+
+WORKDIR "./Patient/Domain/Health.Patient.Domain.Console"
+RUN dotnet build "Health.Patient.Domain.Console.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Health.Patient.Domain.Console.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Health.Patient.Domain.Console.dll"]

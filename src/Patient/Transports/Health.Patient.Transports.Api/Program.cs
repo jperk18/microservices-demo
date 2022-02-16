@@ -37,6 +37,7 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddRequestClient<RegisterPatientCommandQuery>();
     cfg.AddRequestClient<GetPatientQuery>();
     cfg.AddRequestClient<GetAllPatientsQuery>();
+    cfg.AddRequestClient<CheckInPatientCommandQuery>();
 });
 
 builder.Services.AddMassTransitHostedService();

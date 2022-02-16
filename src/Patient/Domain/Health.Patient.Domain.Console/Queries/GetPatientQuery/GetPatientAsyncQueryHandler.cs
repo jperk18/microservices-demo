@@ -24,7 +24,7 @@ public sealed class GetPatientAsyncQueryHandler : IAsyncQueryHandler<Console.Que
         var i = await _unitOfWork.Patients.GetById(command.PatientId);
 
         if (i == null)
-            throw new DomainValidationException($"Record does not exist for {command.PatientId}");
+            throw new DomainValidationException($"Patient does not exist for {command.PatientId}");
         
         return new PatientRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id);
     }

@@ -20,7 +20,7 @@ public class GetPatientConsumer : IConsumer<Workflow.Shared.Processes.GetPatient
     {
         try
         {
-            var result = await _mediator.SendAsync(new GetPatientQuery(context.Message.PatientId));
+            var result = await _mediator.SendAsync(new GetPatientQuery(context.Message.Id));
             await context.RespondAsync(new Workflow.Shared.Processes.Core.Models.Patient()
             {
                 DateOfBirth = result.DateOfBirth, FirstName = result.FirstName, LastName = result.LastName, PatientId = result.Id

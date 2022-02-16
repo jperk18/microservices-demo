@@ -3,8 +3,7 @@ using Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Console.Consumer;
 using Health.Patient.Domain.Console.Core.RegistrationHelpers;
 using Health.Patient.Domain.Console.Core.Serialization;
-using Health.Patient.Domain.Core;
-using Health.Patient.Domain.Core.Services;
+using Health.Patient.Domain.Console.Core.Services;
 using Health.Patient.Domain.Storage.Sql.Core;
 using MassTransit;
 using MassTransit.Definition;
@@ -25,7 +24,7 @@ public static class DependencyInjection
         services.AddHandlers();
         services.AddSingleton(config);
         services.AddSingleton<IJsonSerializer, JsonSerializer>();
-        services.AddTransient<IRetrievalService, RetrievalService>();
+        services.AddTransient<IPatientRetrievalService, PatientRetrievalService>();
 
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(cfg =>
