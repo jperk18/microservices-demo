@@ -8,12 +8,13 @@ namespace Health.Shared.Domain.Core.RegistrationHelpers;
 
 public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services, Type[] types)
+    public static void AddHandlers(this IServiceCollection services, Type[] types, List<Type> handlerTypes)
     {
-        List<Type> handlerTypes = types
-            .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
-            .Where(x => x.Name.EndsWith("Handler"))
-            .ToList();
+        // var types = typeof(ICommand<>).Assembly.GetTypes();
+        // var handlerTypes= types
+        //     .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
+        //     .Where(x => x.Name.EndsWith("Handler"))
+        //     .ToList();
 
         foreach (Type type in handlerTypes)
         {
@@ -108,7 +109,7 @@ public static class Handlers
     //     throw new ArgumentException(attribute.ToString());
     // }
 
-    private static bool IsHandlerInterface(Type type)
+    public static bool IsHandlerInterface(Type type)
     {
         if (!type.IsGenericType)
             return false;

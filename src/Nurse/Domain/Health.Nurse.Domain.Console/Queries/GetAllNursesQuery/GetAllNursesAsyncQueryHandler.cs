@@ -1,7 +1,7 @@
-﻿using Health.Nurse.Domain.Console.Core.Decorators;
-using Health.Nurse.Domain.Console.Core.Models;
-using Health.Nurse.Domain.Console.Queries.Core;
+﻿using Health.Nurse.Domain.Console.Core.Models;
 using Health.Nurse.Domain.Storage.Sql;
+using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Queries.Core;
 
 namespace Health.Nurse.Domain.Console.Queries.GetAllNursesQuery;
 

@@ -5,7 +5,7 @@ public interface IDomainValidationFailure
     /// <summary>
     /// The name of the property.
     /// </summary>
-    string? PropertyName { get; set; }
+    string? PropertyName { get; }
 
     /// <summary>
     /// The error message

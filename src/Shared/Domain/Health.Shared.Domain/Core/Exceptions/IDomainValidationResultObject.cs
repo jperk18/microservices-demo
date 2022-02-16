@@ -5,5 +5,5 @@ namespace Health.Shared.Domain.Core.Exceptions;
 public interface IDomainValidationResultObject
 {
     string Message { get; }
-    IEnumerable<IDomainValidationFailure>? Errors { get; set; }
+    IEnumerable<IDomainValidationFailure>? Errors { get; }
 }

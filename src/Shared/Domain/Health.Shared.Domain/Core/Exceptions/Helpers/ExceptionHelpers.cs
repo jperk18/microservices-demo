@@ -14,18 +14,36 @@ public static class ExceptionHelpers
             _ => DomainSeverity.Error,
         };
 
-    public static IDomainValidationResultObject GetDomainValidationException(ValidationException e)
+    public static DomainValidationException GetDomainValidationException(ValidationException e)
     {
-        return (IDomainValidationResultObject)(object)new
+        var errorsList = e.Errors.Select(x =>
         {
-            Messages = e.Message,
-            Errors = e.Errors.Select(x => (IDomainValidationFailure)(object) new {
+            var ser = GetDomainSeverity(x.Severity);
+            return (IDomainValidationFailure) new DomainValidationFailure()
+            {
                 ErrorMessage = x.ErrorMessage,
                 AttemptedValue = x.AttemptedValue,
                 ErrorCode = x.ErrorCode,
                 PropertyName = x.PropertyName,
-                Severity = GetDomainSeverity(x.Severity)
-            })
-        };
+                Severity = ser
+            };
+        });
+        
+        return new DomainValidationException(e.Message, errorsList);
+    }
+
+    private class DomainValidationFailure : IDomainValidationFailure
+    {
+        public string? PropertyName { get; set; }
+        public string ErrorMessage { get; set; }
+        public object? AttemptedValue { get; set; }
+        public DomainSeverity Severity { get; set; }
+        public string ErrorCode { get; set; }
+    }
+
+    private class DomainValidationResultObject : IDomainValidationResultObject
+    {
+        public string Message { get; set; }
+        public IEnumerable<IDomainValidationFailure>? Errors { get; set; }
     }
 }

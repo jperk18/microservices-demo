@@ -29,16 +29,22 @@ public sealed class LoggingCommandDecorator<TCommand, TOutput> : IAsyncCommandHa
             _logger.LogInformation($"COMPLETED: Command (Success) - {command.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}");
             return response;
         }
-        catch (DomainValidationException e)
-        {
-            watch.Stop();
-            _logger.LogWarning($"COMPLETED: Command (Warning) - {command.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
-            throw;
-        }
         catch (Exception e)
         {
-            watch.Stop();
-            _logger.LogError($"FAILED: Command - {command.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
+            if (e is DomainValidationException)
+            {
+                watch.Stop();
+                _logger.LogWarning(
+                    $"COMPLETED: Command (Warning) - {command.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}",
+                    e);
+            }
+            else
+            {
+                watch.Stop();
+                _logger.LogError(
+                    $"FAILED: Command - {command.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
+            }
+
             throw;
         }
     }
@@ -67,16 +73,20 @@ public sealed class LoggingQueryDecorator<TQuery, TResult> : IAsyncQueryHandler<
             _logger.LogInformation($"COMPLETED: Query (Success) - {query.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}");
             return response;
         }
-        catch (DomainValidationException e)
-        {
-            watch.Stop();
-            _logger.LogWarning($"COMPLETED: Query (Warnings) - {query.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
-            throw;
-        }
         catch (Exception e)
         {
-            watch.Stop();
-            _logger.LogError($"FAILED: Query - {query.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
+            if (e is DomainValidationException)
+            {
+                watch.Stop();
+                _logger.LogWarning($"COMPLETED: Query (Warnings) - {query.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}", e);
+            }
+            else
+            {
+                watch.Stop();
+                _logger.LogError($"FAILED: Query - {query.GetType().Name}; Runtime (ms): {watch.ElapsedMilliseconds}",
+                    e);
+            }
+
             throw;
         }
     }

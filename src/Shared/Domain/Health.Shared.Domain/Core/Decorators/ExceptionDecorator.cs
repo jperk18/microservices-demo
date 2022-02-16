@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Core.Exceptions.Helpers;
 using Health.Shared.Domain.Queries.Core;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,7 @@ public sealed class ExceptionCommandDecorator<TCommand, TOutput> : IAsyncCommand
         }
         catch (ValidationException e)
         {
-            throw (DomainValidationException) ExceptionHelpers.GetDomainValidationException(e);
+            throw ExceptionHelpers.GetDomainValidationException(e);
         }
     }
 }
@@ -51,7 +50,7 @@ public sealed class ExceptionQueryDecorator<TQuery, TResult> : IAsyncQueryHandle
         }
         catch (ValidationException e)
         {
-            throw (DomainValidationException) ExceptionHelpers.GetDomainValidationException(e);
+            throw ExceptionHelpers.GetDomainValidationException(e);
         }
     }
 }

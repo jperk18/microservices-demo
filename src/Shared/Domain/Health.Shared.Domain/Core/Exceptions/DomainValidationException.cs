@@ -2,15 +2,15 @@
 
 namespace Health.Shared.Domain.Core.Exceptions;
 
-public abstract class DomainValidationException : Exception, IDomainValidationResultObject
+public class DomainValidationException : Exception, IDomainValidationResultObject
 {
-    protected DomainValidationException(string message)
+    public DomainValidationException(string message)
     {
         Message = message;
         Errors = new List<IDomainValidationFailure>();
     }
 
-    protected DomainValidationException(string message, IEnumerable<IDomainValidationFailure>? errors)
+    public DomainValidationException(string message, IEnumerable<IDomainValidationFailure> errors)
     {
         Message = message;
         Errors = errors;

@@ -1,5 +1,5 @@
-﻿using Health.Nurse.Domain.Console.Commands.Core;
-using Health.Nurse.Domain.Console.Core.Models;
+﻿using Health.Nurse.Domain.Console.Core.Models;
+using Health.Shared.Domain.Commands.Core;
 
 namespace Health.Nurse.Domain.Console.Commands.CreateNurseCommand;
 

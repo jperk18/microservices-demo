@@ -1,4 +1,6 @@
-﻿using Health.Nurse.Domain.Storage.Sql.Core.Databases.NurseDb;
+﻿using Health.Nurse.Domain.Storage.Sql.Core.Configuration;
+using Health.Nurse.Domain.Storage.Sql.Core.Configuration.Inner;
+using Health.Nurse.Domain.Storage.Sql.Core.Databases.NurseDb;
 using Health.Nurse.Domain.Storage.Sql.Core.Repository.Core.Generic;
 using Health.Nurse.Domain.Storage.Sql.Core.Repository.NurseDb;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +11,12 @@ namespace Health.Nurse.Domain.Storage.Sql.Core;
 
 public static class DependencyInjection
 {
-    public static void AddStorageServices(this IServiceCollection services, IStorageConfiguration configuration)
+    public static void AddStorageServices(this IServiceCollection services, INurseStorageConfiguration configuration)
     {
         if (configuration == null)
             throw new ApplicationException("Database configuration is required for storage");
 
-        if (configuration.PatientDatabase.DbType == SqlType.InMemory)
+        if (configuration.NurseDatabase.DbType == SqlType.InMemory)
         {
             services.AddDbContext<NurseDbContext>(options =>
                 options.UseInMemoryDatabase("NurseDb")
@@ -22,13 +24,13 @@ public static class DependencyInjection
         }
         else
         {
-            if (String.IsNullOrEmpty(configuration.PatientDatabase.ConnectionString))
+            if (String.IsNullOrEmpty(configuration.NurseDatabase.ConnectionString))
                 throw new ApplicationException("Database connection string is required for SQL database");
 
-            if (configuration.PatientDatabase.DbType == SqlType.Postgres)
+            if (configuration.NurseDatabase.DbType == SqlType.Postgres)
             {
                 services.AddDbContext<NurseDbContext>(options =>
-                    options.UseNpgsql(configuration.PatientDatabase.ConnectionString));
+                    options.UseNpgsql(configuration.NurseDatabase.ConnectionString));
             }
         }
 
