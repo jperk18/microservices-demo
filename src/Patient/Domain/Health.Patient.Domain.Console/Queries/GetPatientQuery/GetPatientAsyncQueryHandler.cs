@@ -1,8 +1,9 @@
-﻿using Health.Patient.Domain.Console.Core.Decorators;
-using Health.Patient.Domain.Console.Core.Exceptions;
+﻿using Health.Nurse.Domain.Console.Core.Decorators;
 using Health.Patient.Domain.Console.Core.Models;
-using Health.Patient.Domain.Console.Queries.Core;
 using Health.Patient.Domain.Storage.Sql;
+using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Core.Exceptions;
+using Health.Shared.Domain.Queries.Core;
 
 namespace Health.Patient.Domain.Console.Queries.GetPatientQuery;
 

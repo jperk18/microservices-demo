@@ -1,7 +1,6 @@
 using Health.Nurse.Domain.Console.Core;
 using Health.Nurse.Domain.Console.Core.Configuration;
 using Health.Nurse.Domain.Storage.Sql.Core;
-using Health.Nurse.Domain.Storage.Sql.Core.Configuration;
 using Health.Nurse.Domain.Storage.Sql.Core.Configuration.Inner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

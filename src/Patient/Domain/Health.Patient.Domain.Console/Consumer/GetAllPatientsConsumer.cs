@@ -1,18 +1,17 @@
 ﻿using Health.Patient.Domain.Console.Core.Exceptions;
 using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
-using Health.Patient.Domain.Console.Core.Models;
-using Health.Patient.Domain.Console.Mediator;
-using Health.Patient.Domain.Console.Queries.Core;
 using Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
+using Health.Shared.Domain.Core.Exceptions;
+using Health.Shared.Domain.Mediator;
 using MassTransit;
 
 namespace Health.Patient.Domain.Console.Consumer;
 
 public class GetAllPatientsConsumer : IConsumer<Workflow.Shared.Processes.GetAllPatientsQuery>
 {
-    private readonly IDomainMediator _mediator;
+    private readonly IMediator _mediator;
 
-    public GetAllPatientsConsumer(IDomainMediator mediator)
+    public GetAllPatientsConsumer(IMediator mediator)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
@@ -28,8 +27,14 @@ public class GetAllPatientsConsumer : IConsumer<Workflow.Shared.Processes.GetAll
         }
         catch (DomainValidationException e)
         {
-            await context.RespondAsync(e.ToValidationObject().ToWorkflowValidationObject());
+            if (e is PatientDomainValidationException exception)
+            {
+                await context.RespondAsync(exception.ToWorkflowValidationObject());
+            }
+            else
+            {
+                await context.RespondAsync(e.ToWorkflowValidationObject());
+            }
         }
-        
     }
 }

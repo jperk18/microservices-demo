@@ -1,5 +1,5 @@
 ﻿using Health.Patient.Domain.Console.Core.Models;
-using Health.Patient.Domain.Console.Queries.Core;
+using Health.Shared.Domain.Queries.Core;
 
 namespace Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
 

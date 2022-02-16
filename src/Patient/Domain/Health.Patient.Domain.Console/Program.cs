@@ -1,5 +1,8 @@
 using Health.Patient.Domain.Console.Core;
+using Health.Patient.Domain.Console.Core.Configuration;
 using Health.Patient.Domain.Storage.Sql.Core;
+using Health.Patient.Domain.Storage.Sql.Core.Configuration;
+using Health.Patient.Domain.Storage.Sql.Core.Configuration.Inner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;
@@ -30,9 +33,9 @@ static class Program
             }).ConfigureServices((builder, services) =>
             {
                 var storageSettings = builder.Configuration
-                    .GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase")
+                    .GetSection("PatientDomainConfiguration:PatientStorageConfiguration:PatientDatabase")
                     .Get<SqlDatabaseConfiguration>();
                 
-                services.AddDomainServices(new DomainConfiguration(new StorageConfiguration(storageSettings)));
+                services.AddDomainServices(new PatientDomainConfiguration(new PatientStorageConfiguration(storageSettings)));
             });
 }

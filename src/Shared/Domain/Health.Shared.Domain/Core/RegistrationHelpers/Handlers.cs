@@ -8,7 +8,7 @@ namespace Health.Shared.Domain.Core.RegistrationHelpers;
 
 public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services, Type[] types, List<Type> handlerTypes)
+    public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes)
     {
         // var types = typeof(ICommand<>).Assembly.GetTypes();
         // var handlerTypes= types

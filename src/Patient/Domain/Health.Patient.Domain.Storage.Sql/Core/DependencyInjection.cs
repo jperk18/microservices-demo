@@ -1,4 +1,6 @@
-﻿using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
+﻿using Health.Patient.Domain.Storage.Sql.Core.Configuration;
+using Health.Patient.Domain.Storage.Sql.Core.Configuration.Inner;
+using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
 using Health.Patient.Domain.Storage.Sql.Core.Repository.Core.Generic;
 using Health.Patient.Domain.Storage.Sql.Core.Repository.PatientDb;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +11,7 @@ namespace Health.Patient.Domain.Storage.Sql.Core;
 
 public static class DependencyInjection
 {
-    public static void AddStorageServices(this IServiceCollection services, IStorageConfiguration configuration)
+    public static void AddStorageServices(this IServiceCollection services, IPatientStorageConfiguration configuration)
     {
         if (configuration == null)
             throw new ApplicationException("Database configuration is required for storage");

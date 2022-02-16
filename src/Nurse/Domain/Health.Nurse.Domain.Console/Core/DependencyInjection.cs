@@ -18,22 +18,24 @@ public static class DependencyInjection
 {
     public static void AddDomainServices(this IServiceCollection services, INurseDomainConfiguration config)
     {
-        if (config == null || config.StorageConfiguration == null)
+        if (config == null || config.NurseStorageConfiguration == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateNurseCommandValidator>());
 
-        var types = typeof(Program).Assembly.GetTypes(); //This assembly's Types
-        var handlerTypes= types
+        //Add Dependant Database services
+        services.AddStorageServices(config.NurseStorageConfiguration);
+        
+        //Add Core services (serialization and Transaction handling)
+        var handlerTypes = typeof(Program).Assembly.GetTypes()
             .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
-        
-        services.AddHandlers(types, handlerTypes);
-        
-        
-        services.AddSingleton(config);
 
+        services.AddCoreDomainServices(handlerTypes, typeof(NurseDbContext));
+
+        //Services for this application
+        services.AddSingleton(config);
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(cfg =>
         {
@@ -42,12 +44,6 @@ public static class DependencyInjection
         });
 
         services.AddMassTransitHostedService();
-            
-        //Add Dependant Database services
-        services.AddStorageServices(config.StorageConfiguration);
-        
-        //Add Core services (serialization and Transaction handling)
-        services.AddCoreDomainServices(typeof(NurseDbContext));
     }
     
     static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator) {

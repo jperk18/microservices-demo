@@ -6,7 +6,7 @@ public class NurseDomainConfiguration : INurseDomainConfiguration
 {
     public NurseDomainConfiguration(INurseStorageConfiguration storageConfiguration)
     {
-        StorageConfiguration = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
+        NurseStorageConfiguration = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
     }
-    public INurseStorageConfiguration StorageConfiguration { get; set; }
+    public INurseStorageConfiguration NurseStorageConfiguration { get; set; }
 }

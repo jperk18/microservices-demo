@@ -1,29 +1,15 @@
-﻿using Health.Patient.Domain.Console.Core.Exceptions.Models;
+﻿using Health.Shared.Domain.Core.Exceptions;
+using Health.Shared.Domain.Core.Exceptions.InnerModels;
 
 namespace Health.Patient.Domain.Console.Core.Exceptions;
 
-public class DomainValidationException : Exception, IDomainValidation
+public class PatientDomainValidationException : DomainValidationException
 {
-    public DomainValidationException(string message)
+    public PatientDomainValidationException(string message) : base(message)
     {
-        Message = message;
-        Errors = new List<DomainValidationFailure>();
     }
 
-    public DomainValidationException(string message, IEnumerable<DomainValidationFailure>? errors)
+    public PatientDomainValidationException(string message, IEnumerable<IDomainValidationFailure> errors) : base(message, errors)
     {
-        Message = message;
-        Errors = errors;
     }
-
-    public DomainValidation ToValidationObject()
-    {
-        return new DomainValidation(Message)
-        {
-            Errors = Errors
-        };
-    }
-
-    public IEnumerable<DomainValidationFailure>? Errors { get; set; }
-    public override string Message { get; }
 }

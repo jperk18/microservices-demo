@@ -1,7 +1,8 @@
-﻿using Health.Patient.Domain.Console.Commands.Core;
-using Health.Patient.Domain.Console.Core.Decorators;
+﻿using Health.Nurse.Domain.Console.Core.Decorators;
 using Health.Patient.Domain.Console.Core.Models;
 using Health.Patient.Domain.Storage.Sql;
+using Health.Shared.Domain.Commands.Core;
+using Health.Shared.Domain.Core.Decorators;
 
 namespace Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 
