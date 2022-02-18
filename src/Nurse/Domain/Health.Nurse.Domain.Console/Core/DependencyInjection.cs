@@ -2,8 +2,8 @@
 using Health.Nurse.Domain.Console.Commands.CreateNurseCommand;
 using Health.Nurse.Domain.Console.Consumer;
 using Health.Nurse.Domain.Console.Core.Configuration;
+using Health.Nurse.Domain.Console.Core.Pipelines;
 using Health.Nurse.Domain.Storage.Sql.Core;
-using Health.Nurse.Domain.Storage.Sql.Core.Databases.NurseDb;
 using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
@@ -32,7 +32,22 @@ public static class DependencyInjection
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, typeof(NurseDbContext));
+        services.AddCoreDomainServices(handlerTypes, new Dictionary<Type, Func<object, Type, Type?>>()
+        {
+            {
+                typeof(NurseTransactionPipelineAttribute), (attribute, assigningInterfaceType) =>
+                {
+                    if (Handlers.IsQueryHandlerInterface(assigningInterfaceType))
+                        throw new ArgumentException(attribute.ToString());
+                    
+                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
+                        return typeof(NurseTransactionCommandDecorator<,>);
+
+                    //Should never happen
+                    return null;
+                }
+            }
+        });
 
         //Services for this application
         services.AddSingleton(config);

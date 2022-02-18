@@ -8,7 +8,8 @@ namespace Health.Shared.Domain.Core.RegistrationHelpers;
 
 public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes)
+    public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes,
+        IDictionary<Type, Func<object, Type, Type?>>? handlerOverriders)
     {
         // var types = typeof(ICommand<>).Assembly.GetTypes();
         // var handlerTypes= types
@@ -16,23 +17,39 @@ public static class Handlers
         //     .Where(x => x.Name.EndsWith("Handler"))
         //     .ToList();
 
-        foreach (Type type in handlerTypes)
+        foreach (var type in handlerTypes)
         {
-            AddHandler(services, type);
+            AddHandler(services, type, handlerOverriders);
         }
 
         services.AddTransient<IMediator, Mediator.Mediator>();
     }
 
-    private static void AddHandler(IServiceCollection services, Type type)
+    private static void AddHandler(IServiceCollection services, Type type, IDictionary<Type, Func<object, Type, Type?>>? handlerOverriders)
     {
         object[] attributes = type.GetCustomAttributes(false)
-            .Where(x => Decorators.IsDecorator(x)).ToArray();
-        
+            .Where(x => Decorators.IsDecorator(x) || handlerOverriders.ContainsKey(x.GetType())).ToArray();
+
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 
         List<Type> pipeline = attributes
-            .Select(x => Decorators.ToDecorator(x, interfaceType))
+            .Select(x =>
+            {
+                if (handlerOverriders.ContainsKey(x.GetType()))
+                {
+                    var pipelineHandler = handlerOverriders[x.GetType()](x, interfaceType);
+                    
+                    if(pipelineHandler == null)
+                        throw new ApplicationException("Handler behaviour not specified");
+
+                    return pipelineHandler;
+                }
+
+                if(Decorators.IsDecorator(x))
+                    return Decorators.ToDecorator(x, interfaceType);
+                
+                throw new ApplicationException("Handler behaviour not specified");
+            })
             .Concat(new[] {type})
             .Reverse()
             .ToList();
@@ -71,7 +88,8 @@ public static class Handlers
         return func;
     }
 
-    private static object[] GetParameters(List<ParameterInfo> parameterInfos, object? current, IServiceProvider provider)
+    private static object[] GetParameters(List<ParameterInfo> parameterInfos, object? current,
+        IServiceProvider provider)
     {
         var result = new object[parameterInfos.Count];
 
@@ -118,7 +136,7 @@ public static class Handlers
 
         return typeDefinition == typeof(IAsyncCommandHandler<,>) || typeDefinition == typeof(IAsyncQueryHandler<,>);
     }
-    
+
     public static bool IsCommandHandlerInterface(Type type)
     {
         if (!type.IsGenericType)
@@ -135,7 +153,7 @@ public static class Handlers
             return false;
 
         var typeDefinition = type.GetGenericTypeDefinition();
-        
+
         return type.GetGenericTypeDefinition() == typeof(IAsyncQueryHandler<,>);
     }
 }

@@ -2,6 +2,7 @@
 using Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Console.Consumer;
 using Health.Patient.Domain.Console.Core.Configuration;
+using Health.Patient.Domain.Console.Core.Pipelines;
 using Health.Patient.Domain.Console.Core.Services;
 using Health.Patient.Domain.Storage.Sql.Core;
 using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
@@ -27,14 +28,29 @@ public static class DependencyInjection
 
         //Add Dependant Database services
         services.AddStorageServices(config.PatientStorageConfiguration);
-        
+
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
             .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, typeof(PatientDbContext));
+        services.AddCoreDomainServices(handlerTypes, new Dictionary<Type, Func<object, Type, Type?>>()
+        {
+            {
+                typeof(PatientTransactionPipelineAttribute), (attribute, assigningInterfaceType) =>
+                {
+                    if (Handlers.IsQueryHandlerInterface(assigningInterfaceType))
+                        throw new ArgumentException(attribute.ToString());
+                    
+                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
+                        return typeof(PatientTransactionCommandDecorator<,>);
+
+                    //Should never
+                    return null;
+                }
+            }
+        });
 
         //Services for this application
         services.AddSingleton(config);
