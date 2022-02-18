@@ -25,7 +25,7 @@ public static class Handlers
         IDictionary<Type, Func<object, Type, Type?>>? corePipelinesForHandlersOverriders = null)
     {
         object[] attributes = type.GetCustomAttributes(false)
-            .Where(x => Decorators.IsDecorator(x) || additionalPipelinesForHandlers.ContainsKey(x.GetType())).ToArray();
+            .Where(x => Decorators.IsDecorator(x) || (additionalPipelinesForHandlers != null && additionalPipelinesForHandlers.ContainsKey(x.GetType()))).ToArray();
 
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 

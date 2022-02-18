@@ -57,7 +57,7 @@ public static class DependencyInjection
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(cfg =>
         {
-            cfg.AddConsumersFromNamespaceContaining<RegisterPatientCommandQueryConsumer>();
+            cfg.AddConsumersFromNamespaceContaining<RegisterPatientConsumer>();
             cfg.UsingRabbitMq(ConfigureBus);
             
             cfg.AddTransactionalBus();

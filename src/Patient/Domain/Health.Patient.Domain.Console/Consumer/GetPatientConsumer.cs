@@ -1,13 +1,13 @@
-﻿using Health.Patient.Domain.Console.Core.Exceptions;
-using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
+﻿using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
 using Health.Patient.Domain.Console.Queries.GetPatientQuery;
 using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Mediator;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
 namespace Health.Patient.Domain.Console.Consumer;
 
-public class GetPatientConsumer : IConsumer<Workflow.Shared.Processes.GetPatientQuery>
+public class GetPatientConsumer : IConsumer<GetPatient>
 {
     private readonly IMediator _mediator;
 
@@ -15,27 +15,28 @@ public class GetPatientConsumer : IConsumer<Workflow.Shared.Processes.GetPatient
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    public async Task Consume(ConsumeContext<Workflow.Shared.Processes.GetPatientQuery> context)
+    public async Task Consume(ConsumeContext<GetPatient> context)
     {
         try
         {
             var result = await _mediator.SendAsync(new GetPatientQuery(context.Message.Id));
-            await context.RespondAsync(new Workflow.Shared.Processes.Core.Models.Patient()
+            await context.RespondAsync<GetPatientSuccess>(new
             {
-                DateOfBirth = result.DateOfBirth, FirstName = result.FirstName, LastName = result.LastName, PatientId = result.Id
+                Patient = new
+                {
+                    PatientId = result.Id,
+                    result.FirstName,
+                    result.LastName,
+                    result.DateOfBirth
+                }
             });
         }
         catch (DomainValidationException e)
         {
-            if (e is PatientDomainValidationException exception)
+            await context.RespondAsync<GetPatientFailed>(new
             {
-                await context.RespondAsync(exception.ToWorkflowValidationObject());
-            }
-            else
-            {
-                await context.RespondAsync(e.ToWorkflowValidationObject());
-            }
+                Error = e.ToWorkflowValidationObject()
+            });
         }
-        
     }
 }

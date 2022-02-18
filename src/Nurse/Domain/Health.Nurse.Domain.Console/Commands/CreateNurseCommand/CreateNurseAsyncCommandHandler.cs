@@ -4,7 +4,8 @@ using Health.Nurse.Domain.Console.Core.Pipelines;
 using Health.Nurse.Domain.Storage.Sql;
 using Health.Shared.Domain.Commands.Core;
 using Health.Shared.Domain.Core.Decorators;
-using Health.Workflow.Shared.Processes;
+using Health.Shared.Workflow.Processes;
+using Health.Shared.Workflow.Processes.Events;
 using MassTransit.Transactions;
 
 namespace Health.Nurse.Domain.Console.Commands.CreateNurseCommand;
@@ -13,7 +14,7 @@ namespace Health.Nurse.Domain.Console.Commands.CreateNurseCommand;
 [ExceptionPipeline]
 [ValidationPipeline]
 [NurseTransactionPipeline]
-public sealed class CreateNurseAsyncCommandHandler : IAsyncCommandHandler<Commands.CreateNurseCommand.CreateNurseCommand, NurseRecord>
+public sealed class CreateNurseAsyncCommandHandler : IAsyncCommandHandler<CreateNurseCommand, NurseRecord>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionalBus _transactionalBus;
@@ -24,7 +25,7 @@ public sealed class CreateNurseAsyncCommandHandler : IAsyncCommandHandler<Comman
         _transactionalBus = transactionalBus ?? throw new ArgumentNullException(nameof(transactionalBus));
     }
     
-    public async Task<NurseRecord> Handle(Commands.CreateNurseCommand.CreateNurseCommand command)
+    public async Task<NurseRecord> Handle(CreateNurseCommand command)
     {
         //TODO: More Business logic
         var p = await _unitOfWork.Nurses.Add(new Nurse.Domain.Storage.Sql.Core.Databases.NurseDb.Models.Nurse(
@@ -32,7 +33,16 @@ public sealed class CreateNurseAsyncCommandHandler : IAsyncCommandHandler<Comman
         ));
 
         await _unitOfWork.Complete();
-        await _transactionalBus.Publish(new NurseCreated(p.Id, p.FirstName, p.LastName));
+        await _transactionalBus.Publish<NurseCreated>(new
+        {
+            Nurse = new
+            {
+                Id = p.Id,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                DateOfBirth = p.DateOfBirth
+            }
+        });
         
         return new NurseRecord(p.FirstName, p.LastName, p.DateOfBirth, p.Id);
     }

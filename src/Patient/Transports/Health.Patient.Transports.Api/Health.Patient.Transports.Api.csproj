@@ -8,13 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit.Analyzers" Version="7.3.1" />
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Workflow\Shared\Health.Workflow.Shared.Processes\Health.Workflow.Shared.Processes.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
     </ItemGroup>
 
 </Project>

@@ -4,7 +4,8 @@ using Health.Patient.Domain.Console.Core.Pipelines;
 using Health.Patient.Domain.Storage.Sql;
 using Health.Shared.Domain.Commands.Core;
 using Health.Shared.Domain.Core.Decorators;
-using Health.Workflow.Shared.Processes;
+using Health.Shared.Workflow.Processes;
+using Health.Shared.Workflow.Processes.Events;
 using MassTransit.Transactions;
 
 namespace Health.Patient.Domain.Console.Commands.CreatePatientCommand;
@@ -32,7 +33,16 @@ public sealed class CreatePatientAsyncCommandHandler : IAsyncCommandHandler<Cons
         ));
 
         await _unitOfWork.Complete();
-        await _transactionalBus.Publish(new PatientCreated(p.Id, p.FirstName, p.LastName));
+        await _transactionalBus.Publish<PatientCreated>(new
+        {
+            Patient = new
+            {
+                PatientId = p.Id,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                DateOfBirth = p.DateOfBirth
+            }
+        });
         
         return new PatientRecord(p.FirstName, p.LastName, p.DateOfBirth, p.Id);
     }

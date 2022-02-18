@@ -1,8 +1,11 @@
 using System.Net.Mime;
 using Health.Nurse.Transports.Api.Middleware;
 using Health.Nurse.Transports.Api.Models;
-using Health.Workflow.Shared.Processes;
-using Health.Workflow.Shared.Processes.Core.Exceptions.Models;
+using Health.Shared.Workflow.Processes;
+using Health.Shared.Workflow.Processes.Commands;
+using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Queries;
+using Health.Shared.Workflow.Processes.Sagas.Appointment;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,22 +16,24 @@ namespace Health.Nurse.Transports.Api.Controllers;
 public class NurseController : ControllerBase
 {
     private readonly ILogger<NurseController> _logger;
-    private readonly IRequestClient<RegisterNurseCommandQuery> _registerNurseRequestClient;
-    private readonly IRequestClient<GetAllNursesQuery> _getAllNursesRequestClient;
-    private readonly IRequestClient<GetNurseQuery> _getNurseRequestClient;
+    private readonly IRequestClient<RegisterNurse> _registerNurseRequestClient;
+    private readonly IRequestClient<GetAllNurses> _getAllNursesRequestClient;
+    private readonly IRequestClient<GetNurse> _getNurseRequestClient;
     private readonly IRequestClient<GetWaitingPatientsForNurses> _getWaitingPatients;
 
     public NurseController(ILogger<NurseController> logger,
-        IRequestClient<RegisterNurseCommandQuery> registerNurseRequestClient,
-        IRequestClient<GetAllNursesQuery> getAllNursesRequestClient,
-        IRequestClient<GetNurseQuery> getNurseRequestClient,
-        IRequestClient<GetWaitingPatientsForNurses> getWaitingPatients )
+        IRequestClient<RegisterNurse> registerNurseRequestClient,
+        IRequestClient<GetAllNurses> getAllNursesRequestClient,
+        IRequestClient<GetNurse> getNurseRequestClient,
+        IRequestClient<GetWaitingPatientsForNurses> getWaitingPatients)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _registerNurseRequestClient = registerNurseRequestClient ??
-                                        throw new ArgumentNullException(nameof(registerNurseRequestClient));
-        _getAllNursesRequestClient = getAllNursesRequestClient ?? throw new ArgumentNullException(nameof(getAllNursesRequestClient));
-        _getNurseRequestClient = getNurseRequestClient ?? throw new ArgumentNullException(nameof(getNurseRequestClient));
+                                      throw new ArgumentNullException(nameof(registerNurseRequestClient));
+        _getAllNursesRequestClient = getAllNursesRequestClient ??
+                                     throw new ArgumentNullException(nameof(getAllNursesRequestClient));
+        _getNurseRequestClient =
+            getNurseRequestClient ?? throw new ArgumentNullException(nameof(getNurseRequestClient));
         _getWaitingPatients = getWaitingPatients ?? throw new ArgumentNullException(nameof(getWaitingPatients));
     }
 
@@ -39,8 +44,13 @@ public class NurseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] CreateNurseApiRequest request)
     {
-        var (result, errors) = await _registerNurseRequestClient.GetResponse<Workflow.Shared.Processes.Core.Models.Nurse, WorkflowValidation>(
-            new RegisterNurseCommandQuery(){FirstName = request.FirstName, LastName = request.LastName, DateOfBirth = request.DateOfBirth });
+        var (result, errors) = await _registerNurseRequestClient
+            .GetResponse<RegisterNurseSuccess, RegisterNurseFailed>(new
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                DateOfBirth = request.DateOfBirth
+            });
 
         if (result.IsCompletedSuccessfully)
         {
@@ -50,7 +60,7 @@ public class NurseController : ControllerBase
         }
 
         var domainError = await errors;
-        throw domainError.Message.ToException();
+        throw new WorkflowValidationException(domainError.Message.Error);
     }
 
     [HttpGet]
@@ -59,17 +69,21 @@ public class NurseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetNurse([FromQuery] GetNurseApiRequest request)
     {
-        var (result, errors) = await _getNurseRequestClient.GetResponse<Workflow.Shared.Processes.Core.Models.Nurse, WorkflowValidation>(
-            new GetNurseQuery(){ Id = request.Id});
-        
+        var (result, errors) = await _getNurseRequestClient
+            .GetResponse<GetNurseSuccess, GetNurseFailed>(new
+            {
+                Id = request.Id
+            });
+
         if (result.IsCompletedSuccessfully)
         {
             var response = await result;
-            return Ok(new GetNurseApiResponse(response.Message.Id, response.Message.FirstName, response.Message.LastName));
+            return Ok(new GetNurseApiResponse(response.Message.Nurse.Id, response.Message.Nurse.FirstName,
+                response.Message.Nurse.LastName));
         }
 
         var domainError = await errors;
-        throw domainError.Message.ToException();
+        throw new WorkflowValidationException(domainError.Message.Error);
     }
 
     [HttpGet("All")]
@@ -77,33 +91,7 @@ public class NurseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllNurses()
     {
-        var (result, errors) = await _getAllNursesRequestClient.GetResponse<Workflow.Shared.Processes.Core.Models.Nurse[], WorkflowValidation>(
-            new GetAllNursesQuery());
-        
-        if (result.IsCompletedSuccessfully)
-        {
-            var response = await result;
-            return Ok(response.Message.Select(res => new GetNurseApiResponse(res.Id, res.FirstName, res.LastName)));
-        }
-
-        var domainError = await errors;
-        throw domainError.Message.ToException();
-    }
-    
-    [HttpGet("GetWaitingPatients")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PatientWaitingApiResponse>))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetWaitingPatients()
-    {
-        var result = await _getWaitingPatients.GetResponse<WaitingPatientsForNurses[]>(new {});
-
-        var response = result.Message.Select(x => new PatientWaitingApiResponse()
-        {
-            Id = x.PatientInformation.Id,
-            FirstName = x.PatientInformation.FirstName,
-            LastName = x.PatientInformation.LastName
-        });
-        
-        return Ok(response);
+        var response = await _getAllNursesRequestClient.GetResponse<GetAllNursesSuccess>(new { });
+        return Ok(response.Message.Nurses.Select(res => new GetNurseApiResponse(res.Id, res.FirstName, res.LastName)));
     }
 }

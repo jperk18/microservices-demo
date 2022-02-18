@@ -1,8 +1,9 @@
 using System.Net.Mime;
 using Health.Patient.Transports.Api.Middleware;
 using Health.Patient.Transports.Api.Models;
-using Health.Workflow.Shared.Processes;
-using Health.Workflow.Shared.Processes.Core.Exceptions.Models;
+using Health.Shared.Workflow.Processes.Commands;
+using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,18 +15,16 @@ public class PatientController : ControllerBase
 {
     private readonly ILogger<PatientController> _logger;
 
-    private readonly IRequestClient<Workflow.Shared.Processes.RegisterPatientCommandQuery>
+    private readonly IRequestClient<RegisterPatient>
         _registerPatientRequestClient;
 
-    private readonly IRequestClient<Workflow.Shared.Processes.GetAllPatientsQuery> _getAllPatientsRequestClient;
-    private readonly IRequestClient<Workflow.Shared.Processes.GetPatientQuery> _getPatientRequestClient;
-    private readonly IRequestClient<Workflow.Shared.Processes.CheckInPatientCommandQuery> _checkInPatientRequestClient;
+    private readonly IRequestClient<GetAllPatients> _getAllPatientsRequestClient;
+    private readonly IRequestClient<GetPatient> _getPatientRequestClient;
 
     public PatientController(ILogger<PatientController> logger,
-        IRequestClient<Workflow.Shared.Processes.RegisterPatientCommandQuery> registerPatientRequestClient,
-        IRequestClient<Workflow.Shared.Processes.GetAllPatientsQuery> getAllPatientsRequestClient,
-        IRequestClient<Workflow.Shared.Processes.GetPatientQuery> getPatientRequestClient,
-        IRequestClient<Workflow.Shared.Processes.CheckInPatientCommandQuery> checkInPatientRequestClient
+        IRequestClient<RegisterPatient> registerPatientRequestClient,
+        IRequestClient<GetAllPatients> getAllPatientsRequestClient,
+        IRequestClient<GetPatient> getPatientRequestClient
     )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,7 +34,6 @@ public class PatientController : ControllerBase
                                        throw new ArgumentNullException(nameof(getAllPatientsRequestClient));
         _getPatientRequestClient =
             getPatientRequestClient ?? throw new ArgumentNullException(nameof(getPatientRequestClient));
-        _checkInPatientRequestClient = checkInPatientRequestClient ?? throw new ArgumentNullException(nameof(checkInPatientRequestClient));
     }
 
     [HttpPost()]
@@ -46,9 +44,12 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> Register([FromBody] CreatePatientApiRequest request)
     {
         var (result, errors) = await _registerPatientRequestClient
-            .GetResponse<Workflow.Shared.Processes.Core.Models.Patient, WorkflowValidation>(
-                new RegisterPatientCommandQuery()
-                    {FirstName = request.FirstName, LastName = request.LastName, DateOfBirth = request.DateOfBirth});
+            .GetResponse<RegisterPatientSuccess, RegisterPatientFailed>(new
+            {
+                request.FirstName,
+                request.LastName,
+                request.DateOfBirth
+            });
 
         if (result.IsCompletedSuccessfully)
         {
@@ -58,27 +59,7 @@ public class PatientController : ControllerBase
         }
 
         var domainError = await errors;
-        throw domainError.Message.ToException();
-    }
-
-    [HttpPost("CheckIn")]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CheckIn([FromQuery] Guid patientId)
-    {
-        //Check-in patient
-        var (result, errors) = await _checkInPatientRequestClient
-            .GetResponse<CheckInPatientSuccessResponse, CheckInPatientFailResponse>(new CheckInPatientCommandQuery(patientId));
-
-        if (result.IsCompletedSuccessfully)
-        {
-            return Ok();
-        }
-
-        var domainError = await errors;
-        throw domainError.Message.Error.ToException();
+        throw new WorkflowValidationException(domainError.Message.Error);
     }
 
     [HttpGet]
@@ -88,18 +69,20 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> GetPatient([FromQuery] GetPatientApiRequest request)
     {
         var (result, errors) = await _getPatientRequestClient
-            .GetResponse<Workflow.Shared.Processes.Core.Models.Patient, WorkflowValidation>(
-                new GetPatientQuery() {Id = request.PatientId});
+            .GetResponse<GetPatientSuccess, GetPatientFailed>(new
+            {
+                Id = request.PatientId
+            });
 
         if (result.IsCompletedSuccessfully)
         {
             var response = await result;
-            return Ok(new GetPatientApiResponse(response.Message.PatientId, response.Message.FirstName,
-                response.Message.LastName, response.Message.DateOfBirth));
+            return Ok(new GetPatientApiResponse(response.Message.Patient.PatientId, response.Message.Patient.FirstName,
+                response.Message.Patient.LastName, response.Message.Patient.DateOfBirth));
         }
 
         var domainError = await errors;
-        throw domainError.Message.ToException();
+        throw new WorkflowValidationException(domainError.Message.Error);
     }
 
     [HttpGet("All")]
@@ -107,18 +90,10 @@ public class PatientController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllPatients()
     {
-        var (result, errors) = await _getAllPatientsRequestClient
-            .GetResponse<Workflow.Shared.Processes.Core.Models.Patient[], WorkflowValidation>(
-                new GetAllPatientsQuery());
+        var response = await _getAllPatientsRequestClient
+            .GetResponse<GetAllPatientsSuccess>(new { });
 
-        if (result.IsCompletedSuccessfully)
-        {
-            var response = await result;
-            return Ok(response.Message.Select(res =>
-                new GetPatientApiResponse(res.PatientId, res.FirstName, res.LastName, res.DateOfBirth)));
-        }
-
-        var domainError = await errors;
-        throw domainError.Message.ToException();
+        return Ok(response.Message.Patients.Select(res =>
+            new GetPatientApiResponse(res.PatientId, res.FirstName, res.LastName, res.DateOfBirth)));
     }
 }

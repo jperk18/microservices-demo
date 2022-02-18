@@ -9,7 +9,7 @@ public class NurseDomainValidationException : DomainValidationException
     {
     }
 
-    public NurseDomainValidationException(string message, IEnumerable<IDomainValidationFailure>? errors) : base(message, errors)
+    public NurseDomainValidationException(string message, IEnumerable<IDomainValidationFailure> errors) : base(message, errors)
     {
     }
 }

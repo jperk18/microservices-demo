@@ -1,5 +1,5 @@
 ﻿using Health.Patient.Transports.Api.Core.Serialization;
-using Health.Workflow.Shared.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Core.Exceptions;
 
 namespace Health.Patient.Transports.Api.Middleware;
 
@@ -50,18 +50,20 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
     private IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)
     {
         //IReadOnlyDictionary<string, string[]> errors = null;
-        IReadOnlyDictionary<string, string[]> errors = new Dictionary<string, string[]>();
+        var errors = new Dictionary<string, string[]>();
         if (exception is WorkflowValidationException domainValidationException)
         {
-            errors = domainValidationException.Errors.GroupBy(
-                    x => x.PropertyName,
-                    x => x.ErrorMessage,
-                    (propertyName, errorMessages) => new
-                    {
-                        Key = propertyName,
-                        Values = errorMessages.Distinct().ToArray()
-                    })
-                .ToDictionary(x => x.Key, x => x.Values);;
+            if (domainValidationException.Errors != null)
+                errors = domainValidationException.Errors.GroupBy(
+                        x => x.PropertyName,
+                        x => x.ErrorMessage,
+                        (propertyName, errorMessages) => new
+                        {
+                            Key = propertyName ?? "Unknown",
+                            Values = errorMessages.Distinct().ToArray()
+                        })
+                    .ToDictionary(x => x.Key, x => x.Values);
+            ;
         }
         else
         {

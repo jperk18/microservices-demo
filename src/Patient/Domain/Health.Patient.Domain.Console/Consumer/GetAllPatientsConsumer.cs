@@ -3,11 +3,13 @@ using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
 using Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
 using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Mediator;
+using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
 namespace Health.Patient.Domain.Console.Consumer;
 
-public class GetAllPatientsConsumer : IConsumer<Workflow.Shared.Processes.GetAllPatientsQuery>
+public class GetAllPatientsConsumer : IConsumer<GetAllPatients>
 {
     private readonly IMediator _mediator;
 
@@ -15,26 +17,16 @@ public class GetAllPatientsConsumer : IConsumer<Workflow.Shared.Processes.GetAll
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    public async Task Consume(ConsumeContext<Workflow.Shared.Processes.GetAllPatientsQuery> context)
+
+    public async Task Consume(ConsumeContext<GetAllPatients> context)
     {
-        try
+        var r = await _mediator.SendAsync(new GetAllPatientsQuery());
+
+        await context.RespondAsync<GetAllPatientsSuccess>(new
         {
-            var r = await _mediator.SendAsync(new GetAllPatientsQuery());
-            await context.RespondAsync(r.Select(result => new Workflow.Shared.Processes.Core.Models.Patient()
-            {
-                DateOfBirth = result.DateOfBirth, FirstName = result.FirstName, LastName = result.LastName, PatientId = result.Id
-            }).ToArray());
-        }
-        catch (DomainValidationException e)
-        {
-            if (e is PatientDomainValidationException exception)
-            {
-                await context.RespondAsync(exception.ToWorkflowValidationObject());
-            }
-            else
-            {
-                await context.RespondAsync(e.ToWorkflowValidationObject());
-            }
-        }
+            Patients = r.Select(result => new Shared.Workflow.Processes.Inner.Models.PatientDto(
+                result.Id, result.FirstName, result.LastName, result.DateOfBirth
+            )).ToArray()
+        });
     }
 }

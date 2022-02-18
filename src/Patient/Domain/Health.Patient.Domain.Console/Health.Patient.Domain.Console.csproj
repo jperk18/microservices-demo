@@ -31,7 +31,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
-      <ProjectReference Include="..\..\..\Workflow\Shared\Health.Workflow.Shared.Processes\Health.Workflow.Shared.Processes.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
       <ProjectReference Include="..\Health.Patient.Domain.Storage.Sql\Health.Patient.Domain.Storage.Sql.csproj" />
     </ItemGroup>
 

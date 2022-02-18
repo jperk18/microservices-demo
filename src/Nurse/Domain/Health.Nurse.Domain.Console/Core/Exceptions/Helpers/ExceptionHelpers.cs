@@ -1,26 +1,41 @@
 ﻿using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Core.Exceptions.InnerModels;
-using Health.Workflow.Shared.Processes.Core.Exceptions.Models;
+using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
+
 namespace Health.Nurse.Domain.Console.Core.Exceptions.Helpers;
 
 public static class ExceptionHelpers
 {
     public static WorkflowValidation ToWorkflowValidationObject(this NurseDomainValidationException dv)
     {
-        return new WorkflowValidation(dv.Message)
+        if (dv.Errors == null)
+            return new WorkflowValidationDto(dv.Message);
+
+        return new WorkflowValidationDto(dv.Message)
         {
-            Errors = dv.Errors.Select(x => new WorkflowValidationFailure(x.ErrorCode){ AttemptedValue = x.AttemptedValue, ErrorCode = x.ErrorCode, ErrorMessage = x.ErrorMessage, PropertyName = x.PropertyName, Severity = GetWorkflowSeverity(x.Severity) })
+            Errors = dv.Errors.Select(x => new WorkflowValidationFailureDto(x.ErrorCode)
+            {
+                AttemptedValue = x.AttemptedValue, ErrorCode = x.ErrorCode, ErrorMessage = x.ErrorMessage,
+                PropertyName = x.PropertyName, Severity = GetWorkflowSeverity(x.Severity)
+            }).ToArray<WorkflowValidationFailure>()
         };
-    } 
-    
+    }
+
     public static WorkflowValidation ToWorkflowValidationObject(this DomainValidationException dv)
     {
-        return new WorkflowValidation(dv.Message)
+        if (dv.Errors == null)
+            return new WorkflowValidationDto(dv.Message);
+        
+        return new WorkflowValidationDto(dv.Message)
         {
-            Errors = dv.Errors.Select(x => new WorkflowValidationFailure(x.ErrorCode){ AttemptedValue = x.AttemptedValue, ErrorCode = x.ErrorCode, ErrorMessage = x.ErrorMessage, PropertyName = x.PropertyName, Severity = GetWorkflowSeverity(x.Severity) })
+            Errors = dv.Errors.Select(x => new WorkflowValidationFailureDto(x.ErrorCode)
+            {
+                AttemptedValue = x.AttemptedValue, ErrorCode = x.ErrorCode, ErrorMessage = x.ErrorMessage,
+                PropertyName = x.PropertyName, Severity = GetWorkflowSeverity(x.Severity)
+            }).ToArray<WorkflowValidationFailure>()
         };
-    } 
-    
+    }
+
     private static WorkflowSeverity GetWorkflowSeverity(DomainSeverity exception) =>
         exception switch
         {
@@ -29,6 +44,4 @@ public static class ExceptionHelpers
             DomainSeverity.Info => WorkflowSeverity.Info,
             _ => WorkflowSeverity.Error,
         };
-    
-    
 }

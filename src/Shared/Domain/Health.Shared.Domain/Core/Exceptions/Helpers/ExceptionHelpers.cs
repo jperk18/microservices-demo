@@ -19,11 +19,9 @@ public static class ExceptionHelpers
         var errorsList = e.Errors.Select(x =>
         {
             var ser = GetDomainSeverity(x.Severity);
-            return (IDomainValidationFailure) new DomainValidationFailure()
+            return (IDomainValidationFailure) new DomainValidationFailure(x.ErrorCode, x.ErrorMessage)
             {
-                ErrorMessage = x.ErrorMessage,
                 AttemptedValue = x.AttemptedValue,
-                ErrorCode = x.ErrorCode,
                 PropertyName = x.PropertyName,
                 Severity = ser
             };
@@ -34,6 +32,12 @@ public static class ExceptionHelpers
 
     private class DomainValidationFailure : IDomainValidationFailure
     {
+        public DomainValidationFailure(string errorCode, string errorMessage)
+        {
+            ErrorMessage = errorMessage;
+            ErrorCode = errorCode;
+        }
+
         public string? PropertyName { get; set; }
         public string ErrorMessage { get; set; }
         public object? AttemptedValue { get; set; }
@@ -43,6 +47,16 @@ public static class ExceptionHelpers
 
     private class DomainValidationResultObject : IDomainValidationResultObject
     {
+        public DomainValidationResultObject(string message)
+        {
+            Message = message;
+        }
+        public DomainValidationResultObject(string message, IEnumerable<IDomainValidationFailure>? errors)
+        {
+            Message = message;
+            Errors = errors;
+        }
+
         public string Message { get; set; }
         public IEnumerable<IDomainValidationFailure>? Errors { get; set; }
     }

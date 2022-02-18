@@ -1,13 +1,11 @@
-﻿using Health.Nurse.Domain.Console.Core.Exceptions;
-using Health.Nurse.Domain.Console.Core.Exceptions.Helpers;
-using Health.Nurse.Domain.Console.Queries.GetAllNursesQuery;
-using Health.Shared.Domain.Core.Exceptions;
+﻿using Health.Nurse.Domain.Console.Queries.GetAllNursesQuery;
 using Health.Shared.Domain.Mediator;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
 namespace Health.Nurse.Domain.Console.Consumer;
 
-public class GetAllNursesConsumer : IConsumer<Workflow.Shared.Processes.GetAllNursesQuery>
+public class GetAllNursesConsumer : IConsumer<GetAllNurses>
 {
     private readonly IMediator _mediator;
 
@@ -15,27 +13,15 @@ public class GetAllNursesConsumer : IConsumer<Workflow.Shared.Processes.GetAllNu
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
-    public async Task Consume(ConsumeContext<Workflow.Shared.Processes.GetAllNursesQuery> context)
+
+    public async Task Consume(ConsumeContext<GetAllNurses> context)
     {
-        try
+        var r = await _mediator.SendAsync(new GetAllNursesQuery());
+        await context.RespondAsync<GetAllNursesSuccess>(new
         {
-            var r = await _mediator.SendAsync(new GetAllNursesQuery());
-            await context.RespondAsync(r.Select(result => new Workflow.Shared.Processes.Core.Models.Nurse()
-            {
-                FirstName = result.FirstName, LastName = result.LastName, Id = result.Id
-            }).ToArray());
-        }
-        catch (DomainValidationException e)
-        {
-            if (e is NurseDomainValidationException exception)
-            {
-                await context.RespondAsync(exception.ToWorkflowValidationObject());
-            }
-            else
-            {
-                await context.RespondAsync(e.ToWorkflowValidationObject());
-            }
-        }
-        
+            Nurses = r.Select(result =>
+                new Shared.Workflow.Processes.Inner.Models.NurseDto(result.Id, result.FirstName, result.LastName,
+                    result.DateOfBirth))
+        });
     }
 }

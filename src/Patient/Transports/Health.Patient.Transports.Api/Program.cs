@@ -1,7 +1,9 @@
 using Health.Patient.Transports.Api.Core;
 using Health.Patient.Transports.Api.Core.Serialization;
 using Health.Patient.Transports.Api.Middleware;
-using Health.Workflow.Shared.Processes;
+using Health.Shared.Workflow.Processes;
+using Health.Shared.Workflow.Processes.Commands;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.RabbitMqTransport;
@@ -34,10 +36,9 @@ builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.UsingRabbitMq(ConfigureBus);
-    cfg.AddRequestClient<RegisterPatientCommandQuery>();
-    cfg.AddRequestClient<GetPatientQuery>();
-    cfg.AddRequestClient<GetAllPatientsQuery>();
-    cfg.AddRequestClient<CheckInPatientCommandQuery>();
+    cfg.AddRequestClient<RegisterPatient>();
+    cfg.AddRequestClient<GetPatient>();
+    cfg.AddRequestClient<GetAllPatients>();
 });
 
 builder.Services.AddMassTransitHostedService();
