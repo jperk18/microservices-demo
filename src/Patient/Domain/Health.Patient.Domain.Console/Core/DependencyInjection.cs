@@ -2,14 +2,15 @@
 using Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 using Health.Patient.Domain.Console.Consumer;
 using Health.Patient.Domain.Console.Core.Configuration;
+using Health.Patient.Domain.Console.Core.Pipelines;
 using Health.Patient.Domain.Console.Core.Services;
 using Health.Patient.Domain.Storage.Sql.Core;
-using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
 using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.RabbitMqTransport;
+using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -27,14 +28,27 @@ public static class DependencyInjection
 
         //Add Dependant Database services
         services.AddStorageServices(config.PatientStorageConfiguration);
-        
+
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
             .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, typeof(PatientDbContext));
+        services.AddCoreDomainServices(handlerTypes, new Dictionary<Type, Func<object, Type, Type?>>()
+        {
+            {
+                typeof(PatientTransactionPipelineAttribute), (attribute, assigningInterfaceType) =>
+                {
+                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
+                        return typeof(PatientTransactionCommandDecorator<,>);
+                    
+                    //Transaction pipeline not supported in queries
+                    
+                    return null;
+                }
+            }
+        });
 
         //Services for this application
         services.AddSingleton(config);
@@ -45,6 +59,8 @@ public static class DependencyInjection
         {
             cfg.AddConsumersFromNamespaceContaining<RegisterPatientCommandQueryConsumer>();
             cfg.UsingRabbitMq(ConfigureBus);
+            
+            cfg.AddTransactionalBus();
         });
 
         services.AddMassTransitHostedService();

@@ -1,21 +1,27 @@
 ﻿using Health.Nurse.Domain.Console.Core.Decorators;
 using Health.Patient.Domain.Console.Core.Models;
+using Health.Patient.Domain.Console.Core.Pipelines;
 using Health.Patient.Domain.Storage.Sql;
 using Health.Shared.Domain.Commands.Core;
 using Health.Shared.Domain.Core.Decorators;
+using Health.Workflow.Shared.Processes;
+using MassTransit.Transactions;
 
 namespace Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 
 [LoggingPipeline]
 [ExceptionPipeline]
 [ValidationPipeline]
-[TransactionPipeline]
+[PatientTransactionPipeline]
 public sealed class CreatePatientAsyncCommandHandler : IAsyncCommandHandler<Console.Commands.CreatePatientCommand.CreatePatientCommand, PatientRecord>
 {
     private readonly IPatientUnitOfWork _unitOfWork;
-    public CreatePatientAsyncCommandHandler(IPatientUnitOfWork unitOfWork)
+    private readonly ITransactionalBus _transactionalBus;
+
+    public CreatePatientAsyncCommandHandler(IPatientUnitOfWork unitOfWork, ITransactionalBus transactionalBus)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _transactionalBus = transactionalBus ?? throw new ArgumentNullException(nameof(transactionalBus));
     }
     
     public async Task<PatientRecord> Handle(Console.Commands.CreatePatientCommand.CreatePatientCommand command)
@@ -26,6 +32,8 @@ public sealed class CreatePatientAsyncCommandHandler : IAsyncCommandHandler<Cons
         ));
 
         await _unitOfWork.Complete();
+        await _transactionalBus.Publish(new PatientCreated(p.Id, p.FirstName, p.LastName));
+        
         return new PatientRecord(p.FirstName, p.LastName, p.DateOfBirth, p.Id);
     }
 }

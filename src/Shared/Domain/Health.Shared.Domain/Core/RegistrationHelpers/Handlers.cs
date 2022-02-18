@@ -8,31 +8,57 @@ namespace Health.Shared.Domain.Core.RegistrationHelpers;
 
 public static class Handlers
 {
-    public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes)
+    public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes,
+        IDictionary<Type, Func<object, Type, Type?>>? additionalPipelinesForHandlers,
+        IDictionary<Type, Func<object, Type, Type?>>? corePipelinesForHandlersOverriders = null)
     {
-        // var types = typeof(ICommand<>).Assembly.GetTypes();
-        // var handlerTypes= types
-        //     .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
-        //     .Where(x => x.Name.EndsWith("Handler"))
-        //     .ToList();
-
-        foreach (Type type in handlerTypes)
+        foreach (var type in handlerTypes)
         {
-            AddHandler(services, type);
+            AddHandler(services, type, additionalPipelinesForHandlers, corePipelinesForHandlersOverriders);
         }
 
         services.AddTransient<IMediator, Mediator.Mediator>();
     }
 
-    private static void AddHandler(IServiceCollection services, Type type)
+    private static void AddHandler(IServiceCollection services, Type type,
+        IDictionary<Type, Func<object, Type, Type?>>? additionalPipelinesForHandlers,
+        IDictionary<Type, Func<object, Type, Type?>>? corePipelinesForHandlersOverriders = null)
     {
         object[] attributes = type.GetCustomAttributes(false)
-            .Where(x => Decorators.IsDecorator(x)).ToArray();
-        
+            .Where(x => Decorators.IsDecorator(x) || additionalPipelinesForHandlers.ContainsKey(x.GetType())).ToArray();
+
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 
         List<Type> pipeline = attributes
-            .Select(x => Decorators.ToDecorator(x, interfaceType))
+            .Select(x =>
+            {
+                if (Decorators.IsDecorator(x)) //is Core decorator in shared library
+                {
+                    if (corePipelinesForHandlersOverriders != null && corePipelinesForHandlersOverriders.ContainsKey(x.GetType()))
+                    {
+                        var pipelineHandler = corePipelinesForHandlersOverriders[x.GetType()](x, interfaceType);
+
+                        if (pipelineHandler == null)
+                            throw new ApplicationException("Core pipelines handler behaviour not specified correctly");
+
+                        return pipelineHandler;
+                    }
+
+                    return Decorators.ToDecorator(x, interfaceType);
+                }
+
+                if (additionalPipelinesForHandlers != null && additionalPipelinesForHandlers.ContainsKey(x.GetType()))
+                {
+                    var pipelineHandler = additionalPipelinesForHandlers[x.GetType()](x, interfaceType);
+
+                    if (pipelineHandler == null)
+                        throw new ApplicationException("Pipeline behaviour not specified");
+
+                    return pipelineHandler;
+                }
+                
+                throw new ApplicationException("Pipeline behaviour not specified");
+            })
             .Concat(new[] {type})
             .Reverse()
             .ToList();
@@ -71,7 +97,8 @@ public static class Handlers
         return func;
     }
 
-    private static object[] GetParameters(List<ParameterInfo> parameterInfos, object? current, IServiceProvider provider)
+    private static object[] GetParameters(List<ParameterInfo> parameterInfos, object? current,
+        IServiceProvider provider)
     {
         var result = new object[parameterInfos.Count];
 
@@ -118,7 +145,7 @@ public static class Handlers
 
         return typeDefinition == typeof(IAsyncCommandHandler<,>) || typeDefinition == typeof(IAsyncQueryHandler<,>);
     }
-    
+
     public static bool IsCommandHandlerInterface(Type type)
     {
         if (!type.IsGenericType)
@@ -135,7 +162,7 @@ public static class Handlers
             return false;
 
         var typeDefinition = type.GetGenericTypeDefinition();
-        
+
         return type.GetGenericTypeDefinition() == typeof(IAsyncQueryHandler<,>);
     }
 }
