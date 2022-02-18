@@ -38,8 +38,8 @@ public static class DependencyInjection
             {
                 typeof(NurseTransactionPipelineAttribute), (attribute, assigningInterfaceType) =>
                 {
-                    if (Handlers.IsQueryHandlerInterface(assigningInterfaceType))
-                        throw new ArgumentException(attribute.ToString());
+                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
+                        return typeof(NurseTransactionCommandDecorator<,>);
                     
                     //Transaction pipeline not supported in queries
                     
