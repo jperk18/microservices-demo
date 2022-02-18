@@ -1,5 +1,6 @@
 ﻿using Health.Nurse.Domain.Storage.Sql.Core.Databases.NurseDb;
 using Health.Shared.Domain.Commands.Core;
+using MassTransit.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -10,12 +11,14 @@ public class NurseTransactionCommandDecorator<TCommand, TOutput> : IAsyncCommand
 {
     private readonly ILogger<NurseTransactionCommandDecorator<TCommand, TOutput>> _logger;
     private readonly IAsyncCommandHandler<TCommand, TOutput> _handler;
+    private readonly ITransactionalBus _transactionalBus;
     private readonly DbContext _dbContext;
 
-    public NurseTransactionCommandDecorator(ILogger<NurseTransactionCommandDecorator<TCommand, TOutput>> logger,IAsyncCommandHandler<TCommand, TOutput> handler, NurseDbContext dbContext)
+    public NurseTransactionCommandDecorator(ILogger<NurseTransactionCommandDecorator<TCommand, TOutput>> logger,IAsyncCommandHandler<TCommand, TOutput> handler, ITransactionalBus transactionalBus, NurseDbContext dbContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        _transactionalBus = transactionalBus ?? throw new ArgumentNullException(nameof(transactionalBus));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
@@ -26,6 +29,7 @@ public class NurseTransactionCommandDecorator<TCommand, TOutput> : IAsyncCommand
         {
             var response = await _handler.Handle(command);
             await transaction.CommitAsync();
+            await _transactionalBus.Release();
             return response;
         }
         catch (Exception)

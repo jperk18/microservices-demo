@@ -9,6 +9,7 @@ using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.RabbitMqTransport;
+using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -40,10 +41,8 @@ public static class DependencyInjection
                     if (Handlers.IsQueryHandlerInterface(assigningInterfaceType))
                         throw new ArgumentException(attribute.ToString());
                     
-                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
-                        return typeof(NurseTransactionCommandDecorator<,>);
-
-                    //Should never happen
+                    //Transaction pipeline not supported in queries
+                    
                     return null;
                 }
             }
@@ -56,6 +55,8 @@ public static class DependencyInjection
         {
             cfg.AddConsumersFromNamespaceContaining<RegisterNurseCommandQueryConsumer>();
             cfg.UsingRabbitMq(ConfigureBus);
+            
+            cfg.AddTransactionalBus();
         });
 
         services.AddMassTransitHostedService();

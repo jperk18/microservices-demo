@@ -1,6 +1,6 @@
 ﻿using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
 using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Decorators;
+using MassTransit.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -11,12 +11,14 @@ public class PatientTransactionCommandDecorator<TCommand, TOutput> : IAsyncComma
 {
     private readonly ILogger<PatientTransactionCommandDecorator<TCommand, TOutput>> _logger;
     private readonly IAsyncCommandHandler<TCommand, TOutput> _handler;
+    private readonly ITransactionalBus _transactionalBus;
     private readonly DbContext _dbContext;
 
-    public PatientTransactionCommandDecorator(ILogger<PatientTransactionCommandDecorator<TCommand, TOutput>> logger,IAsyncCommandHandler<TCommand, TOutput> handler, PatientDbContext dbContext)
+    public PatientTransactionCommandDecorator(ILogger<PatientTransactionCommandDecorator<TCommand, TOutput>> logger, IAsyncCommandHandler<TCommand, TOutput> handler, ITransactionalBus transactionalBus, PatientDbContext dbContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        _transactionalBus = transactionalBus ?? throw new ArgumentNullException(nameof(transactionalBus));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
@@ -27,6 +29,7 @@ public class PatientTransactionCommandDecorator<TCommand, TOutput> : IAsyncComma
         {
             var response = await _handler.Handle(command);
             await transaction.CommitAsync();
+            await _transactionalBus.Release();
             return response;
         }
         catch (Exception)
