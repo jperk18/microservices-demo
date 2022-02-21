@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Health.Shared.Domain.Commands.Core;
+using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Mediator;
 using Health.Shared.Domain.Queries.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +10,8 @@ namespace Health.Shared.Domain.Core.RegistrationHelpers;
 public static class Handlers
 {
     public static void AddHandlers(this IServiceCollection services, IEnumerable<Type> handlerTypes,
-        IDictionary<Type, Func<object, Type, Type?>>? additionalPipelinesForHandlers,
-        IDictionary<Type, Func<object, Type, Type?>>? corePipelinesForHandlersOverriders = null)
+        IEnumerable<IPipelineConfiguration>? additionalPipelinesForHandlers = null,
+        IEnumerable<IPipelineConfiguration>? corePipelinesForHandlersOverriders = null)
     {
         foreach (var type in handlerTypes)
         {
@@ -21,11 +22,13 @@ public static class Handlers
     }
 
     private static void AddHandler(IServiceCollection services, Type type,
-        IDictionary<Type, Func<object, Type, Type?>>? additionalPipelinesForHandlers,
-        IDictionary<Type, Func<object, Type, Type?>>? corePipelinesForHandlersOverriders = null)
+        IEnumerable<IPipelineConfiguration>? additionalPipelinesForHandlers = null,
+        IEnumerable<IPipelineConfiguration>? corePipelinesForHandlersOverriders = null)
     {
         object[] attributes = type.GetCustomAttributes(false)
-            .Where(x => Decorators.IsDecorator(x) || (additionalPipelinesForHandlers != null && additionalPipelinesForHandlers.ContainsKey(x.GetType()))).ToArray();
+            .Where(x => Decorators.IsDecorator(x) || (additionalPipelinesForHandlers != null &&
+                                                      additionalPipelinesForHandlers.Any(p => p.Pipeline == x.GetType())))
+            .ToArray();
 
         Type interfaceType = type.GetInterfaces().Single(y => IsHandlerInterface(y));
 
@@ -34,29 +37,35 @@ public static class Handlers
             {
                 if (Decorators.IsDecorator(x)) //is Core decorator in shared library
                 {
-                    if (corePipelinesForHandlersOverriders != null && corePipelinesForHandlersOverriders.ContainsKey(x.GetType()))
-                    {
-                        var pipelineHandler = corePipelinesForHandlersOverriders[x.GetType()](x, interfaceType);
+                    var corePipelineConfigurationOverride =
+                        corePipelinesForHandlersOverriders?.FirstOrDefault(p => p.Pipeline == x.GetType());
 
-                        if (pipelineHandler == null)
-                            throw new ApplicationException("Core pipelines handler behaviour not specified correctly");
+                    if (corePipelineConfigurationOverride == null)
+                        return Decorators.ToDecorator(x, interfaceType);
+                    
+                    if (IsCommandHandlerInterface(interfaceType) &&
+                        corePipelineConfigurationOverride.CommandHandler != null)
+                        return corePipelineConfigurationOverride.CommandHandler;
+                    if (IsQueryHandlerInterface(interfaceType) && corePipelineConfigurationOverride.QueryHandler != null)
+                        return corePipelineConfigurationOverride.QueryHandler;
 
-                        return pipelineHandler;
-                    }
-
-                    return Decorators.ToDecorator(x, interfaceType);
+                    throw new ApplicationException("Core pipelines handler behaviour not specified correctly");
                 }
 
-                if (additionalPipelinesForHandlers != null && additionalPipelinesForHandlers.ContainsKey(x.GetType()))
+                if (additionalPipelinesForHandlers != null)
                 {
-                    var pipelineHandler = additionalPipelinesForHandlers[x.GetType()](x, interfaceType);
+                    var additionalPipelineConfigurationOverride =
+                        additionalPipelinesForHandlers?.FirstOrDefault(p => p.Pipeline == x.GetType());
+                    
+                    if (IsCommandHandlerInterface(interfaceType) &&
+                        additionalPipelineConfigurationOverride?.CommandHandler != null)
+                        return additionalPipelineConfigurationOverride.CommandHandler;
+                    if (IsQueryHandlerInterface(interfaceType) && additionalPipelineConfigurationOverride?.QueryHandler != null)
+                        return additionalPipelineConfigurationOverride.QueryHandler;
 
-                    if (pipelineHandler == null)
-                        throw new ApplicationException("Pipeline behaviour not specified");
-
-                    return pipelineHandler;
+                    throw new ApplicationException("Additional pipelines handler behaviour not specified correctly");
                 }
-                
+
                 throw new ApplicationException("Pipeline behaviour not specified");
             })
             .Concat(new[] {type})
@@ -123,18 +132,6 @@ public static class Handlers
 
         throw new ArgumentException($"Type {parameterType} not found");
     }
-
-    // private static Type ToDecorator(object attribute)
-    // {
-    //     Type type = attribute.GetType();
-    //
-    //     if (type == typeof(AuditLogPipelineAttribute))
-    //         return typeof(AuditLoggingCommandDecorator<,>);
-    //
-    //     // other attributes go here
-    //
-    //     throw new ArgumentException(attribute.ToString());
-    // }
 
     public static bool IsHandlerInterface(Type type)
     {

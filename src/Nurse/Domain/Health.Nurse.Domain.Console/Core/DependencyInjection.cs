@@ -5,6 +5,7 @@ using Health.Nurse.Domain.Console.Core.Configuration;
 using Health.Nurse.Domain.Console.Core.Pipelines;
 using Health.Nurse.Domain.Storage.Sql.Core;
 using Health.Shared.Domain.Core;
+using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
 using MassTransit.Definition;
@@ -33,18 +34,11 @@ public static class DependencyInjection
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, new Dictionary<Type, Func<object, Type, Type?>>()
+        services.AddCoreDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
         {
-            {
-                typeof(NurseTransactionPipelineAttribute), (attribute, assigningInterfaceType) =>
-                {
-                    if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
-                        return typeof(NurseTransactionCommandDecorator<,>);
-                    
-                    //Transaction pipeline not supported in queries
-                    
-                    return null;
-                }
+            new(typeof(NurseTransactionPipelineAttribute)){
+                CommandHandler = typeof(NurseTransactionCommandDecorator<,>),
+                QueryHandler = null //Transaction pipeline not supported in queries
             }
         });
 

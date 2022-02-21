@@ -30,14 +30,6 @@ public static class Decorators
                 return typeof(ValidationQueryDecorator<,>);
         }
 
-        // if (type == typeof(TransactionPipelineAttribute))
-        // {
-        //     if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
-        //         return typeof(TransactionCommandDecorator<,>);
-        //     if (Handlers.IsQueryHandlerInterface(assigningInterfaceType))
-        //         throw new ArgumentException(attribute.ToString());
-        // }
-
         if (type == typeof(ExceptionPipelineAttribute))
         {
             if (Handlers.IsCommandHandlerInterface(assigningInterfaceType))
@@ -46,7 +38,7 @@ public static class Decorators
                 return typeof(ExceptionQueryDecorator<,>);
         }
         
-        // other attributes go here
+        // other core attributes go here
 
         throw new ArgumentException(attribute.ToString());
     }
