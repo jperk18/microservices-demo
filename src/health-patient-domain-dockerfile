@@ -5,11 +5,12 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY "./Patient/Domain/Health.Patient.Domain.Console" "./Patient/Domain/Health.Patient.Domain.Console"
 COPY "./Patient/Domain/Health.Patient.Domain.Storage.Sql" "./Patient/Domain/Health.Patient.Domain.Storage.Sql"
-COPY "./Workflow/Shared/Health.Workflow.Shared.Processes" "./Workflow/Shared/Health.Workflow.Shared.Processes"
-RUN dotnet restore "./Workflow/Shared/Health.Workflow.Shared.Processes/Health.Workflow.Shared.Processes.csproj"
+COPY "./Shared/Domain/Health.Shared.Domain" "./Shared/Domain/Health.Shared.Domain"
+COPY "./Shared/Workflow/Health.Shared.Workflow.Processes" "./Shared/Workflow/Health.Shared.Workflow.Processes"
+RUN dotnet restore "./Shared/Workflow/Health.Shared.Workflow.Processes/Health.Shared.Workflow.Processes.csproj"
+RUN dotnet restore "./Shared/Domain/Health.Shared.Domain/Health.Shared.Domain.csproj"
 RUN dotnet restore "./Patient/Domain/Health.Patient.Domain.Storage.Sql/Health.Patient.Domain.Storage.Sql.csproj"
 RUN dotnet restore "./Patient/Domain/Health.Patient.Domain.Console/Health.Patient.Domain.Console.csproj"
-
 WORKDIR "./Patient/Domain/Health.Patient.Domain.Console"
 RUN dotnet build "Health.Patient.Domain.Console.csproj" -c Release -o /app/build
 

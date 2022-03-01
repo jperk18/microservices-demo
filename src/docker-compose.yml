@@ -1,28 +1,50 @@
 version: "3.2"
 services:
+  patientdomain:
+    image: healthpatientdomain:dev
+    build:
+      context: .
+      dockerfile: .\health-patient-domain-dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - health-broker-net
+  patientapi:
+    image: healthpatientapi:dev
+    build:
+      context: .
+      dockerfile: .\health-patient-api-dockerfile
+    ports:
+      - 49501:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - health-broker-net
   rabbitmq:
     image: rabbitmq:3-management-alpine
     restart: always
     container_name: 'rabbitmq'
     ports:
-        - 5672:5672
-        - 15672:15672
+      - 5672:5672
+      - 15672:15672
     volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-        - rabbitmq_go_net
+      - health-broker-net
   cache:
     image: redis:6.2-alpine
     restart: always
     ports:
-      - '6379:6379'
+      - 6379:6379
     command: redis-server --save 20 1 --loglevel debug
-    volumes: 
+    volumes:
       - cache:/data
 volumes:
   cache:
     driver: local
 networks:
-  rabbitmq_go_net:
+  health-broker-net:
+    driver: bridge
+  health-patient-net:
     driver: bridge
