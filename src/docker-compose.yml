@@ -4,20 +4,25 @@ services:
     image: healthpatientdomain:dev
     build:
       context: .
-      dockerfile: .\health-patient-domain-dockerfile
+      dockerfile: health-patient-domain-dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - rabbitmq
     networks:
       - health-broker-net
   patientapi:
     image: healthpatientapi:dev
     build:
       context: .
-      dockerfile: .\health-patient-api-dockerfile
+      dockerfile: health-patient-api-dockerfile
     ports:
       - 49501:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    restart: on-failure
+    depends_on:
+      - rabbitmq
     networks:
       - health-broker-net
   rabbitmq:
@@ -45,6 +50,4 @@ volumes:
     driver: local
 networks:
   health-broker-net:
-    driver: bridge
-  health-patient-net:
     driver: bridge
