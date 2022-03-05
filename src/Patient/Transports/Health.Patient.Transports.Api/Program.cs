@@ -1,7 +1,6 @@
 using Health.Patient.Transports.Api.Core;
 using Health.Patient.Transports.Api.Core.Serialization;
 using Health.Patient.Transports.Api.Middleware;
-using Health.Shared.Workflow.Processes;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
@@ -29,9 +28,6 @@ builder.Services.AddSingleton<IApiConfiguration>(apiSettings);
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
-// Add Services to Domain (and storage dependant service)
-//var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();
-//builder.Services.AddDomainServices(new DomainConfiguration(new StorageConfiguration(storageSettings)));
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>
 {
