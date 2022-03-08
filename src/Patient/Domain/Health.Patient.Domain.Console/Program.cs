@@ -1,6 +1,5 @@
 using Health.Patient.Domain.Console.Core;
 using Health.Patient.Domain.Console.Core.Configuration;
-using Health.Patient.Domain.Storage.Sql.Core;
 using Health.Patient.Domain.Storage.Sql.Core.Configuration;
 using Health.Patient.Domain.Storage.Sql.Core.Configuration.Inner;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +8,7 @@ using IHost = Microsoft.Extensions.Hosting.IHost;
 
 namespace Health.Patient.Domain.Console;
 
-static class Program
+public static class Program
 {
     static async Task Main(string[] args)
     {
@@ -20,7 +19,7 @@ static class Program
         await host.RunAsync();
     }
 
-    static IHostBuilder CreateHostBuilder(string[] args) =>
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureHostConfiguration(configHost =>
             {
