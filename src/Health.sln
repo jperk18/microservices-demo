@@ -44,6 +44,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{C2A34057
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Domain.Utils.EfMigration", "Patient\Domain\utils\Health.Patient.Domain.Utils.EfMigration\Health.Patient.Domain.Utils.EfMigration.csproj", "{12445A33-DA3A-4D66-8E32-DD26B75902DE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{9E6EB3BB-D86D-41BA-B4A3-514058358EA4}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		health-patient-api-dockerfile = health-patient-api-dockerfile
+		health-patient-domain-dockerfile = health-patient-domain-dockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
