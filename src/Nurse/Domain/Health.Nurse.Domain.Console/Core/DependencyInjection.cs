@@ -20,13 +20,13 @@ public static class DependencyInjection
 {
     public static void AddDomainServices(this IServiceCollection services, INurseDomainConfiguration config)
     {
-        if (config == null || config.NurseStorageConfiguration == null)
+        if (config == null || config.NurseStorage == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateNurseCommandValidator>());
 
         //Add Dependant Database services
-        services.AddStorageServices(config.NurseStorageConfiguration);
+        services.AddStorageServices(config.NurseStorage);
         
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()

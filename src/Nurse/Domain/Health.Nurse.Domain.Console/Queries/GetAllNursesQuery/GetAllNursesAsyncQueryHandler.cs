@@ -17,8 +17,11 @@ public sealed class GetAllNursesAsyncQueryHandler : IAsyncQueryHandler<GetAllNur
     
     public async Task<IEnumerable<NurseRecord>> Handle(GetAllNursesQuery command)
     {
+        var r = _unitOfWork.Nurses.GetAll();
+        var nurses = r as Storage.Sql.Core.Databases.NurseDb.Models.Nurse[] ?? r.ToArray();
+
         return await Task.FromResult(
-            _unitOfWork.Nurses.GetAll().Select(i => new NurseRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id))
+            nurses.Select(i => new NurseRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id))
             );
     }
 }

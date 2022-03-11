@@ -4,5 +4,6 @@ namespace Health.Patient.Domain.Console.Core.Configuration;
 
 public interface IPatientDomainConfiguration
 {
-    IPatientStorageConfiguration PatientStorageConfiguration { get; set; }
+    IPatientStorageConfiguration PatientStorage { get; set; }
+    IBrokerCredentialsConfiguration BrokerCredentials { get; }
 }

@@ -10,7 +10,6 @@ using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
 using MassTransit.Definition;
-using MassTransit.RabbitMqTransport;
 using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,14 +20,14 @@ public static class DependencyInjection
 {
     public static void AddDomainServices(this IServiceCollection services, IPatientDomainConfiguration config)
     {
-        if (config == null || config.PatientStorageConfiguration == null)
+        if (config == null || config.PatientStorage == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         services.AddFluentValidation(fv =>
             fv.RegisterValidatorsFromAssemblyContaining<CreatePatientCommandValidator>());
 
         //Add Dependant Database services
-        services.AddStorageServices(config.PatientStorageConfiguration);
+        services.AddStorageServices(config.PatientStorage);
 
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
@@ -52,16 +51,19 @@ public static class DependencyInjection
         services.AddMassTransit(cfg =>
         {
             cfg.AddConsumersFromNamespaceContaining<RegisterPatientConsumer>();
-            cfg.UsingRabbitMq(ConfigureBus);
+            cfg.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host(config.BrokerCredentials.Host, "/", h =>
+                {
+                    h.Username(config.BrokerCredentials.Username);
+                    h.Password(config.BrokerCredentials.Password);
+                });
+                configurator.ConfigureEndpoints(context);
+            });
             
             cfg.AddTransactionalBus();
         });
 
         services.AddMassTransitHostedService();
-    }
-
-    static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator)
-    {
-        configurator.ConfigureEndpoints(context);
     }
 }

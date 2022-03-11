@@ -17,8 +17,11 @@ public sealed class GetAllPatientsAsyncQueryHandler : IAsyncQueryHandler<Console
     
     public async Task<IEnumerable<PatientRecord>> Handle(Console.Queries.GetAllPatientsQuery.GetAllPatientsQuery command)
     {
+        var r = _unitOfWork.Patients.GetAll();
+        var patients = r as Storage.Sql.Core.Databases.PatientDb.Models.Patient[] ?? r.ToArray();
+
         return await Task.FromResult(
-            _unitOfWork.Patients.GetAll().Select(i => new PatientRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id))
+            patients.Select(i => new PatientRecord(i.FirstName, i.LastName, i.DateOfBirth, i.Id))
             );
     }
 }

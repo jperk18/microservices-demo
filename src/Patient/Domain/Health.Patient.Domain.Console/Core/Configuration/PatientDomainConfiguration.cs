@@ -1,13 +1,14 @@
-﻿using Health.Patient.Domain.Storage.Sql.Core;
-using Health.Patient.Domain.Storage.Sql.Core.Configuration;
+﻿using Health.Patient.Domain.Storage.Sql.Core.Configuration;
 
 namespace Health.Patient.Domain.Console.Core.Configuration;
 
 public class PatientDomainConfiguration : IPatientDomainConfiguration
 {
-    public PatientDomainConfiguration(IPatientStorageConfiguration storageConfiguration)
+    public PatientDomainConfiguration(IPatientStorageConfiguration storage, IBrokerCredentialsConfiguration brokerCredentials)
     {
-        PatientStorageConfiguration = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
+        PatientStorage = storage ?? throw new ArgumentNullException(nameof(storage));
+        BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
     }
-    public IPatientStorageConfiguration PatientStorageConfiguration { get; set; }
+    public IPatientStorageConfiguration PatientStorage { get; set; }
+    public IBrokerCredentialsConfiguration BrokerCredentials { get; }
 }

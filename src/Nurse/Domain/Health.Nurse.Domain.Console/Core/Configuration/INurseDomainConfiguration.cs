@@ -4,5 +4,6 @@ namespace Health.Nurse.Domain.Console.Core.Configuration;
 
 public interface INurseDomainConfiguration
 {
-    INurseStorageConfiguration NurseStorageConfiguration { get; set; }
+    INurseStorageConfiguration NurseStorage { get; }
+    IBrokerCredentialsConfiguration BrokerCredentials { get; }
 }

@@ -7,6 +7,7 @@ services:
       dockerfile: health-patient-domain-dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - PatientDomain__BrokerCredentials__Host=rabbitmq
     depends_on:
       - rabbitmq
     networks:
@@ -20,6 +21,7 @@ services:
       - 49501:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - PatientApi__BrokerCredentials__Host=rabbitmq
     restart: on-failure
     depends_on:
       - rabbitmq

@@ -1,5 +1,6 @@
 ﻿using Health.Patient.Domain.Console.Core.Exceptions;
 using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
+using Health.Patient.Domain.Console.Core.Models;
 using Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
 using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Mediator;
@@ -21,10 +22,11 @@ public class GetAllPatientsConsumer : IConsumer<GetAllPatients>
     public async Task Consume(ConsumeContext<GetAllPatients> context)
     {
         var r = await _mediator.SendAsync(new GetAllPatientsQuery());
+        var patientRecords = r as PatientRecord[] ?? r.ToArray();
 
         await context.RespondAsync<GetAllPatientsSuccess>(new
         {
-            Patients = r.Select(result => new Shared.Workflow.Processes.Inner.Models.PatientDto(
+            Patients = patientRecords.Select(result => new Shared.Workflow.Processes.Inner.Models.PatientDto(
                 result.Id, result.FirstName, result.LastName, result.DateOfBirth
             )).ToArray()
         });

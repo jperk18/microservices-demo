@@ -32,9 +32,13 @@ public static class Program
             }).ConfigureServices((builder, services) =>
             {
                 var storageSettings = builder.Configuration
-                    .GetSection("PatientDomainConfiguration:PatientStorageConfiguration:PatientDatabase")
+                    .GetSection("PatientDomain:PatientStorage:PatientDatabase")
                     .Get<SqlDatabaseConfiguration>();
                 
-                services.AddDomainServices(new PatientDomainConfiguration(new PatientStorageConfiguration(storageSettings)));
+                var brokerSettings = builder.Configuration
+                    .GetSection("PatientDomain:BrokerCredentials")
+                    .Get<BrokerCredentialsConfiguration>();
+                
+                services.AddDomainServices(new PatientDomainConfiguration(new PatientStorageConfiguration(storageSettings), brokerSettings));
             });
 }

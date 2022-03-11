@@ -4,9 +4,11 @@ namespace Health.Nurse.Domain.Console.Core.Configuration;
 
 public class NurseDomainConfiguration : INurseDomainConfiguration
 {
-    public NurseDomainConfiguration(INurseStorageConfiguration storageConfiguration)
+    public NurseDomainConfiguration(INurseStorageConfiguration storageConfiguration, IBrokerCredentialsConfiguration brokerCredentials)
     {
-        NurseStorageConfiguration = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
+        NurseStorage = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
+        BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
     }
-    public INurseStorageConfiguration NurseStorageConfiguration { get; set; }
+    public INurseStorageConfiguration NurseStorage { get; }
+    public IBrokerCredentialsConfiguration BrokerCredentials { get; }
 }

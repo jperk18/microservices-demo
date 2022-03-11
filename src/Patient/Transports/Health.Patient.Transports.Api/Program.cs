@@ -1,4 +1,5 @@
 using Health.Patient.Transports.Api.Core;
+using Health.Patient.Transports.Api.Core.Configuration;
 using Health.Patient.Transports.Api.Core.Serialization;
 using Health.Patient.Transports.Api.Middleware;
 using Health.Shared.Workflow.Processes.Commands;
@@ -22,8 +23,9 @@ builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.Environment
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container for API
-var apiSettings = builder.Configuration.GetSection("ApiConfiguration").Get<ApiConfiguration>();
-builder.Services.AddSingleton<IApiConfiguration>(apiSettings);
+var brokerSettings = builder.Configuration.GetSection("PatientApi:BrokerCredentials").Get<BrokerCredentialsConfiguration>();
+var config = new PatientApiConfiguration(brokerSettings);
+builder.Services.AddSingleton<IPatientApiConfiguration>(config);
 
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
@@ -31,7 +33,16 @@ builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>
 {
-    cfg.UsingRabbitMq(ConfigureBus);
+    cfg.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host(config.BrokerCredentials.Host, "/", h =>
+        {
+            h.Username(config.BrokerCredentials.Username);
+            h.Password(config.BrokerCredentials.Password);
+        });
+        configurator.ConfigureEndpoints(context);
+    });
+    
     cfg.AddRequestClient<RegisterPatient>();
     cfg.AddRequestClient<GetPatient>();
     cfg.AddRequestClient<GetAllPatients>();
@@ -61,7 +72,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator) {
-    configurator.ConfigureEndpoints(context);
-}
