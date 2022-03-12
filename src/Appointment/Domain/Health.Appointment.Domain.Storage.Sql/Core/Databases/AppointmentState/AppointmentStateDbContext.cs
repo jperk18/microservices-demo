@@ -2,7 +2,7 @@
 using MassTransit.EntityFrameworkCoreIntegration.Mappings;
 using Microsoft.EntityFrameworkCore;
 
-namespace Health.Appointment.Domain.Console.Db;
+namespace Health.Appointment.Domain.Storage.Sql.Core.Databases.AppointmentState;
 
 public class AppointmentStateDbContext: 
     SagaDbContext

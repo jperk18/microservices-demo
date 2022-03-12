@@ -51,6 +51,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{9E6EB3
 		health-patient-domain-dockerfile = health-patient-domain-dockerfile
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.Sql", "Appointment\Domain\Health.Appointment.Domain.Storage.Sql\Health.Appointment.Domain.Storage.Sql.csproj", "{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.StateMachines", "Appointment\Domain\Health.Appointment.Domain.StateMachines\Health.Appointment.Domain.StateMachines.csproj", "{6FD5F635-3D11-4868-9322-D0EA1E7747EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docs", "_docs", "{C2779D9E-41B2-4805-AB35-7C9F15A4A681}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +84,8 @@ Global
 		{C2332021-0F85-4E4F-9D77-D1993431054D} = {FC9C182D-442B-464D-8161-D72AED548F0A}
 		{C2A34057-6307-4EC2-8545-9579E1A45476} = {40A11761-576F-4E16-ABC8-FE3A8E69BC5E}
 		{12445A33-DA3A-4D66-8E32-DD26B75902DE} = {C2A34057-6307-4EC2-8545-9579E1A45476}
+		{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF} = {FC9C182D-442B-464D-8161-D72AED548F0A}
+		{6FD5F635-3D11-4868-9322-D0EA1E7747EE} = {FC9C182D-442B-464D-8161-D72AED548F0A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5CE8E922-77AF-4B21-B9D4-79EFD8A8CCB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -117,5 +128,13 @@ Global
 		{12445A33-DA3A-4D66-8E32-DD26B75902DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12445A33-DA3A-4D66-8E32-DD26B75902DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12445A33-DA3A-4D66-8E32-DD26B75902DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FD5F635-3D11-4868-9322-D0EA1E7747EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FD5F635-3D11-4868-9322-D0EA1E7747EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FD5F635-3D11-4868-9322-D0EA1E7747EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FD5F635-3D11-4868-9322-D0EA1E7747EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,12 +1,8 @@
-using Health.Appointment.Domain.Console.Db;
-using Health.Appointment.Domain.Console.StateMachines;
-using MassTransit;
-using MassTransit.Definition;
-using MassTransit.EntityFrameworkCoreIntegration;
-using MassTransit.RabbitMqTransport;
-using Microsoft.EntityFrameworkCore;
+using Health.Appointment.Domain.Console.Core;
+using Health.Appointment.Domain.Console.Core.Configuration;
+using Health.Appointment.Domain.Storage.Sql.Core.Configuration;
+using Health.Appointment.Domain.Storage.Sql.Core.Configuration.Inner;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;
 
@@ -33,36 +29,16 @@ static class Program
                 configHost.AddJsonFile("appsettings.json", optional: false);
                 configHost.AddJsonFile($"appsettings.{environment}.json", optional: true);
                 configHost.AddEnvironmentVariables();
-            }).ConfigureServices((hostcontext, services) =>
+            }).ConfigureServices((builder, services) =>
             {
-                services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+                var storageSettings = builder.Configuration
+                    .GetSection("AppointmentDomain:AppointmentStorage:AppointmentDatabase")
+                    .Get<SqlDatabaseConfiguration>();
+                
+                var brokerSettings = builder.Configuration
+                    .GetSection("AppointmentDomain:BrokerCredentials")
+                    .Get<BrokerCredentialsConfiguration>();
 
-                services.AddMassTransit(cfg =>
-                {
-                    cfg.AddSagaStateMachine<AppointmentStateMachine, AppointmentState>()
-                        .EntityFrameworkRepository(r =>
-                        {
-                            r.ConcurrencyMode = ConcurrencyMode.Pessimistic; // or use Optimistic, which requires RowVersion
-
-                            r.AddDbContext<DbContext, AppointmentStateDbContext>((provider,builder) =>
-                            {
-                                builder.UseInMemoryDatabase("Appointment");
-                                // builder.UseSqlServer(connectionString, m =>
-                                // {
-                                //     m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-                                //     m.MigrationsHistoryTable($"__{nameof(OrderStateDbContext)}");
-                                // });
-                            });
-                        });
-
-                    cfg.UsingRabbitMq(ConfigureBus);
-                });
-
-                services.AddMassTransitHostedService();
+                services.AddDomainServices(new AppointmentDomainConfiguration(new AppointmentStorageConfiguration(storageSettings), brokerSettings));
             });
-
-    static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator)
-    {
-        configurator.ConfigureEndpoints(context);
-    }
 }

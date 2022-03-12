@@ -1,11 +1,13 @@
 ﻿using Automatonymous;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
 
-namespace Health.Appointment.Domain.Console.StateMachines;
+namespace Health.Appointment.Domain.StateMachines;
 
 public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
 {
+#pragma warning disable CS8618
     public AppointmentStateMachine()
+#pragma warning restore CS8618
     {
         Event(() => PatientCheckedIn, x => x.CorrelateById(m => m.Message.AppointmentId));
         
