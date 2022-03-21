@@ -40,7 +40,7 @@ public class NurseController : ControllerBase
     [HttpPost()]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNurseApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(NurseApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] CreateNurseApiRequest request)
     {
@@ -65,7 +65,7 @@ public class NurseController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetNurseApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(NurseApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetNurse([FromQuery] GetNurseApiRequest request)
     {

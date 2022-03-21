@@ -1,4 +1,4 @@
-﻿using Health.Patient.Transports.Api.Core.Serialization;
+﻿using Health.Shared.Application.Services.Serialization;
 using Health.Shared.Workflow.Processes.Core.Exceptions;
 
 namespace Health.Patient.Transports.Api.Middleware;
@@ -29,7 +29,7 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
     private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
         var statusCode = GetStatusCode(exception);
-        var response = new ApiGenericValidationResultObject(GetTitle(exception), statusCode, exception.Message, GetErrors(exception));
+        var response = new PatientApiGenericValidationResultObject(GetTitle(exception), statusCode, exception.Message, GetErrors(exception));
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = statusCode;
         await httpContext.Response.WriteAsync(_serializer.Serialize(response));

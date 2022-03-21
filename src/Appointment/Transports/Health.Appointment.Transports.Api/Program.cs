@@ -1,5 +1,5 @@
-using Health.Patient.Transports.Api.Core.Configuration;
-using Health.Patient.Transports.Api.Middleware;
+using Health.Appointment.Transports.Api.Core.Configuration;
+using Health.Appointment.Transports.Api.Middleware;
 using Health.Shared.Application;
 using Health.Shared.Application.Configuration;
 using Health.Shared.Workflow.Processes.Commands;
@@ -22,9 +22,9 @@ builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.Environment
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container for API
-var brokerSettings = builder.Configuration.GetSection("PatientApi:BrokerCredentials").Get<BrokerCredentialsConfiguration>();
-var config = new PatientApiConfiguration(brokerSettings);
-builder.Services.AddSingleton<IPatientApiConfiguration>(config);
+var brokerSettings = builder.Configuration.GetSection("AppointmentApi:BrokerCredentials").Get<BrokerCredentialsConfiguration>();
+var config = new AppointmentApiConfiguration(brokerSettings);
+builder.Services.AddSingleton<IAppointmentApiConfiguration>(config);
 
 builder.Services.AddSharedApplicationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
@@ -42,9 +42,7 @@ builder.Services.AddMassTransit(cfg =>
         configurator.ConfigureEndpoints(context);
     });
     
-    cfg.AddRequestClient<RegisterPatient>();
-    cfg.AddRequestClient<GetPatient>();
-    cfg.AddRequestClient<GetAllPatients>();
+    cfg.AddRequestClient<GetAllWaitingPatients>();
 });
 
 builder.Services.AddMassTransitHostedService();

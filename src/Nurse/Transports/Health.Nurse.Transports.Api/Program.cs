@@ -1,6 +1,7 @@
 using Health.Nurse.Transports.Api.Core.Configuration;
-using Health.Nurse.Transports.Api.Core.Serialization;
 using Health.Nurse.Transports.Api.Middleware;
+using Health.Shared.Application;
+using Health.Shared.Application.Configuration;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
@@ -26,8 +27,8 @@ var brokerSettings = builder.Configuration.GetSection("NurseApi:BrokerCredential
 var config = new NurseApiConfiguration(brokerSettings);
 builder.Services.AddSingleton<INurseApiConfiguration>(config);
 
+builder.Services.AddSharedApplicationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
 // Add Services to Domain (and storage dependant service)
 //var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();

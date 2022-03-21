@@ -1,38 +1,40 @@
 namespace Health.Shared.Workflow.Processes.Inner.Models;
 
-public interface Patient : PatientIdentifier, PatientInfo
+public interface Patient : PatientIdentifier, PatientInfo, PatientCardInformation
 {
 }
 
-public interface PatientBasicInformation : PatientIdentifier
+public interface PatientCardInformation : PatientIdentifier, PatientBasicInformation
+{
+}
+
+public interface PatientBasicInformation
 {
     string FirstName { get; }
     string LastName { get; }
 }
 
-public interface PatientInfo
+public interface PatientInfo : PatientBasicInformation
 {
-    string FirstName { get; }
-    string LastName { get; }
     DateTime DateOfBirth { get; }
 }
 
 public interface PatientIdentifier
 {
-    Guid PatientId { get; }
+    Guid Id { get; }
 }
 
 public class PatientDto : Patient
 {
     public PatientDto(Guid patientId, string firstName, string lastName, DateTime dateOfBirth)
     {
-        PatientId = patientId;
+        Id = patientId;
         FirstName = firstName;
         LastName = lastName;
         DateOfBirth = dateOfBirth;
     }
 
-    public Guid PatientId { get; }
+    public Guid Id { get; }
     public string FirstName { get; }
     public string LastName { get; }
     public DateTime DateOfBirth { get; }

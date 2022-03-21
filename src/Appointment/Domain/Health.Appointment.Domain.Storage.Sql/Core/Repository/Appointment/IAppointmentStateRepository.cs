@@ -5,5 +5,5 @@ namespace Health.Appointment.Domain.Storage.Sql.Core.Repository.Appointment;
 
 public interface IAppointmentStateRepository : IGenericRepository<AppointmentState>
 {
-    
+    IEnumerable<Guid> GetAllWaitingPatients();
 }

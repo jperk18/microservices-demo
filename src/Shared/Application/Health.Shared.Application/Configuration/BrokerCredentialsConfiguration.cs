@@ -1,4 +1,4 @@
-namespace Health.Nurse.Transports.Api.Core.Configuration;
+namespace Health.Shared.Application.Configuration;
 
 public class BrokerCredentialsConfiguration : IBrokerCredentialsConfiguration
 {

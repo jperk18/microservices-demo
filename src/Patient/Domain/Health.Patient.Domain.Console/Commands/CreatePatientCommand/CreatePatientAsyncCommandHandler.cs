@@ -37,7 +37,7 @@ public sealed class CreatePatientAsyncCommandHandler : IAsyncCommandHandler<Cons
         {
             Patient = new
             {
-                PatientId = p.Id,
+                Id = p.Id,
                 FirstName = p.FirstName,
                 LastName = p.LastName,
                 DateOfBirth = p.DateOfBirth

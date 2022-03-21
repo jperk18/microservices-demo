@@ -1,4 +1,4 @@
-﻿namespace Health.Nurse.Transports.Api.Core.Serialization;
+namespace Health.Shared.Application.Services.Serialization;
 
 public interface IJsonSerializer
 {

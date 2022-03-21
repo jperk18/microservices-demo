@@ -1,10 +1,10 @@
 ﻿using Health.Shared.Application.Configuration;
 
-namespace Health.Nurse.Transports.Api.Core.Configuration;
+namespace Health.Appointment.Transports.Api.Core.Configuration;
 
-public class NurseApiConfiguration : INurseApiConfiguration
+public class AppointmentApiConfiguration : IAppointmentApiConfiguration
 {
-    public NurseApiConfiguration(IBrokerCredentialsConfiguration brokerCredentials)
+    public AppointmentApiConfiguration(IBrokerCredentialsConfiguration brokerCredentials)
     {
         BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
     }

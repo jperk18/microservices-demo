@@ -1,11 +1,11 @@
-﻿using Health.Shared.Workflow.Processes.Inner.Models;
+using Health.Shared.Workflow.Processes.Inner.Models;
 
 namespace Health.Shared.Workflow.Processes.Sagas.Appointment;
 
-public interface PatientCheckedIn
+public interface AssignedDoctorToPatient
 {
     Guid AppointmentId { get; }
-    PatientCardInformation Patient { get; }
+    DoctorCardInformation Doctor { get; }
     
     DateTime Timestamp { get; }
 }

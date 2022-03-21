@@ -1,4 +1,5 @@
-﻿using Health.Appointment.Domain.StateMachines;
+﻿using System.Linq.Expressions;
+using Health.Appointment.Domain.StateMachines;
 using Health.Appointment.Domain.Storage.Sql.Core.Databases.AppointmentState;
 using Health.Appointment.Domain.Storage.Sql.Core.Repository.Core.Generic;
 
@@ -13,5 +14,18 @@ public class AppointmentStateRepository : GenericRepository<AppointmentState>, I
     public AppointmentStateRepository(AppointmentStateDbContext context) : base(context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public IEnumerable<Guid> GetAllWaitingPatients()
+    {
+        string waitingState = GetPropertyName((AppointmentStateMachine c) => c.PatientAwaitingNurse);
+        return _context.Set<AppointmentState>().Where(x => x.CurrentState == waitingState).Select(c => c.PatientId).ToList();
+    }
+    
+    private static string GetPropertyName<TModel, TProperty>(Expression<Func<TModel, TProperty>> property)
+    {
+        MemberExpression memberExpression = (MemberExpression)property.Body;
+
+        return memberExpression.Member.Name;
     }
 }

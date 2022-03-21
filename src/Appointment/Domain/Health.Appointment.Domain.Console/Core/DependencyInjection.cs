@@ -6,6 +6,7 @@ using Health.Appointment.Domain.Storage.Sql.Core.Databases.AppointmentState;
 using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
+using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.EntityFrameworkCoreIntegration;
@@ -62,6 +63,8 @@ public static class DependencyInjection
                     // });
                 });
             
+            cfg.AddConsumersFromNamespaceContaining<GetAllWaitingPatients>();
+
             cfg.UsingRabbitMq((context, configurator) =>
             {
                 configurator.Host(config.BrokerCredentials.Host, "/", h =>

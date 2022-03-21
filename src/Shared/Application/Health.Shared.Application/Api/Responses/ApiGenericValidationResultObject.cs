@@ -1,6 +1,6 @@
-﻿namespace Health.Nurse.Transports.Api.Middleware;
+﻿namespace Health.Shared.Application.Api.Responses;
 
-public class ApiGenericValidationResultObject
+public abstract class ApiGenericValidationResultObject
 {
     public string Title { get; }
     public int Status { get; }
