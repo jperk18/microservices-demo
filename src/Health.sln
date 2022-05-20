@@ -49,9 +49,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{9E6EB3
 		docker-compose.yml = docker-compose.yml
 		health-patient-api-dockerfile = health-patient-api-dockerfile
 		health-patient-domain-dockerfile = health-patient-domain-dockerfile
+		health-appointment-domain-dockerfile = health-appointment-domain-dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.Sql", "Appointment\Domain\Health.Appointment.Domain.Storage.Sql\Health.Appointment.Domain.Storage.Sql.csproj", "{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.Sql.Appointment", "Appointment\Domain\Health.Appointment.Domain.Storage.Sql.Appointment\Health.Appointment.Domain.Storage.Sql.Appointment.csproj", "{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.StateMachines", "Appointment\Domain\Health.Appointment.Domain.StateMachines\Health.Appointment.Domain.StateMachines.csproj", "{6FD5F635-3D11-4868-9322-D0EA1E7747EE}"
 EndProject
@@ -67,6 +68,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transports", "Transports", "{AAC9F134-05E1-4D43-81B1-694602BDD911}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Transports.Api", "Appointment\Transports\Health.Appointment.Transports.Api\Health.Appointment.Transports.Api.csproj", "{388ACAD5-6421-44FB-92FB-051CEE97E129}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.UnitOfWorks", "Appointment\Domain\Health.Appointment.Domain.Storage.UnitOfWorks\Health.Appointment.Domain.Storage.UnitOfWorks.csproj", "{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.Sql.ReferenceData", "Appointment\Domain\Health.Appointment.Domain.Storage.Sql.ReferenceData\Health.Appointment.Domain.Storage.Sql.ReferenceData.csproj", "{832BE82B-B002-4C0B-A5E1-CECC7715F728}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +103,8 @@ Global
 		{C1CD436C-F3CF-4D66-B400-76CCAD208F1F} = {9B665B40-1967-4E4E-BC27-ECE3A3E88225}
 		{AAC9F134-05E1-4D43-81B1-694602BDD911} = {C6476BFB-434A-4AD5-ACA5-A22CA2644E7C}
 		{388ACAD5-6421-44FB-92FB-051CEE97E129} = {AAC9F134-05E1-4D43-81B1-694602BDD911}
+		{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA} = {FC9C182D-442B-464D-8161-D72AED548F0A}
+		{832BE82B-B002-4C0B-A5E1-CECC7715F728} = {FC9C182D-442B-464D-8161-D72AED548F0A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5CE8E922-77AF-4B21-B9D4-79EFD8A8CCB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -156,5 +163,13 @@ Global
 		{388ACAD5-6421-44FB-92FB-051CEE97E129}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{388ACAD5-6421-44FB-92FB-051CEE97E129}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{388ACAD5-6421-44FB-92FB-051CEE97E129}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF01909-9B7B-4367-8E6B-0D0FA6305BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{832BE82B-B002-4C0B-A5E1-CECC7715F728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{832BE82B-B002-4C0B-A5E1-CECC7715F728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{832BE82B-B002-4C0B-A5E1-CECC7715F728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{832BE82B-B002-4C0B-A5E1-CECC7715F728}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

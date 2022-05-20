@@ -27,6 +27,18 @@ services:
       - rabbitmq
     networks:
       - health-broker-net
+  appointmentdomain:
+    image: healthappointmentdomain:dev
+    build:
+      context: .
+      dockerfile: health-appointment-domain-dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PatientDomain__BrokerCredentials__Host=rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - health-broker-net
   rabbitmq:
     image: rabbitmq:3-management-alpine
     restart: always

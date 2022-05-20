@@ -1,8 +1,7 @@
 ﻿using Health.Appointment.Domain.Console.Core.Configuration;
 using Health.Appointment.Domain.Console.Core.Pipelines;
 using Health.Appointment.Domain.StateMachines;
-using Health.Appointment.Domain.Storage.Sql.Core;
-using Health.Appointment.Domain.Storage.Sql.Core.Databases.AppointmentState;
+using Health.Appointment.Domain.Storage.UnitOfWorks.Core;
 using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
@@ -24,7 +23,7 @@ public static class DependencyInjection
             throw new ApplicationException("Configuration is needed for domain services");
 
         //Add Dependant Database services
-        services.AddStorageServices(config.StorageConfiguration);
+        services.AddUnitsOfWork(config.AppointmentStorageConfiguration, config.ReferenceDataStorageConfiguration);
         
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
@@ -42,42 +41,7 @@ public static class DependencyInjection
 
         //Services for this application
         services.AddSingleton(config);
-        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
-        services.AddMassTransit(cfg =>
-        {
-            cfg.AddSagaStateMachine<AppointmentStateMachine, AppointmentState>()
-                .EntityFrameworkRepository(r =>
-                {
-                    r.ConcurrencyMode = ConcurrencyMode.Pessimistic; // or use Optimistic, which requires RowVersion
-
-                    r.ExistingDbContext<AppointmentStateDbContext>();
-                    r.LockStatementProvider = new PostgresLockStatementProvider();
-                    // r.AddDbContext<DbContext, AppointmentStateDbContext>((provider, builder) =>
-                    // {
-                    //     builder.UseInMemoryDatabase("Appointment");
-                    //     // builder.UseSqlServer(connectionString, m =>
-                    //     // {
-                    //     //     m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-                    //     //     m.MigrationsHistoryTable($"__{nameof(OrderStateDbContext)}");
-                    //     // });
-                    // });
-                });
-            
-            cfg.AddConsumersFromNamespaceContaining<GetAllWaitingPatients>();
-
-            cfg.UsingRabbitMq((context, configurator) =>
-            {
-                configurator.Host(config.BrokerCredentials.Host, "/", h =>
-                {
-                    h.Username(config.BrokerCredentials.Username);
-                    h.Password(config.BrokerCredentials.Password);
-                });
-                configurator.ConfigureEndpoints(context);
-            });
-            
-            cfg.AddTransactionalBus();
-        });
-
-        services.AddMassTransitHostedService();
+        
+        services.AddAppointmentMassTransit(config.BrokerCredentials);
     }
 }

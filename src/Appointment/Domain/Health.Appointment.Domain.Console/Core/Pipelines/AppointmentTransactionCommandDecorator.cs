@@ -1,4 +1,4 @@
-using Health.Appointment.Domain.Storage.Sql.Core.Databases.AppointmentState;
+using Health.Appointment.Domain.Storage.Sql.Appointment.Database;
 using Health.Shared.Domain.Commands.Core;
 using MassTransit.Transactions;
 using Microsoft.EntityFrameworkCore;

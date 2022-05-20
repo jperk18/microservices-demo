@@ -8,24 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit.Analyzers" Version="7.3.1" />
-      <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-      <PackageReference Include="MassTransit.EntityFrameworkCore" Version="7.3.1" />
-      <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
-      <PackageReference Include="MassTransit.Redis" Version="7.3.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -33,9 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
-      <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
-      <ProjectReference Include="..\Health.Appointment.Domain.StateMachines\Health.Appointment.Domain.StateMachines.csproj" />
-      <ProjectReference Include="..\Health.Appointment.Domain.Storage.Sql\Health.Appointment.Domain.Storage.Sql.csproj" />
+        <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
+        <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
+        <ProjectReference Include="..\Health.Appointment.Domain.Storage.UnitOfWorks\Health.Appointment.Domain.Storage.UnitOfWorks.csproj" />
     </ItemGroup>
 </Project>
