@@ -25,4 +25,8 @@
         <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
         <ProjectReference Include="..\Health.Appointment.Domain.Storage.UnitOfWorks\Health.Appointment.Domain.Storage.UnitOfWorks.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Commands\ReferenceData" />
+    </ItemGroup>
 </Project>
