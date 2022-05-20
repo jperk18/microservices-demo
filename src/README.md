@@ -9,6 +9,8 @@ dotnet ef database update -s ../Health.Patient.Domain.Console
 
 
 dotnet ef migrations add initial -s ../Health.Appointment.Domain.Console --context AppointmentStateDbContext
+\
+\
 dotnet ef database update -s ../Health.Appointment.Domain.Console --context AppointmentStateDbContext
 \
 \

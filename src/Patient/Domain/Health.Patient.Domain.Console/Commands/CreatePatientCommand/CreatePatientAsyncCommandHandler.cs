@@ -27,7 +27,6 @@ public sealed class CreatePatientAsyncCommandHandler : IAsyncCommandHandler<Cons
     
     public async Task<PatientRecord> Handle(Console.Commands.CreatePatientCommand.CreatePatientCommand command)
     {
-        //TODO: More Business logic
         var p = await _unitOfWork.Patients.Add(new Storage.Sql.Core.Databases.PatientDb.Models.Patient(
             Guid.NewGuid(), command.FirstName, command.LastName, command.DateOfBirth
         ));

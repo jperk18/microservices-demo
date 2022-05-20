@@ -1,5 +1,4 @@
-﻿using Health.Appointment.Domain.Storage.Sql;
-using Health.Appointment.Domain.Storage.UnitOfWorks;
+﻿using Health.Appointment.Domain.Storage.UnitOfWorks;
 using Health.Shared.Domain.Core.Decorators;
 using Health.Shared.Domain.Queries.Core;
 
@@ -18,9 +17,6 @@ public sealed class GetAllWaitingPatientsAsyncQueryHandler : IAsyncQueryHandler<
     public async Task<IEnumerable<Guid>> Handle(GetAllWaitingPatientsQuery command)
     {
         var r = _unitOfWork.AppointmentState.GetAllWaitingPatients();
-        
-        //TODO: Remove. Using for testing
-        var testing = _unitOfWork.PatientReferenceData.GetAll().ToArray();
         
         var patients = r as Guid[] ?? r.ToArray();
 
