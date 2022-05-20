@@ -1,17 +1,11 @@
-﻿using Health.Appointment.Domain.Console.Core.Configuration;
+﻿using Health.Appointment.Domain.Console.Consumer;
+using Health.Appointment.Domain.Console.Core.Configuration;
 using Health.Appointment.Domain.Console.Core.Pipelines;
-using Health.Appointment.Domain.StateMachines;
 using Health.Appointment.Domain.Storage.UnitOfWorks.Core;
 using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
-using Health.Shared.Workflow.Processes.Queries;
-using MassTransit;
-using MassTransit.Definition;
-using MassTransit.EntityFrameworkCoreIntegration;
-using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Health.Appointment.Domain.Console.Core;
 
@@ -42,6 +36,6 @@ public static class DependencyInjection
         //Services for this application
         services.AddSingleton(config);
         
-        services.AddAppointmentMassTransit(config.BrokerCredentials);
+        services.AddAppointmentMassTransit(config.BrokerCredentials, typeof(GetAllWaitingPatientsConsumer));
     }
 }

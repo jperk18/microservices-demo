@@ -5,7 +5,6 @@ using Health.Appointment.Domain.Storage.Sql.Appointment.Database;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
 using Health.Shared.Application.Configuration;
-using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using MassTransit.Definition;
 using MassTransit.EntityFrameworkCoreIntegration;
@@ -24,7 +23,7 @@ public static class DependencyInjection
         services.AddTransient<IAppointmentUnitOfWork, AppointmentUnitOfWork>();
     }
     
-    public static void AddAppointmentMassTransit(this IServiceCollection services, IBrokerCredentialsConfiguration brokerConfig)
+    public static void AddAppointmentMassTransit(this IServiceCollection services, IBrokerCredentialsConfiguration brokerConfig, Type consumersFromNamespaceContaining)
     {
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(cfg =>
@@ -36,18 +35,9 @@ public static class DependencyInjection
 
                     r.ExistingDbContext<AppointmentStateDbContext>();
                     r.LockStatementProvider = new PostgresLockStatementProvider();
-                    // r.AddDbContext<DbContext, AppointmentStateDbContext>((provider, builder) =>
-                    // {
-                    //     builder.UseInMemoryDatabase("Appointment");
-                    //     // builder.UseSqlServer(connectionString, m =>
-                    //     // {
-                    //     //     m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-                    //     //     m.MigrationsHistoryTable($"__{nameof(OrderStateDbContext)}");
-                    //     // });
-                    // });
                 });
             
-            cfg.AddConsumersFromNamespaceContaining<GetAllWaitingPatients>();
+            cfg.AddConsumersFromNamespaceContaining(consumersFromNamespaceContaining);
 
             cfg.UsingRabbitMq((context, configurator) =>
             {
