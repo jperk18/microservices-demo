@@ -50,6 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{9E6EB3
 		health-patient-api-dockerfile = health-patient-api-dockerfile
 		health-patient-domain-dockerfile = health-patient-domain-dockerfile
 		health-appointment-domain-dockerfile = health-appointment-domain-dockerfile
+		health-appointment-api-dockerfile = health-appointment-api-dockerfile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage.Sql.Appointment", "Appointment\Domain\Health.Appointment.Domain.Storage.Sql.Appointment\Health.Appointment.Domain.Storage.Sql.Appointment.csproj", "{C02F6A1E-F3BC-4333-82C4-6BF0D2775AAF}"

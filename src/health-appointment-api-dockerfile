@@ -7,17 +7,18 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY "./Shared/Application/Health.Shared.Application" "./Shared/Application/Health.Shared.Application"
 COPY "./Shared/Workflow/Health.Shared.Workflow.Processes" "./Shared/Workflow/Health.Shared.Workflow.Processes"
-COPY "./Patient/Transports/Health.Patient.Transports.Api" "./Patient/Transports/Health.Patient.Transports.Api"
+COPY "./Appointment/Transports/Health.Appointment.Transports.Api" "./Appointment/Transports/Health.Appointment.Transports.Api"
 RUN dotnet restore "./Shared/Application/Health.Shared.Application/Health.Shared.Application.csproj"
 RUN dotnet restore "./Shared/Workflow/Health.Shared.Workflow.Processes/Health.Shared.Workflow.Processes.csproj"
-RUN dotnet restore "./Patient/Transports/Health.Patient.Transports.Api/Health.Patient.Transports.Api.csproj"
-WORKDIR "./Patient/Transports/Health.Patient.Transports.Api"
-RUN dotnet build "Health.Patient.Transports.Api.csproj" -c Release -o /app/build
+RUN dotnet restore "./Appointment/Transports/Health.Appointment.Transports.Api/Health.Appointment.Transports.Api.csproj"
+
+WORKDIR "./Appointment/Transports/Health.Appointment.Transports.Api"
+RUN dotnet build "Health.Appointment.Transports.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Health.Patient.Transports.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "Health.Appointment.Transports.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Health.Patient.Transports.Api.dll"]
+ENTRYPOINT ["dotnet", "Health.Appointment.Transports.Api.dll"]

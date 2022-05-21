@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Application\Health.Shared.Application\Health.Shared.Application.csproj" />
       <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
       <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
       <ProjectReference Include="..\Health.Nurse.Domain.Storage.Sql\Health.Nurse.Domain.Storage.Sql.csproj" />

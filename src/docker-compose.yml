@@ -34,7 +34,22 @@ services:
       dockerfile: health-appointment-domain-dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - PatientDomain__BrokerCredentials__Host=rabbitmq
+      - AppointmentDomain__BrokerCredentials__Host=rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - health-broker-net
+  appointmentapi:
+    image: healthappointmentapi:dev
+    build:
+      context: .
+      dockerfile: health-appointment-api-dockerfile
+    ports:
+      - 49502:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AppointmentApi__BrokerCredentials__Host=rabbitmq
+    restart: on-failure
     depends_on:
       - rabbitmq
     networks:
