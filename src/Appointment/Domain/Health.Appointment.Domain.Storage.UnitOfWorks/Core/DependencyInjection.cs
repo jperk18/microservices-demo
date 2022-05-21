@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddStorageServices(configuration);
         services.AddReferenceDataStorageServices(config);
         services.AddTransient<IAppointmentUnitOfWork, AppointmentUnitOfWork>();
+        services.AddTransient<IRefDataUnitOfWork, RefDataUnitOfWork>();
     }
     
     public static void AddAppointmentMassTransit(this IServiceCollection services, IBrokerCredentialsConfiguration brokerConfig, Type consumersFromNamespaceContaining)

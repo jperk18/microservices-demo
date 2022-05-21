@@ -44,5 +44,6 @@ public static class DependencyInjection
         
         services.AddSingleton(configuration);
         services.AddTransient<IPatientReferenceDataQueryRepository, PatientReferenceDataQueryRepository>();
+        services.AddTransient<IPatientReferenceDataRepository, PatientReferenceDataRepository>();
     }
 }
