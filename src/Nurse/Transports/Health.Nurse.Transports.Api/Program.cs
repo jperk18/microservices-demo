@@ -49,7 +49,6 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddRequestClient<RegisterNurse>();
     cfg.AddRequestClient<GetNurse>();
     cfg.AddRequestClient<GetAllNurses>();
-    cfg.AddRequestClient<GetWaitingPatientsForNurses>();
 });
 
 builder.Services.AddMassTransitHostedService();

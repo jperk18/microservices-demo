@@ -19,13 +19,11 @@ public class NurseController : ControllerBase
     private readonly IRequestClient<RegisterNurse> _registerNurseRequestClient;
     private readonly IRequestClient<GetAllNurses> _getAllNursesRequestClient;
     private readonly IRequestClient<GetNurse> _getNurseRequestClient;
-    private readonly IRequestClient<GetWaitingPatientsForNurses> _getWaitingPatients;
 
     public NurseController(ILogger<NurseController> logger,
         IRequestClient<RegisterNurse> registerNurseRequestClient,
         IRequestClient<GetAllNurses> getAllNursesRequestClient,
-        IRequestClient<GetNurse> getNurseRequestClient,
-        IRequestClient<GetWaitingPatientsForNurses> getWaitingPatients)
+        IRequestClient<GetNurse> getNurseRequestClient)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _registerNurseRequestClient = registerNurseRequestClient ??
@@ -34,7 +32,6 @@ public class NurseController : ControllerBase
                                      throw new ArgumentNullException(nameof(getAllNursesRequestClient));
         _getNurseRequestClient =
             getNurseRequestClient ?? throw new ArgumentNullException(nameof(getNurseRequestClient));
-        _getWaitingPatients = getWaitingPatients ?? throw new ArgumentNullException(nameof(getWaitingPatients));
     }
 
     [HttpPost()]

@@ -18,8 +18,12 @@ public class ReferenceDataDbContext : DbContext
     {
         modelBuilder.Entity<Patient>()
             .HasKey(x => x.PatientId);
+        
+        modelBuilder.Entity<Entities.Nurse>()
+            .HasKey(x => x.NurseId);
     }
     
     //entities
     public DbSet<Patient>? Patients { get; set; }
+    public DbSet<Entities.Nurse>? Nurses { get; set; }
 }

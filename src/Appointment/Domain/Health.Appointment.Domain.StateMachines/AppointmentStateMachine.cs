@@ -9,23 +9,49 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
     public AppointmentStateMachine()
 #pragma warning restore CS8618
     {
-        Event(() => PatientCheckedIn, x => x.CorrelateById(m => m.Message.AppointmentId));
+        Event(() => ScheduleAppointment, e =>
+        {
+            e.CorrelateById(m => m.Message.AppointmentId);
+            
+            // e.SelectId(x => NewId.NextGuid());
+            //
+            // e.InsertOnInitial = true;
+            // e.SetSagaFactory(context => new AppointmentState
+            // {
+            //     CorrelationId = context.CorrelationId ?? NewId.NextGuid(),
+            //     //AppointmentId = context.Message.AppointmentId,
+            // });
+        });
+        
+        Event(() => PatientCheckedIn, e => e.CorrelateById(m => m.Message.AppointmentId));
+        Event(() => AssignedNurseForAppointment, x => x.CorrelateById(m => m.Message.AppointmentId));
 
         InstanceState(x => x.CurrentState);
 
         Initially(
-            When(PatientCheckedIn)
-                .Then(context => { context.Instance.PatientId = context.Data.Patient.Id; })
-                .TransitionTo(PatientAwaitingNurse)
+            When(ScheduleAppointment)
+                .Then(context =>
+                {
+                    context.Instance.CorrelationId = context.Data.AppointmentId;
+                    context.Instance.PatientId = context.Data.PatientId;
+                })
+                .TransitionTo(AppointmentScheduled)
         );
 
-        // During(PatientAwaitingNurse,
-        //     Ignore(PatientCheckedIn),
-        //     When(AssignedNurseToPatient)
-        //         .Then(context => { context.Instance.NurseId = context.Data.Nurse.Id; })
-        //         .TransitionTo(VitalCheckExaminationInProgress)
-        // );
-        //
+        During(AppointmentScheduled,
+            Ignore(AssignedNurseForAppointment),
+
+            When(PatientCheckedIn)
+                .TransitionTo(PatientAwaitingNurse)
+        );
+        
+        During(PatientAwaitingNurse,
+            Ignore(PatientCheckedIn),
+            When(AssignedNurseForAppointment)
+                .Then(context => { context.Instance.NurseId = context.Data.NurseId; })
+                .TransitionTo(VitalCheckExaminationInProgress)
+        );
+        
         // During(VitalCheckExaminationInProgress,
         //     Ignore(PatientCheckedIn),
         //     Ignore(AssignedNurseToPatient),
@@ -62,14 +88,11 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
         SetCompletedWhenFinalized();
     }
 
+    public State AppointmentScheduled { get; private set; }
     public State PatientAwaitingNurse { get; private set; }
-    // public State VitalCheckExaminationInProgress { get; private set; }
-    // public State PatientWaitingForDoctor { get; private set; }
-    // public State AppointmentInProgress { get; private set; }
-    // public State AppointmentCompleted { get; private set; }
-    // public Event<RecordHealthAndAppointmentEnded> RecordHealthAndAppointmentEnded { get; private set; }
-    // public Event<AssignedNurseToPatient> AssignedNurseToPatient { get; private set; }
-    // public Event<AssignedDoctorToPatient> AssignedDoctorToPatient { get; private set; }
-    // public Event<RecordedPatientVitals> RecordedPatientVitals { get; private set; }
+    public State VitalCheckExaminationInProgress { get; private set; }
+    
+    public Event<AssignedNurseForAppointment> AssignedNurseForAppointment { get; private set; }
     public Event<PatientCheckedIn> PatientCheckedIn { get; private set; }
+    public Event<ScheduleAppointment> ScheduleAppointment { get; private set; }
 }

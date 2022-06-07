@@ -8,8 +8,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PatientDomain__BrokerCredentials__Host=rabbitmq
+      - PatientDomain__PatientStorage__PatientDatabase__ConnectionString=Username=patient_service;Password=password;Server=db_host;Port=5432;Database=patient;Pooling=true;
     depends_on:
       - rabbitmq
+    extra_hosts:
+      - "db_host:192.168.1.17"
     networks:
       - health-broker-net
   patientapi:
@@ -35,8 +38,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - AppointmentDomain__BrokerCredentials__Host=rabbitmq
+      - AppointmentDomain__AppointmentStorage__AppointmentDatabase__ConnectionString=Username=appointment_service;Password=password;Server=db_host;Port=5432;Database=appointment;Pooling=true;
+      - AppointmentDomain__AppointmentStorage__ReferenceDataDatabase__ConnectionString=Username=appointment_service;Password=password;Server=db_host;Port=5432;Database=appointment_refdata;Pooling=true;
     depends_on:
       - rabbitmq
+    extra_hosts:
+      - "db_host:192.168.1.17"
     networks:
       - health-broker-net
   appointmentapi:
