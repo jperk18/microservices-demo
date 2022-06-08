@@ -9,25 +9,20 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
     public AppointmentStateMachine()
 #pragma warning restore CS8618
     {
+        InstanceState(x => x.CurrentState);
+
         Event(() => ScheduleAppointment, e =>
         {
             e.CorrelateById(m => m.Message.AppointmentId);
-            
-            // e.SelectId(x => NewId.NextGuid());
-            //
-            // e.InsertOnInitial = true;
-            // e.SetSagaFactory(context => new AppointmentState
-            // {
-            //     CorrelationId = context.CorrelationId ?? NewId.NextGuid(),
-            //     //AppointmentId = context.Message.AppointmentId,
-            // });
+            e.InsertOnInitial = true;
+            e.SetSagaFactory(context => new AppointmentState
+            {
+                CorrelationId = context.Message.AppointmentId
+            });
         });
-        
         Event(() => PatientCheckedIn, e => e.CorrelateById(m => m.Message.AppointmentId));
         Event(() => AssignedNurseForAppointment, x => x.CorrelateById(m => m.Message.AppointmentId));
-
-        InstanceState(x => x.CurrentState);
-
+        
         Initially(
             When(ScheduleAppointment)
                 .Then(context =>
@@ -91,7 +86,6 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
     public State AppointmentScheduled { get; private set; }
     public State PatientAwaitingNurse { get; private set; }
     public State VitalCheckExaminationInProgress { get; private set; }
-    
     public Event<AssignedNurseForAppointment> AssignedNurseForAppointment { get; private set; }
     public Event<PatientCheckedIn> PatientCheckedIn { get; private set; }
     public Event<ScheduleAppointment> ScheduleAppointment { get; private set; }

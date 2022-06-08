@@ -1,7 +1,7 @@
 ﻿namespace Health.Appointment.Transports.Api.Models;
 
-public interface AssignNurseApiRequest
+public class AssignNurseApiRequest
 {
-    Guid Appointment { get; }
-    Guid Nurse { get; }
+    public Guid Appointment { get; set; }
+    public Guid Nurse { get; set; }
 }

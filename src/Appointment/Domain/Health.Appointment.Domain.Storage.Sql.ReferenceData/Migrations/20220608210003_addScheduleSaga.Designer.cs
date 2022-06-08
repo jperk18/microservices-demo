@@ -3,6 +3,7 @@ using System;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Health.Appointment.Domain.Storage.Sql.ReferenceData.Migrations
 {
     [DbContext(typeof(ReferenceDataDbContext))]
-    partial class ReferenceDataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220608210003_addScheduleSaga")]
+    partial class addScheduleSaga
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

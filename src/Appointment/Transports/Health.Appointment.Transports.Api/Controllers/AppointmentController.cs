@@ -11,17 +11,14 @@ namespace Health.Appointment.Transports.Api.Controllers;
 [Route("api/[controller]")]
 public class AppointmentController : ControllerBase
 {
-    private readonly ILogger<AppointmentController> _logger;
     private readonly IRequestClient<GetAllWaitingPatients> _getAllWaitingPatientsRequestClient;
     private readonly IRequestClient<RequestNurseAssignmentForAppointment> _requestNurseAssignmentForAppointmentRequestClient;
     private readonly IRequestClient<RequestScheduleAppointment> _requestScheduleAppointmentRequestClient;
 
-    public AppointmentController(ILogger<AppointmentController> logger,
-        IRequestClient<GetAllWaitingPatients> getAllWaitingPatientsRequestClient,
+    public AppointmentController(IRequestClient<GetAllWaitingPatients> getAllWaitingPatientsRequestClient,
         IRequestClient<RequestScheduleAppointment> requestScheduleAppointmentRequestClient,
         IRequestClient<RequestNurseAssignmentForAppointment> requestNurseAssignmentForForAppointmentRequestClient)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _getAllWaitingPatientsRequestClient = getAllWaitingPatientsRequestClient ??
                                               throw new ArgumentNullException(nameof(getAllWaitingPatientsRequestClient));
         _requestScheduleAppointmentRequestClient = requestScheduleAppointmentRequestClient ?? throw new ArgumentNullException(nameof(requestScheduleAppointmentRequestClient));
@@ -78,7 +75,7 @@ public class AppointmentController : ControllerBase
 
         if (result.IsCompletedSuccessfully)
         {
-            var response = await result;
+            //var response = await result;
             return Ok();
         }
 

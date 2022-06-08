@@ -1,8 +1,8 @@
 ﻿namespace Health.Appointment.Transports.Api.Models;
 
-public interface ScheduleAppointmentApiRequest
+public class ScheduleAppointmentApiRequest
 {
-    Guid Patient { get; }
+    public Guid Patient { get; set; }
 }
 
 public class ScheduleAppointmentApiResponse

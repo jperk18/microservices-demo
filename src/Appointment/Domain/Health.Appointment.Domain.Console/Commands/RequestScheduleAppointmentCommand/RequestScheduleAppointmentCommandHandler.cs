@@ -5,7 +5,6 @@ using Health.Nurse.Domain.Console.Core.Decorators;
 using Health.Shared.Domain.Commands.Core;
 using Health.Shared.Domain.Core.Decorators;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
-using MassTransit;
 using MassTransit.Transactions;
 
 namespace Health.Appointment.Domain.Console.Commands.RequestScheduleAppointmentCommand;
@@ -27,6 +26,11 @@ public sealed class RequestScheduleAppointmentCommandHandler : IAsyncCommandHand
     
     public async Task<Guid> Handle(RequestScheduleAppointmentCommand command)
     {
+        var patient = await _unitOfWork.PatientReferenceData.GetById(command.Patient);
+        
+        if (patient == null)
+            throw new AppointmentDomainValidationException($"Patient: {command.Patient} does not exist");
+        
         var appointmentId = Guid.NewGuid();
         await _transactionalBus.Publish<ScheduleAppointment>(new
         {
