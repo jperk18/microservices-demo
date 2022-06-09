@@ -1,5 +1,5 @@
-﻿using Automatonymous;
-using Health.Shared.Workflow.Processes.Sagas.Appointment;
+﻿using Health.Shared.Workflow.Processes.Sagas.Appointment;
+using MassTransit;
 
 namespace Health.Appointment.Domain.StateMachines;
 
@@ -27,8 +27,8 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
             When(ScheduleAppointment)
                 .Then(context =>
                 {
-                    context.Instance.CorrelationId = context.Data.AppointmentId;
-                    context.Instance.PatientId = context.Data.PatientId;
+                    context.Saga.CorrelationId = context.Message.AppointmentId;
+                    context.Saga.PatientId = context.Message.PatientId;
                 })
                 .TransitionTo(AppointmentScheduled)
         );
@@ -43,7 +43,7 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
         During(PatientAwaitingNurse,
             Ignore(PatientCheckedIn),
             When(AssignedNurseForAppointment)
-                .Then(context => { context.Instance.NurseId = context.Data.NurseId; })
+                .Then(context => { context.Saga.NurseId = context.Message.NurseId; })
                 .TransitionTo(VitalCheckExaminationInProgress)
         );
         

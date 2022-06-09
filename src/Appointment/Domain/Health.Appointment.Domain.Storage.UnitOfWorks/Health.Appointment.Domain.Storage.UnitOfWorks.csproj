@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MassTransit.Analyzers" Version="7.3.1" />
+        <PackageReference Include="MassTransit.Analyzers" Version="8.0.4-develop.479" />
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-        <PackageReference Include="MassTransit.EntityFrameworkCore" Version="7.3.1" />
-        <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
+        <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.0.4-develop.479" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.4-develop.479" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.2" />
     </ItemGroup>
     

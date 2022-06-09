@@ -6,9 +6,7 @@ using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
 using Health.Shared.Application.Configuration;
 using MassTransit;
-using MassTransit.Definition;
 using MassTransit.EntityFrameworkCoreIntegration;
-using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -52,7 +50,5 @@ public static class DependencyInjection
             
             cfg.AddTransactionalBus();
         });
-
-        services.AddMassTransitHostedService();
     }
 }

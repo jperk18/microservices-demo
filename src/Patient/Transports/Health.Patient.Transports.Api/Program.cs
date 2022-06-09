@@ -5,7 +5,6 @@ using Health.Shared.Application.Configuration;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
-using MassTransit.Definition;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,8 +45,6 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddRequestClient<GetPatient>();
     cfg.AddRequestClient<GetAllPatients>();
 });
-
-builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddControllers();
 

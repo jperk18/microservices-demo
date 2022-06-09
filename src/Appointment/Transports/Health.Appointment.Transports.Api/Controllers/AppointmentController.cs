@@ -14,14 +14,17 @@ public class AppointmentController : ControllerBase
     private readonly IRequestClient<GetAllWaitingPatients> _getAllWaitingPatientsRequestClient;
     private readonly IRequestClient<RequestNurseAssignmentForAppointment> _requestNurseAssignmentForAppointmentRequestClient;
     private readonly IRequestClient<RequestScheduleAppointment> _requestScheduleAppointmentRequestClient;
+    private readonly IRequestClient<RequestPatientCheckIn> _requestPatientCheckInRequestClient;
 
     public AppointmentController(IRequestClient<GetAllWaitingPatients> getAllWaitingPatientsRequestClient,
         IRequestClient<RequestScheduleAppointment> requestScheduleAppointmentRequestClient,
+        IRequestClient<RequestPatientCheckIn> requestPatientCheckInRequestClient,
         IRequestClient<RequestNurseAssignmentForAppointment> requestNurseAssignmentForForAppointmentRequestClient)
     {
         _getAllWaitingPatientsRequestClient = getAllWaitingPatientsRequestClient ??
                                               throw new ArgumentNullException(nameof(getAllWaitingPatientsRequestClient));
         _requestScheduleAppointmentRequestClient = requestScheduleAppointmentRequestClient ?? throw new ArgumentNullException(nameof(requestScheduleAppointmentRequestClient));
+        _requestPatientCheckInRequestClient = requestPatientCheckInRequestClient ?? throw new ArgumentNullException(nameof(requestPatientCheckInRequestClient));
         _requestNurseAssignmentForAppointmentRequestClient = requestNurseAssignmentForForAppointmentRequestClient ??
                                                              throw new ArgumentNullException(nameof(requestNurseAssignmentForForAppointmentRequestClient));
     }
@@ -37,7 +40,7 @@ public class AppointmentController : ControllerBase
         return Ok(response.Message.Patients);
     }
     
-    [HttpPut("ScheduleAppointment")]
+    [HttpPost("ScheduleAppointment")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ScheduleAppointmentApiResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -60,8 +63,30 @@ public class AppointmentController : ControllerBase
         throw new WorkflowValidationException(domainError.Message.Error);
     }
     
+    [HttpPut("CheckIn")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CheckInApiResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CheckIn(CheckInApiRequest request)
+    {
+        var (result, errors) = await _requestPatientCheckInRequestClient
+            .GetResponse<RequestPatientCheckInSuccess, RequestPatientCheckInFailed>(new
+            {
+                AppointmentId = request.Appointment
+            });
+
+        if (result.IsCompletedSuccessfully)
+        {
+            var response = await result;
+            return Ok(new CheckInApiResponse() {CheckedIn = true});
+        }
+
+        var domainError = await errors;
+        throw new WorkflowValidationException(domainError.Message.Error);
+    }
+    
     [HttpPut("AssignNurse")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Guid>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AssignNurseApiResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AssignNurse(AssignNurseApiRequest request)
@@ -76,7 +101,7 @@ public class AppointmentController : ControllerBase
         if (result.IsCompletedSuccessfully)
         {
             //var response = await result;
-            return Ok();
+            return Ok(new AssignNurseApiResponse(){NurseAssigned = true});
         }
 
         var domainError = await errors;

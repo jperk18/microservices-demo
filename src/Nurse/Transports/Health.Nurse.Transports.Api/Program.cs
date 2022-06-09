@@ -4,9 +4,7 @@ using Health.Shared.Application;
 using Health.Shared.Application.Configuration;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
-using Health.Shared.Workflow.Processes.Sagas.Appointment;
 using MassTransit;
-using MassTransit.Definition;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,8 +48,6 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddRequestClient<GetNurse>();
     cfg.AddRequestClient<GetAllNurses>();
 });
-
-builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddControllers();
 

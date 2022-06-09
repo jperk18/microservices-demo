@@ -16,10 +16,7 @@ public sealed class GetAllWaitingPatientsAsyncQueryHandler : IAsyncQueryHandler<
     
     public async Task<IEnumerable<Guid>> Handle(GetAllWaitingPatientsQuery command)
     {
-        var r = _unitOfWork.AppointmentState.GetAllWaitingPatients();
-        
-        var patients = r as Guid[] ?? r.ToArray();
-
-        return await Task.FromResult(patients);
+        var r = await _unitOfWork.AppointmentState.GetWaitingPatients();
+        return r == null ? Array.Empty<Guid>() : r.ToArray();
     }
 }

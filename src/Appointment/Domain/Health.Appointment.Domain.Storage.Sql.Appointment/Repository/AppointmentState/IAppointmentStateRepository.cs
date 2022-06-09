@@ -4,5 +4,6 @@ namespace Health.Appointment.Domain.Storage.Sql.Appointment.Repository.Appointme
 
 public interface IAppointmentStateRepository : IGenericRepository<StateMachines.AppointmentState>
 {
-    IEnumerable<Guid> GetAllWaitingPatients();
+    Task<IEnumerable<Guid>?> GetWaitingPatients();
+    Task<IEnumerable<Guid>?> GetScheduledAppointments();
 }

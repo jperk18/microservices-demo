@@ -19,6 +19,9 @@ public class GetAllWaitingPatientsConsumer : IConsumer<GetAllWaitingPatients>
         var r = await _mediator.SendAsync(new GetAllWaitingPatientsQuery());
         var patientRecords = r as Guid[] ?? r.ToArray();
 
-        await context.RespondAsync<GetAllWaitingPatientsSuccess>(patientRecords);
+        await context.RespondAsync<GetAllWaitingPatientsSuccess>(new
+        {
+            Patients = patientRecords
+        });
     }
 }
