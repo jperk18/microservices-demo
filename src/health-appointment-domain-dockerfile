@@ -1,0 +1,31 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY "./Appointment/Domain/Health.Appointment.Domain.Console" "./Appointment/Domain/Health.Appointment.Domain.Console"
+COPY "./Appointment/Domain/Health.Appointment.Domain.StateMachines" "./Appointment/Domain/Health.Appointment.Domain.StateMachines"
+COPY "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.Appointment" "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.Appointment"
+COPY "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.ReferenceData" "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.ReferenceData"
+COPY "./Appointment/Domain/Health.Appointment.Domain.Storage.UnitOfWorks" "./Appointment/Domain/Health.Appointment.Domain.Storage.UnitOfWorks"
+COPY "./Shared/Domain/Health.Shared.Domain" "./Shared/Domain/Health.Shared.Domain"
+COPY "./Shared/Application/Health.Shared.Application" "./Shared/Application/Health.Shared.Application"
+COPY "./Shared/Workflow/Health.Shared.Workflow.Processes" "./Shared/Workflow/Health.Shared.Workflow.Processes"
+RUN dotnet restore "./Shared/Workflow/Health.Shared.Workflow.Processes/Health.Shared.Workflow.Processes.csproj"
+RUN dotnet restore "./Shared/Domain/Health.Shared.Domain/Health.Shared.Domain.csproj"
+RUN dotnet restore "./Shared/Application/Health.Shared.Application/Health.Shared.Application.csproj"
+RUN dotnet restore "./Appointment/Domain/Health.Appointment.Domain.StateMachines/Health.Appointment.Domain.StateMachines.csproj"
+RUN dotnet restore "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.Appointment/Health.Appointment.Domain.Storage.Sql.Appointment.csproj"
+RUN dotnet restore "./Appointment/Domain/Health.Appointment.Domain.Storage.Sql.ReferenceData/Health.Appointment.Domain.Storage.Sql.ReferenceData.csproj"
+RUN dotnet restore "./Appointment/Domain/Health.Appointment.Domain.Storage.UnitOfWorks/Health.Appointment.Domain.Storage.UnitOfWorks.csproj"
+RUN dotnet restore "./Appointment/Domain/Health.Appointment.Domain.Console/Health.Appointment.Domain.Console.csproj"
+WORKDIR "./Appointment/Domain/Health.Appointment.Domain.Console"
+RUN dotnet build "Health.Appointment.Domain.Console.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Health.Appointment.Domain.Console.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Health.Appointment.Domain.Console.dll"]

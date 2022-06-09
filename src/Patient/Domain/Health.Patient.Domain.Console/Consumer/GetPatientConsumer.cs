@@ -24,7 +24,7 @@ public class GetPatientConsumer : IConsumer<GetPatient>
             {
                 Patient = new
                 {
-                    PatientId = result.Id,
+                    result.Id,
                     result.FirstName,
                     result.LastName,
                     result.DateOfBirth

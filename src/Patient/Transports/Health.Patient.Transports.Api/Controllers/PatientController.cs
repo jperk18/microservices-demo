@@ -39,7 +39,8 @@ public class PatientController : ControllerBase
     [HttpPost()]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreatePatientApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(PatientApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] CreatePatientApiRequest request)
     {
@@ -54,7 +55,7 @@ public class PatientController : ControllerBase
         if (result.IsCompletedSuccessfully)
         {
             var response = await result;
-            return new ObjectResult(new CreatePatientApiResponse() {PatientId = response.Message.PatientId})
+            return new ObjectResult(new CreatePatientApiResponse() {PatientId = response.Message.Id})
                 {StatusCode = StatusCodes.Status201Created};
         }
 
@@ -64,7 +65,8 @@ public class PatientController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPatientApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(PatientApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetPatient([FromQuery] GetPatientApiRequest request)
     {
@@ -77,7 +79,7 @@ public class PatientController : ControllerBase
         if (result.IsCompletedSuccessfully)
         {
             var response = await result;
-            return Ok(new GetPatientApiResponse(response.Message.Patient.PatientId, response.Message.Patient.FirstName,
+            return Ok(new GetPatientApiResponse(response.Message.Patient.Id, response.Message.Patient.FirstName,
                 response.Message.Patient.LastName, response.Message.Patient.DateOfBirth));
         }
 
@@ -94,6 +96,6 @@ public class PatientController : ControllerBase
             .GetResponse<GetAllPatientsSuccess>(new { });
 
         return Ok(response.Message.Patients.Select(res =>
-            new GetPatientApiResponse(res.PatientId, res.FirstName, res.LastName, res.DateOfBirth)));
+            new GetPatientApiResponse(res.Id, res.FirstName, res.LastName, res.DateOfBirth)));
     }
 }

@@ -1,13 +1,21 @@
 ﻿namespace Health.Shared.Workflow.Processes.Inner.Models;
 
-public interface Nurse : NurseIdentifier, NurseInfo
+public interface Nurse : NurseIdentifier, NurseInfo, NurseCardInformation
 {
 }
 
-public interface NurseInfo
+public interface NurseCardInformation : NurseIdentifier, NurseBasicInformation
+{
+}
+
+public interface NurseBasicInformation
 {
     string FirstName { get; }
     string LastName { get; }
+}
+
+public interface NurseInfo : NurseBasicInformation
+{
     DateTime DateOfBirth { get; }
 }
 

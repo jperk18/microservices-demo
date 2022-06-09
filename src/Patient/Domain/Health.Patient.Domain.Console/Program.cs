@@ -2,6 +2,7 @@ using Health.Patient.Domain.Console.Core;
 using Health.Patient.Domain.Console.Core.Configuration;
 using Health.Patient.Domain.Storage.Sql.Core.Configuration;
 using Health.Patient.Domain.Storage.Sql.Core.Configuration.Inner;
+using Health.Shared.Application.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;

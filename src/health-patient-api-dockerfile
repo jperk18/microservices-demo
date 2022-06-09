@@ -5,10 +5,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY "./Patient/Transports/Health.Patient.Transports.Api" "./Patient/Transports/Health.Patient.Transports.Api"
+COPY "./Shared/Application/Health.Shared.Application" "./Shared/Application/Health.Shared.Application"
 COPY "./Shared/Workflow/Health.Shared.Workflow.Processes" "./Shared/Workflow/Health.Shared.Workflow.Processes"
-RUN dotnet restore "./Patient/Transports/Health.Patient.Transports.Api/Health.Patient.Transports.Api.csproj"
+COPY "./Patient/Transports/Health.Patient.Transports.Api" "./Patient/Transports/Health.Patient.Transports.Api"
+RUN dotnet restore "./Shared/Application/Health.Shared.Application/Health.Shared.Application.csproj"
 RUN dotnet restore "./Shared/Workflow/Health.Shared.Workflow.Processes/Health.Shared.Workflow.Processes.csproj"
+RUN dotnet restore "./Patient/Transports/Health.Patient.Transports.Api/Health.Patient.Transports.Api.csproj"
 WORKDIR "./Patient/Transports/Health.Patient.Transports.Api"
 RUN dotnet build "Health.Patient.Transports.Api.csproj" -c Release -o /app/build
 

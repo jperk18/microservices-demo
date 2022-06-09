@@ -23,7 +23,7 @@ public class RegisterPatientConsumer : IConsumer<RegisterPatient>
                 await _mediator.SendAsync(new CreatePatientCommand(context.Message.FirstName, context.Message.LastName, context.Message.DateOfBirth));
             await context.RespondAsync<RegisterPatientSuccess>(new
             {
-                PatientId = result.Id,
+                result.Id,
                 result.FirstName,
                 result.LastName,
                 result.DateOfBirth

@@ -1,7 +1,9 @@
 using Health.Appointment.Domain.Console.Core;
 using Health.Appointment.Domain.Console.Core.Configuration;
-using Health.Appointment.Domain.Storage.Sql.Core.Configuration;
-using Health.Appointment.Domain.Storage.Sql.Core.Configuration.Inner;
+using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
+using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
+using Health.Shared.Application.Configuration;
+using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;
@@ -35,10 +37,14 @@ static class Program
                     .GetSection("AppointmentDomain:AppointmentStorage:AppointmentDatabase")
                     .Get<SqlDatabaseConfiguration>();
                 
+                var refStorageSettings = builder.Configuration
+                    .GetSection("AppointmentDomain:AppointmentStorage:ReferenceDataDatabase")
+                    .Get<SqlDatabaseConfiguration>();
+                
                 var brokerSettings = builder.Configuration
                     .GetSection("AppointmentDomain:BrokerCredentials")
                     .Get<BrokerCredentialsConfiguration>();
-
-                services.AddDomainServices(new AppointmentDomainConfiguration(new AppointmentStorageConfiguration(storageSettings), brokerSettings));
+                
+                services.AddDomainServices(new AppointmentDomainConfiguration(new AppointmentStorageConfiguration(storageSettings), new ReferenceDataStorageConfiguration(refStorageSettings), brokerSettings));
             });
 }

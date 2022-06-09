@@ -1,12 +1,10 @@
-using Health.Patient.Transports.Api.Core;
 using Health.Patient.Transports.Api.Core.Configuration;
-using Health.Patient.Transports.Api.Core.Serialization;
 using Health.Patient.Transports.Api.Middleware;
+using Health.Shared.Application;
+using Health.Shared.Application.Configuration;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
-using MassTransit.Definition;
-using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,8 +25,8 @@ var brokerSettings = builder.Configuration.GetSection("PatientApi:BrokerCredenti
 var config = new PatientApiConfiguration(brokerSettings);
 builder.Services.AddSingleton<IPatientApiConfiguration>(config);
 
+builder.Services.AddSharedApplicationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>
@@ -47,8 +45,6 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddRequestClient<GetPatient>();
     cfg.AddRequestClient<GetAllPatients>();
 });
-
-builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddControllers();
 

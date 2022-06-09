@@ -6,6 +6,7 @@ public sealed class CreatePatientCommandValidator : AbstractValidator<Console.Co
 {
     public CreatePatientCommandValidator()
     {
+        RuleFor(patient => patient).NotNull().NotEmpty();
         RuleFor(patient => patient.FirstName).NotNull().NotEmpty();
         RuleFor(patient => patient.LastName).NotNull().NotEmpty();
     }

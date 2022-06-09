@@ -9,8 +9,6 @@ using Health.Shared.Domain.Core;
 using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
 using MassTransit;
-using MassTransit.Definition;
-using MassTransit.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -63,7 +61,5 @@ public static class DependencyInjection
             
             cfg.AddTransactionalBus();
         });
-
-        services.AddMassTransitHostedService();
     }
 }

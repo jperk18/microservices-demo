@@ -27,7 +27,6 @@ public sealed class CreateNurseAsyncCommandHandler : IAsyncCommandHandler<Create
     
     public async Task<NurseRecord> Handle(CreateNurseCommand command)
     {
-        //TODO: More Business logic
         var p = await _unitOfWork.Nurses.Add(new Nurse.Domain.Storage.Sql.Core.Databases.NurseDb.Models.Nurse(
             Guid.NewGuid(), command.FirstName, command.LastName, command.DateOfBirth
         ));

@@ -1,4 +1,6 @@
-﻿namespace Health.Patient.Transports.Api.Core.Configuration;
+﻿using Health.Shared.Application.Configuration;
+
+namespace Health.Patient.Transports.Api.Core.Configuration;
 
 public class PatientApiConfiguration : IPatientApiConfiguration
 {

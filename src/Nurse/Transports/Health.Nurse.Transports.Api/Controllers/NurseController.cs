@@ -19,13 +19,11 @@ public class NurseController : ControllerBase
     private readonly IRequestClient<RegisterNurse> _registerNurseRequestClient;
     private readonly IRequestClient<GetAllNurses> _getAllNursesRequestClient;
     private readonly IRequestClient<GetNurse> _getNurseRequestClient;
-    private readonly IRequestClient<GetWaitingPatientsForNurses> _getWaitingPatients;
 
     public NurseController(ILogger<NurseController> logger,
         IRequestClient<RegisterNurse> registerNurseRequestClient,
         IRequestClient<GetAllNurses> getAllNursesRequestClient,
-        IRequestClient<GetNurse> getNurseRequestClient,
-        IRequestClient<GetWaitingPatientsForNurses> getWaitingPatients)
+        IRequestClient<GetNurse> getNurseRequestClient)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _registerNurseRequestClient = registerNurseRequestClient ??
@@ -34,13 +32,12 @@ public class NurseController : ControllerBase
                                      throw new ArgumentNullException(nameof(getAllNursesRequestClient));
         _getNurseRequestClient =
             getNurseRequestClient ?? throw new ArgumentNullException(nameof(getNurseRequestClient));
-        _getWaitingPatients = getWaitingPatients ?? throw new ArgumentNullException(nameof(getWaitingPatients));
     }
 
     [HttpPost()]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNurseApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(NurseApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Register([FromBody] CreateNurseApiRequest request)
     {
@@ -65,7 +62,7 @@ public class NurseController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetNurseApiResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ApiGenericValidationResultObject))]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(NurseApiGenericValidationResultObject))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetNurse([FromQuery] GetNurseApiRequest request)
     {

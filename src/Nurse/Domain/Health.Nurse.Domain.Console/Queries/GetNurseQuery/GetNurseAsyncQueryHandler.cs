@@ -20,8 +20,6 @@ public sealed class GetNurseAsyncQueryHandler : IAsyncQueryHandler<GetNurseQuery
     
     public async Task<NurseRecord> Handle(GetNurseQuery command)
     {
-        //TODO: More Business logic
-        
         var i = await _unitOfWork.Nurses.GetById(command.PatientId);
 
         if (i == null)
