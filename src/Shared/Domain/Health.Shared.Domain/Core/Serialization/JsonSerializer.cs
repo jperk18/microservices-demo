@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Health.Nurse.Domain.Console.Core.Serialization;
+namespace Health.Shared.Domain.Core.Serialization;
 
 public class JsonSerializer : IJsonSerializer
 {

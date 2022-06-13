@@ -25,6 +25,26 @@ public class GenericAppointmentStateDbRepository<T> : GenericAppointmentStateDbQ
         return entities;
     }
 
+    public async Task<T> Update(T entity)
+    {
+        await Task.Run(() =>
+        {
+            _context.Set<T>().Update(entity);
+        });
+        
+        return entity;
+    }
+
+    public async Task<IEnumerable<T>> UpdateRange(IEnumerable<T> entities)
+    {
+        await Task.Run(() =>
+        {
+            _context.Set<T>().UpdateRange(entities);
+        });
+        
+        return entities;
+    }
+
     public void Remove(T entity)
     {
         _context.Set<T>().Remove(entity);
@@ -33,5 +53,12 @@ public class GenericAppointmentStateDbRepository<T> : GenericAppointmentStateDbQ
     public void RemoveRange(IEnumerable<T> entities)
     {
         _context.Set<T>().RemoveRange(entities);
+    }
+
+    public async Task<T> AddOrUpdate(Guid id, T entity)
+    {
+        var obj = await GetById(id);
+        if (obj == null) return await Add(entity);
+        return await Update(entity);
     }
 }

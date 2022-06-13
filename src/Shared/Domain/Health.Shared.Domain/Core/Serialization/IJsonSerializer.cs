@@ -1,4 +1,4 @@
-﻿namespace Health.Nurse.Domain.Console.Core.Serialization;
+﻿namespace Health.Shared.Domain.Core.Serialization;
 
 public interface IJsonSerializer
 {

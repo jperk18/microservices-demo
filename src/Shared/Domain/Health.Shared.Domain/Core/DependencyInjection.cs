@@ -1,6 +1,6 @@
-﻿using Health.Nurse.Domain.Console.Core.Serialization;
-using Health.Shared.Domain.Core.Configurations;
+﻿using Health.Shared.Domain.Core.Configurations;
 using Health.Shared.Domain.Core.RegistrationHelpers;
+using Health.Shared.Domain.Core.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Health.Shared.Domain.Core;
