@@ -1,5 +1,5 @@
 ﻿using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
-using Health.Patient.Domain.Storage.Sql.Core.Repository.PatientDb;
+using Health.Shared.Domain.Storage.Repository;
 
 namespace Health.Patient.Domain.Storage.Sql;
 
@@ -9,12 +9,12 @@ public class PatientUnitOfWork : IPatientUnitOfWork
 
     public PatientUnitOfWork(PatientDbContext context)
     {
-        _context = context;
-        Patients = new PatientRepository(_context);
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        Patients = new GenericRepository<Domain.Storage.Sql.Core.Databases.PatientDb.Models.Patient, PatientDbContext>(context);
         //Add additional table repos here
     }
 
-    public IPatientRepository Patients { get; private set; }
+    public IGenericRepository<Core.Databases.PatientDb.Models.Patient> Patients { get; }
 
     public async Task<int> Complete()
     {

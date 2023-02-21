@@ -1,7 +1,7 @@
 ﻿using Health.Appointment.Domain.Console.Consumer;
 using Health.Appointment.Domain.Console.Core.Configuration;
 using Health.Appointment.Domain.Console.Core.Pipelines;
-using Health.Appointment.Domain.Storage.UnitOfWorks.Core;
+using Health.Appointment.Domain.Storage.UnitOfWorks;
 using Health.Shared.Domain;
 using Health.Shared.Domain.Mediator.Configurations;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,13 +10,13 @@ namespace Health.Appointment.Domain.Console.Core;
 
 public static class DependencyInjection
 {
-    public static void AddDomainServices(this IServiceCollection services, IAppointmentDomainConfiguration config)
+    public static void AddDomainServices(this IServiceCollection services, AppointmentDomainConfiguration config)
     {
         if (config?.BrokerCredentials == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         //Add Dependant Database services
-        services.AddUnitsOfWork(config.AppointmentStorageConfiguration, config.ReferenceDataStorageConfiguration);
+        services.AddStorageServices(config.AppointmentStorageConfiguration);
         
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
@@ -24,7 +24,7 @@ public static class DependencyInjection
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
+        services.AddSharedDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
         {
             new(typeof(AppointmentTransactionPipelineAttribute)){
                 CommandHandler = typeof(AppointmentTransactionCommandDecorator<,>),

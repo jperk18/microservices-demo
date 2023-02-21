@@ -22,11 +22,11 @@ builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.Environment
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container for API
-var brokerSettings = builder.Configuration.GetSection("AppointmentApi:BrokerCredentials").Get<BrokerCredentialsConfiguration>();
-var config = new AppointmentApiConfiguration(brokerSettings);
-builder.Services.AddSingleton<IAppointmentApiConfiguration>(config);
+var brokerSettings = builder.Configuration.GetSection("AppointmentApi:BrokerCredentials").Get<BrokerCredentialsConfigurationDto>();
+var config = new AppointmentApiConfigurationDto(brokerSettings);
+builder.Services.AddSingleton<AppointmentApiConfiguration>(config);
 
-builder.Services.AddSerializationServices();
+builder.Services.AddSharedApplicationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);

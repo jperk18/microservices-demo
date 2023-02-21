@@ -10,8 +10,8 @@ namespace Health.Shared.Domain.Mediator;
 public static class DependencyInjection
 {
     public static void AddMediatorServices(this IServiceCollection services, IEnumerable<Type> handlerTypes,
-        IEnumerable<IPipelineConfiguration>? additionalPipelinesForHandlers = null,
-        IEnumerable<IPipelineConfiguration>? corePipelinesForHandlersOverriders = null)
+        IEnumerable<PipelineConfiguration>? additionalPipelinesForHandlers = null,
+        IEnumerable<PipelineConfiguration>? corePipelinesForHandlersOverriders = null)
     {
         foreach (var type in handlerTypes)
         {
@@ -24,8 +24,8 @@ public static class DependencyInjection
     public static class Handlers
     {
         public static void AddHandler(IServiceCollection services, Type type,
-            IEnumerable<IPipelineConfiguration>? additionalPipelinesForHandlers = null,
-            IEnumerable<IPipelineConfiguration>? corePipelinesForHandlersOverriders = null)
+            IEnumerable<PipelineConfiguration>? additionalPipelinesForHandlers = null,
+            IEnumerable<PipelineConfiguration>? corePipelinesForHandlersOverriders = null)
         {
             object[] attributes = type.GetCustomAttributes(false)
                 .Where(x => Decorators.IsDecorator(x) || (additionalPipelinesForHandlers != null &&

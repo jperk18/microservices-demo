@@ -6,6 +6,6 @@ public static class DependencyInjection
 {
     public static void AddSerializationServices(this IServiceCollection services)
     {
-        services.AddSingleton<IJsonSerializer, JsonSerializer>();
+        services.AddSingleton<JsonSerializer, JsonSerializerDto>();
     }
 }

@@ -15,7 +15,7 @@ namespace Health.Patient.Domain.Console.Core;
 
 public static class DependencyInjection
 {
-    public static void AddDomainServices(this IServiceCollection services, IPatientDomainConfiguration config)
+    public static void AddDomainServices(this IServiceCollection services, PatientDomainConfiguration config)
     {
         if (config == null || config.PatientStorage == null)
             throw new ApplicationException("Configuration is needed for domain services");
@@ -32,7 +32,7 @@ public static class DependencyInjection
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
-        services.AddCoreDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
+        services.AddSharedDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
         {
             new (typeof(PatientTransactionPipelineAttribute)){
                 CommandHandler = typeof(PatientTransactionCommandDecorator<,>),

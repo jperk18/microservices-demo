@@ -1,11 +1,15 @@
-﻿using Health.Nurse.Domain.Storage.Sql.Core.Configuration;
-using Health.Nurse.Domain.Storage.Sql.Core.Configuration.Inner;
+﻿using Health.Shared.Domain.Storage.Configuration;
 
-namespace Health.Nurse.Domain.Storage.Sql.Core;
+namespace Health.Nurse.Domain.Storage.Sql.Core.Configuration;
 
-public class NurseStorageConfiguration : INurseStorageConfiguration
+public interface NurseStorageConfiguration
 {
-    public NurseStorageConfiguration(SqlDatabaseConfiguration patientDatabaseConfiguration)
+    SqlDatabaseConfiguration NurseDatabase { get; set; }
+}
+
+public class NurseStorageConfigurationDto : NurseStorageConfiguration
+{
+    public NurseStorageConfigurationDto(SqlDatabaseConfiguration patientDatabaseConfiguration)
     {
         NurseDatabase = patientDatabaseConfiguration ?? throw new ArgumentNullException(nameof(patientDatabaseConfiguration));
     }

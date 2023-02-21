@@ -1,8 +1,8 @@
 using Health.Nurse.Domain.Console.Core;
 using Health.Nurse.Domain.Console.Core.Configuration;
-using Health.Nurse.Domain.Storage.Sql.Core;
-using Health.Nurse.Domain.Storage.Sql.Core.Configuration.Inner;
+using Health.Nurse.Domain.Storage.Sql.Core.Configuration;
 using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;
@@ -34,12 +34,12 @@ static class Program
             {
                 var storageSettings = builder.Configuration
                     .GetSection("NurseDomain:NurseStorage:NurseDatabase")
-                    .Get<SqlDatabaseConfiguration>();
+                    .Get<SqlDatabaseConfigurationDto>();
                 
                 var brokerSettings = builder.Configuration
                     .GetSection("NurseDomain:BrokerCredentials")
-                    .Get<BrokerCredentialsConfiguration>();
+                    .Get<BrokerCredentialsConfigurationDto>();
                 
-                services.AddDomainServices(new NurseDomainConfiguration(new NurseStorageConfiguration(storageSettings), brokerSettings));
+                services.AddDomainServices(new NurseDomainConfigurationDto(new NurseStorageConfigurationDto(storageSettings), brokerSettings));
             });
 }

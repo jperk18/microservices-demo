@@ -1,10 +1,7 @@
 ﻿using System.Reflection;
 using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
 using Health.Appointment.Domain.Storage.Sql.Appointment.Database;
-using Health.Appointment.Domain.Storage.Sql.Appointment.Repository.AppointmentState;
-using Health.Appointment.Domain.Storage.Sql.Appointment.Repository.Generic;
 using Health.Shared.Domain.Storage.Configuration;
-using Health.Shared.Domain.Storage.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +10,7 @@ namespace Health.Appointment.Domain.Storage.Sql.Appointment.Core;
 
 public static class DependencyInjection
 {
-    public static void AddStorageServices(this IServiceCollection services, IAppointmentStorageConfiguration configuration)
+    public static void AddSqlAppointmentStorageServices(this IServiceCollection services, AppointmentStorageConfiguration configuration)
     {
         if (configuration == null)
             throw new ApplicationException("Database configuration is required for storage");
@@ -39,11 +36,8 @@ public static class DependencyInjection
                     }));
             }
         }
-
-        services.AddScoped(typeof(IGenericQueryRepository<>), typeof(GenericAppointmentStateDbQueryRepository<>));
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericAppointmentStateDbRepository<>));
         
+        services.AddTransient<IAppointmentRepository, AppointmentRepository>();
         services.AddSingleton(configuration);
-        services.AddTransient<IAppointmentStateRepository, AppointmentStateRepository>();
     }
 }

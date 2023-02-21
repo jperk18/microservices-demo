@@ -1,8 +1,14 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace Health.Shared.Application.Serialization;
 
-public class JsonSerializer : IJsonSerializer
+public interface JsonSerializer
+{
+    string Serialize(object value);
+    T? Deserialize<T>(string value);
+}
+
+public class JsonSerializerDto : JsonSerializer
 {
     private readonly JsonSerializerOptions _settings = new JsonSerializerOptions()
     {

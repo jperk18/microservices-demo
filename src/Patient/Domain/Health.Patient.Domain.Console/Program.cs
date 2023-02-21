@@ -1,8 +1,8 @@
 using Health.Patient.Domain.Console.Core;
 using Health.Patient.Domain.Console.Core.Configuration;
 using Health.Patient.Domain.Storage.Sql.Core.Configuration;
-using Health.Patient.Domain.Storage.Sql.Core.Configuration.Inner;
 using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using IHost = Microsoft.Extensions.Hosting.IHost;
@@ -34,12 +34,12 @@ public static class Program
             {
                 var storageSettings = builder.Configuration
                     .GetSection("PatientDomain:PatientStorage:PatientDatabase")
-                    .Get<SqlDatabaseConfiguration>();
+                    .Get<SqlDatabaseConfigurationDto>();
                 
                 var brokerSettings = builder.Configuration
                     .GetSection("PatientDomain:BrokerCredentials")
-                    .Get<BrokerCredentialsConfiguration>();
+                    .Get<BrokerCredentialsConfigurationDto>();
                 
-                services.AddDomainServices(new PatientDomainConfiguration(new PatientStorageConfiguration(storageSettings), brokerSettings));
+                services.AddDomainServices(new PatientDomainConfigurationDto(new PatientStorageConfigurationDto(storageSettings), brokerSettings));
             });
 }

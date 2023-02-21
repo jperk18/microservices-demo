@@ -1,13 +1,18 @@
-﻿using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Application.Broker.Configuration;
 
 namespace Health.Nurse.Transports.Api.Core.Configuration;
 
-public class NurseApiConfiguration : INurseApiConfiguration
+public interface NurseApiConfiguration
 {
-    public NurseApiConfiguration(IBrokerCredentialsConfiguration brokerCredentials)
+    BrokerCredentialsConfiguration BrokerCredentials { get; }
+}
+
+public class NurseApiConfigurationDto : NurseApiConfiguration
+{
+    public NurseApiConfigurationDto(BrokerCredentialsConfiguration brokerCredentials)
     {
         BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
     }
 
-    public IBrokerCredentialsConfiguration BrokerCredentials { get; set; }
+    public BrokerCredentialsConfiguration BrokerCredentials { get; set; }
 }

@@ -6,9 +6,9 @@ namespace Health.Appointment.Transports.Api.Middleware;
 internal sealed class ExceptionHandlingMiddleware : IMiddleware
 {
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-    private readonly IJsonSerializer _serializer;
+    private readonly JsonSerializer _serializer;
 
-    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger, IJsonSerializer serializer)
+    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger, JsonSerializer serializer)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));

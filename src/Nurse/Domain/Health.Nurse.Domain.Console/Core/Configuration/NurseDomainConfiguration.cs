@@ -3,13 +3,8 @@ using Health.Shared.Application.Broker.Configuration;
 
 namespace Health.Nurse.Domain.Console.Core.Configuration;
 
-public class NurseDomainConfiguration : INurseDomainConfiguration
+public interface NurseDomainConfiguration
 {
-    public NurseDomainConfiguration(INurseStorageConfiguration storageConfiguration, IBrokerCredentialsConfiguration brokerCredentials)
-    {
-        NurseStorage = storageConfiguration ?? throw new ArgumentNullException(nameof(storageConfiguration));
-        BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
-    }
-    public INurseStorageConfiguration NurseStorage { get; }
-    public IBrokerCredentialsConfiguration BrokerCredentials { get; }
+    NurseStorageConfiguration NurseStorage { get; }
+    BrokerCredentialsConfiguration BrokerCredentials { get; }
 }

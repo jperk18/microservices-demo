@@ -1,6 +1,6 @@
 ﻿using Health.Appointment.Domain.Console.Commands.RequestNurseAssignmentForAppointmentCommand;
 using Health.Appointment.Domain.Console.Commands.RequestScheduleAppointmentCommand;
-using Health.Appointment.Domain.Console.Core.Exceptions.Helpers;
+using Health.Appointment.Domain.Console.Core.Exceptions;
 using Health.Shared.Domain.Exceptions;
 using Health.Shared.Domain.Mediator;
 using Health.Shared.Workflow.Processes.Commands;

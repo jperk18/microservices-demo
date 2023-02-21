@@ -1,13 +1,18 @@
-﻿using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Application.Broker.Configuration;
 
 namespace Health.Appointment.Transports.Api.Core.Configuration;
 
-public class AppointmentApiConfiguration : IAppointmentApiConfiguration
+public interface AppointmentApiConfiguration
 {
-    public AppointmentApiConfiguration(IBrokerCredentialsConfiguration brokerCredentials)
+    BrokerCredentialsConfiguration BrokerCredentials { get; }
+}
+
+public class AppointmentApiConfigurationDto : AppointmentApiConfiguration
+{
+    public AppointmentApiConfigurationDto(BrokerCredentialsConfiguration brokerCredentials)
     {
         BrokerCredentials = brokerCredentials ?? throw new ArgumentNullException(nameof(brokerCredentials));
     }
 
-    public IBrokerCredentialsConfiguration BrokerCredentials { get; set; }
+    public BrokerCredentialsConfiguration BrokerCredentials { get; set; }
 }

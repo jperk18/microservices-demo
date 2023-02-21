@@ -23,7 +23,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
         <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
-        <ProjectReference Include="..\Health.Appointment.Domain.Storage.UnitOfWorks\Health.Appointment.Domain.Storage.UnitOfWorks.csproj" />
+        <ProjectReference Include="..\Health.Appointment.Domain.Storage.Sql.Appointment\Health.Appointment.Domain.Storage.Sql.Appointment.csproj" />
+        <ProjectReference Include="..\Health.Appointment.Domain.Storage\Health.Appointment.Domain.Storage.csproj" />
     </ItemGroup>
 
     <ItemGroup>

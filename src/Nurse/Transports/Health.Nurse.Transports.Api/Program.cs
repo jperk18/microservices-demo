@@ -2,7 +2,6 @@ using Health.Nurse.Transports.Api.Core.Configuration;
 using Health.Nurse.Transports.Api.Middleware;
 using Health.Shared.Application;
 using Health.Shared.Application.Broker.Configuration;
-using Health.Shared.Application.Serialization;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
@@ -22,11 +21,11 @@ builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.Environment
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container for API
-var brokerSettings = builder.Configuration.GetSection("NurseApi:BrokerCredentials").Get<BrokerCredentialsConfiguration>();
-var config = new NurseApiConfiguration(brokerSettings);
-builder.Services.AddSingleton<INurseApiConfiguration>(config);
+var brokerSettings = builder.Configuration.GetSection("NurseApi:BrokerCredentials").Get<BrokerCredentialsConfigurationDto>();
+var config = new NurseApiConfigurationDto(brokerSettings);
+builder.Services.AddSingleton<NurseApiConfiguration>(config);
 
-builder.Services.AddSerializationServices();
+builder.Services.AddSharedApplicationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 // Add Services to Domain (and storage dependant service)

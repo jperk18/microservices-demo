@@ -2,7 +2,7 @@
 
 namespace Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
 
-public interface IAppointmentStorageConfiguration
+public interface AppointmentStorageConfiguration
 {
     SqlDatabaseConfiguration AppointmentStateDatabase { get; set; }
 }

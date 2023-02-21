@@ -1,9 +1,9 @@
-﻿using Health.Patient.Domain.Storage.Sql.Core.Repository.PatientDb;
+﻿using Health.Shared.Domain.Storage.Repository;
 
 namespace Health.Patient.Domain.Storage.Sql;
 
 public interface IPatientUnitOfWork : IDisposable
 {
-    IPatientRepository Patients { get; }
+    IGenericRepository<Domain.Storage.Sql.Core.Databases.PatientDb.Models.Patient> Patients { get; }
     Task<int> Complete();
 }
