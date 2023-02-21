@@ -5,9 +5,8 @@ using Health.Patient.Domain.Console.Core.Configuration;
 using Health.Patient.Domain.Console.Core.Pipelines;
 using Health.Patient.Domain.Console.Core.Services;
 using Health.Patient.Domain.Storage.Sql.Core;
-using Health.Shared.Domain.Core;
-using Health.Shared.Domain.Core.Configurations;
-using Health.Shared.Domain.Core.RegistrationHelpers;
+using Health.Shared.Domain;
+using Health.Shared.Domain.Mediator.Configurations;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -29,7 +28,7 @@ public static class DependencyInjection
 
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
-            .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
+            .Where(x => x.GetInterfaces().Any(Shared.Domain.Mediator.DependencyInjection.Handlers.IsHandlerInterface))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 

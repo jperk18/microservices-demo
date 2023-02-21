@@ -2,7 +2,5 @@
 
 public interface AppointmentScheduled
 {
-    Guid AppointmentId { get; }
-    Guid PatientId { get; }
-
+    Guid Appointment { get; }
 }

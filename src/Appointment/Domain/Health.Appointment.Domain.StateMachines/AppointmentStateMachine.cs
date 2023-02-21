@@ -17,7 +17,7 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
             e.InsertOnInitial = true;
             e.SetSagaFactory(context => new AppointmentState
             {
-                CorrelationId = context.Message.AppointmentId
+                CorrelationId = context.CorrelationId ?? NewId.NextGuid()
             });
         });
         Event(() => PatientCheckedIn, e => e.CorrelateById(m => m.Message.AppointmentId));
@@ -30,6 +30,7 @@ public class AppointmentStateMachine : MassTransitStateMachine<AppointmentState>
                     context.Saga.CorrelationId = context.Message.AppointmentId;
                     context.Saga.PatientId = context.Message.PatientId;
                 })
+                .RespondAsync(context => context.Init<AppointmentScheduled>(new { Appointment = context.Saga.CorrelationId }))
                 .TransitionTo(AppointmentScheduled)
         );
 

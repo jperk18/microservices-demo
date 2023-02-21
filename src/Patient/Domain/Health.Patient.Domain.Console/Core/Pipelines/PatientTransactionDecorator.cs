@@ -1,5 +1,5 @@
 ﻿using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
-using Health.Shared.Domain.Commands.Core;
+using Health.Shared.Domain.Mediator.Commands;
 using MassTransit.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

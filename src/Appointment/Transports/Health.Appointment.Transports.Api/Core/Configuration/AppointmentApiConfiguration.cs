@@ -1,4 +1,4 @@
-﻿using Health.Shared.Application.Configuration;
+﻿using Health.Shared.Application.Broker.Configuration;
 
 namespace Health.Appointment.Transports.Api.Core.Configuration;
 

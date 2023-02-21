@@ -1,4 +1,4 @@
-﻿using Health.Shared.Application.Services.Serialization;
+﻿using Health.Shared.Application.Serialization;
 using Health.Shared.Workflow.Processes.Core.Exceptions;
 
 namespace Health.Appointment.Transports.Api.Middleware;

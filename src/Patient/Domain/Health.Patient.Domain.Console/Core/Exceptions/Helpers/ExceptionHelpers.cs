@@ -1,5 +1,5 @@
-﻿using Health.Shared.Domain.Core.Exceptions;
-using Health.Shared.Domain.Core.Exceptions.InnerModels;
+﻿using Health.Shared.Domain.Exceptions;
+using Health.Shared.Domain.Exceptions.Models;
 using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
 
 namespace Health.Patient.Domain.Console.Core.Exceptions.Helpers;

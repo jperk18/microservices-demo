@@ -2,7 +2,6 @@
 using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
 using Health.Patient.Domain.Console.Core.Models;
 using Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
-using Health.Shared.Domain.Core.Exceptions;
 using Health.Shared.Domain.Mediator;
 using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
 using Health.Shared.Workflow.Processes.Queries;

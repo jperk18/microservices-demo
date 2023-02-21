@@ -1,4 +1,4 @@
-﻿using Health.Shared.Domain.Queries.Core;
+﻿using Health.Shared.Domain.Mediator.Queries;
 
 namespace Health.Appointment.Domain.Console.Queries.GetAllWaitingPatientsQuery;
 

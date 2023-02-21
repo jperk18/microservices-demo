@@ -1,5 +1,5 @@
-﻿using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Queries.Core;
+﻿using Health.Shared.Domain.Mediator.Commands;
+using Health.Shared.Domain.Mediator.Queries;
 
 namespace Health.Shared.Domain.Mediator;
 

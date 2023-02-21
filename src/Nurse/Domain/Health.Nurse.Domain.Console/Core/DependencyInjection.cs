@@ -4,9 +4,8 @@ using Health.Nurse.Domain.Console.Consumer;
 using Health.Nurse.Domain.Console.Core.Configuration;
 using Health.Nurse.Domain.Console.Core.Pipelines;
 using Health.Nurse.Domain.Storage.Sql.Core;
-using Health.Shared.Domain.Core;
-using Health.Shared.Domain.Core.Configurations;
-using Health.Shared.Domain.Core.RegistrationHelpers;
+using Health.Shared.Domain;
+using Health.Shared.Domain.Mediator.Configurations;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,7 +26,7 @@ public static class DependencyInjection
         
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
-            .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
+            .Where(x => x.GetInterfaces().Any(Shared.Domain.Mediator.DependencyInjection.Handlers.IsHandlerInterface))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 
@@ -50,8 +49,15 @@ public static class DependencyInjection
             cfg.AddTransactionalBus();
         });
     }
+
+    
     
     static void ConfigureBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator) {
+        configurator.ReceiveEndpoint("register-nurse", (ctx) =>
+        {
+            ctx.ConfigureConsumer<RegisterNurseConsumer>(context);
+        });
+        
         configurator.ConfigureEndpoints(context);
     }
 }

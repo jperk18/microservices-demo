@@ -1,9 +1,8 @@
 ﻿using Health.Appointment.Domain.Console.Core.Exceptions;
 using Health.Appointment.Domain.Console.Core.Pipelines;
 using Health.Appointment.Domain.Storage.UnitOfWorks;
-using Health.Nurse.Domain.Console.Core.Decorators;
-using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Mediator.Commands;
+using Health.Shared.Domain.Mediator.Decorators;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
 using MassTransit.Transactions;
 
@@ -26,16 +25,13 @@ public sealed class RequestScheduleAppointmentCommandHandler : IAsyncCommandHand
     
     public async Task<Guid> Handle(RequestScheduleAppointmentCommand command)
     {
-        var patient = await _unitOfWork.PatientReferenceData.GetById(command.Patient);
-        
-        if (patient == null)
-            throw new AppointmentDomainValidationException($"Patient: {command.Patient} does not exist");
+        var patient = await _unitOfWork.PatientReferenceData.GetById(command.Patient) ?? throw AppointmentDomainExceptions.PatientNotFound(command.Patient, (RequestScheduleAppointmentCommand e) => e.Patient);
         
         var appointmentId = Guid.NewGuid();
         await _transactionalBus.Publish<ScheduleAppointment>(new
         {
             AppointmentId = appointmentId,
-            PatientId = command.Patient
+            PatientId = patient.PatientId
         });
         
         return appointmentId;

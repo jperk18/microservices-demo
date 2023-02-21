@@ -1,7 +1,8 @@
 using Health.Appointment.Transports.Api.Core.Configuration;
 using Health.Appointment.Transports.Api.Middleware;
 using Health.Shared.Application;
-using Health.Shared.Application.Configuration;
+using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Application.Serialization;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
@@ -25,7 +26,7 @@ var brokerSettings = builder.Configuration.GetSection("AppointmentApi:BrokerCred
 var config = new AppointmentApiConfiguration(brokerSettings);
 builder.Services.AddSingleton<IAppointmentApiConfiguration>(config);
 
-builder.Services.AddSharedApplicationServices();
+builder.Services.AddSerializationServices();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);

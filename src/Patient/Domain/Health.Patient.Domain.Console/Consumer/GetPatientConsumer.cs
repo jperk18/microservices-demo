@@ -1,6 +1,6 @@
 ﻿using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
 using Health.Patient.Domain.Console.Queries.GetPatientQuery;
-using Health.Shared.Domain.Core.Exceptions;
+using Health.Shared.Domain.Exceptions;
 using Health.Shared.Domain.Mediator;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;

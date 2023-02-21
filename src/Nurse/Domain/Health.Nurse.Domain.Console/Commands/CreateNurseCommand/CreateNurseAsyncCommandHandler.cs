@@ -1,9 +1,8 @@
-﻿using Health.Nurse.Domain.Console.Core.Decorators;
-using Health.Nurse.Domain.Console.Core.Models;
+﻿using Health.Nurse.Domain.Console.Core.Models;
 using Health.Nurse.Domain.Console.Core.Pipelines;
 using Health.Nurse.Domain.Storage.Sql;
-using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Mediator.Commands;
+using Health.Shared.Domain.Mediator.Decorators;
 using Health.Shared.Workflow.Processes;
 using Health.Shared.Workflow.Processes.Events;
 using MassTransit.Transactions;

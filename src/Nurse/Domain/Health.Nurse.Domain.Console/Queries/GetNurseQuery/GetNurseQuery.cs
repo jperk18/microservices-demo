@@ -1,13 +1,13 @@
 ﻿using Health.Nurse.Domain.Console.Core.Models;
-using Health.Shared.Domain.Queries.Core;
+using Health.Shared.Domain.Mediator.Queries;
 
 namespace Health.Nurse.Domain.Console.Queries.GetNurseQuery;
 
 public sealed class GetNurseQuery : IQuery<NurseRecord>
 {
-    public GetNurseQuery(Guid patientId)
+    public GetNurseQuery(Guid nurseId)
     {
-        PatientId = patientId;
+        NurseId = nurseId;
     }
-    public Guid PatientId { get; set; }
+    public Guid NurseId { get; set; }
 }

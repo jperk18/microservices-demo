@@ -14,4 +14,8 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Application\Health.Shared.Application\Health.Shared.Application.csproj" />
+    </ItemGroup>
+
 </Project>

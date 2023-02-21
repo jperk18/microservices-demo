@@ -1,7 +1,8 @@
 using Health.Patient.Transports.Api.Core.Configuration;
 using Health.Patient.Transports.Api.Middleware;
 using Health.Shared.Application;
-using Health.Shared.Application.Configuration;
+using Health.Shared.Application.Broker.Configuration;
+using Health.Shared.Application.Serialization;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
@@ -25,7 +26,7 @@ var brokerSettings = builder.Configuration.GetSection("PatientApi:BrokerCredenti
 var config = new PatientApiConfiguration(brokerSettings);
 builder.Services.AddSingleton<IPatientApiConfiguration>(config);
 
-builder.Services.AddSharedApplicationServices();
+builder.Services.AddSerializationServices();;
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);

@@ -4,7 +4,7 @@ using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
 using Health.Appointment.Domain.Storage.Sql.Appointment.Database;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
-using Health.Shared.Application.Configuration;
+using Health.Shared.Application.Broker.Configuration;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.Extensions.DependencyInjection;

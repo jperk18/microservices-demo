@@ -1,9 +1,8 @@
 ﻿using Health.Appointment.Domain.Console.Core.Exceptions;
 using Health.Appointment.Domain.Console.Core.Pipelines;
 using Health.Appointment.Domain.Storage.UnitOfWorks;
-using Health.Nurse.Domain.Console.Core.Decorators;
-using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Mediator.Commands;
+using Health.Shared.Domain.Mediator.Decorators;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
 using MassTransit.Transactions;
 
@@ -26,15 +25,13 @@ public sealed class RequestPatientCheckInCommandHandler : IAsyncCommandHandler<R
     
     public async Task<Guid> Handle(RequestPatientCheckInCommand command)
     {
-        var appointment = await _unitOfWork.AppointmentState.GetById(command.Appointment);
+        var appointment = await _unitOfWork.AppointmentState.GetById(command.Appointment) ?? throw AppointmentDomainExceptions.AppointmentNotExist(command.Appointment, (RequestPatientCheckInCommand e) => e.Appointment);
 
-        if (appointment == null)
-            throw new AppointmentDomainValidationException($"Appointment: {command.Appointment} does not exist");
-        
         var scheduledPatients = await _unitOfWork.AppointmentState.GetScheduledAppointments();
 
-        if(scheduledPatients == null || !scheduledPatients.Contains(command.Appointment))
-                throw new AppointmentDomainValidationException($"Appointment: Unable to check in");
+        if (scheduledPatients == null || !scheduledPatients.Contains(command.Appointment))
+            throw AppointmentDomainExceptions.ScheduledAppointmentNotFound(command.Appointment,
+                (RequestPatientCheckInCommand e) => e.Appointment);
         
         await _transactionalBus.Publish<PatientCheckedIn>(new
         {

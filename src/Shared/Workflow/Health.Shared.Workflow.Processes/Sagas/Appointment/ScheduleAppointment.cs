@@ -4,5 +4,4 @@ public interface ScheduleAppointment
 {
     Guid AppointmentId { get; }
     Guid PatientId { get; }
-
 }

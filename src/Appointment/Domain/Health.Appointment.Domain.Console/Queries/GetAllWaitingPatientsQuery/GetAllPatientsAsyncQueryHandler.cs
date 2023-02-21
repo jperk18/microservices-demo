@@ -1,6 +1,6 @@
 ﻿using Health.Appointment.Domain.Storage.UnitOfWorks;
-using Health.Shared.Domain.Core.Decorators;
-using Health.Shared.Domain.Queries.Core;
+using Health.Shared.Domain.Mediator.Decorators;
+using Health.Shared.Domain.Mediator.Queries;
 
 namespace Health.Appointment.Domain.Console.Queries.GetAllWaitingPatientsQuery;
 

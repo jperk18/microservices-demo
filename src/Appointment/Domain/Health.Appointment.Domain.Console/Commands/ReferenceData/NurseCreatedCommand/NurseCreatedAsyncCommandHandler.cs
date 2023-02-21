@@ -1,8 +1,7 @@
 ﻿using Health.Appointment.Domain.Console.Core.Pipelines;
 using Health.Appointment.Domain.Storage.UnitOfWorks;
-using Health.Nurse.Domain.Console.Core.Decorators;
-using Health.Shared.Domain.Commands.Core;
-using Health.Shared.Domain.Core.Decorators;
+using Health.Shared.Domain.Mediator.Commands;
+using Health.Shared.Domain.Mediator.Decorators;
 using MassTransit.Transactions;
 
 namespace Health.Appointment.Domain.Console.Commands.ReferenceData.NurseCreatedCommand;

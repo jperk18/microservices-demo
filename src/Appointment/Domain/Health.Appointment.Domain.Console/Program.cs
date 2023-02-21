@@ -2,7 +2,7 @@ using Health.Appointment.Domain.Console.Core;
 using Health.Appointment.Domain.Console.Core.Configuration;
 using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
-using Health.Shared.Application.Configuration;
+using Health.Shared.Application.Broker.Configuration;
 using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

@@ -1,5 +1,5 @@
 ﻿using Health.Patient.Domain.Console.Core.Models;
-using Health.Shared.Domain.Commands.Core;
+using Health.Shared.Domain.Mediator.Commands;
 
 namespace Health.Patient.Domain.Console.Commands.CreatePatientCommand;
 

@@ -2,9 +2,8 @@
 using Health.Appointment.Domain.Console.Core.Configuration;
 using Health.Appointment.Domain.Console.Core.Pipelines;
 using Health.Appointment.Domain.Storage.UnitOfWorks.Core;
-using Health.Shared.Domain.Core;
-using Health.Shared.Domain.Core.Configurations;
-using Health.Shared.Domain.Core.RegistrationHelpers;
+using Health.Shared.Domain;
+using Health.Shared.Domain.Mediator.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Health.Appointment.Domain.Console.Core;
@@ -13,7 +12,7 @@ public static class DependencyInjection
 {
     public static void AddDomainServices(this IServiceCollection services, IAppointmentDomainConfiguration config)
     {
-        if (config == null || config.BrokerCredentials == null)
+        if (config?.BrokerCredentials == null)
             throw new ApplicationException("Configuration is needed for domain services");
 
         //Add Dependant Database services
@@ -21,7 +20,7 @@ public static class DependencyInjection
         
         //Add Core services (serialization and Transaction handling)
         var handlerTypes = typeof(Program).Assembly.GetTypes()
-            .Where(x => x.GetInterfaces().Any(y => Handlers.IsHandlerInterface(y)))
+            .Where(x => x.GetInterfaces().Any(Shared.Domain.Mediator.DependencyInjection.Handlers.IsHandlerInterface))
             .Where(x => x.Name.EndsWith("Handler"))
             .ToList(); //This assembly Handlers
 

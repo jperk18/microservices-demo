@@ -1,6 +1,6 @@
 ﻿using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
 using Health.Appointment.Domain.Storage.Sql.ReferenceData.Core.Configuration;
-using Health.Shared.Application.Configuration;
+using Health.Shared.Application.Broker.Configuration;
 
 namespace Health.Appointment.Domain.Console.Core.Configuration;
 
