@@ -72,6 +72,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Transpor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Appointment.Domain.Storage", "Appointment\Domain\Health.Appointment.Domain.Storage\Health.Appointment.Domain.Storage.csproj", "{169C492F-705C-46B9-841B-E591D06C949A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Health.Patient.Transports.Api.UnitTests", "Patient\Transports\Health.Patient.Transports.Api.UnitTests\Health.Patient.Transports.Api.UnitTests.csproj", "{326F050A-A1AA-4DB4-B192-8E39883D624D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,7 @@ Global
 		{AAC9F134-05E1-4D43-81B1-694602BDD911} = {C6476BFB-434A-4AD5-ACA5-A22CA2644E7C}
 		{388ACAD5-6421-44FB-92FB-051CEE97E129} = {AAC9F134-05E1-4D43-81B1-694602BDD911}
 		{169C492F-705C-46B9-841B-E591D06C949A} = {FC9C182D-442B-464D-8161-D72AED548F0A}
+		{326F050A-A1AA-4DB4-B192-8E39883D624D} = {7F599BE0-B194-49F2-93A4-FB16C07F7807}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5CE8E922-77AF-4B21-B9D4-79EFD8A8CCB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -165,5 +168,9 @@ Global
 		{169C492F-705C-46B9-841B-E591D06C949A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{169C492F-705C-46B9-841B-E591D06C949A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{169C492F-705C-46B9-841B-E591D06C949A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{326F050A-A1AA-4DB4-B192-8E39883D624D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{326F050A-A1AA-4DB4-B192-8E39883D624D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{326F050A-A1AA-4DB4-B192-8E39883D624D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{326F050A-A1AA-4DB4-B192-8E39883D624D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

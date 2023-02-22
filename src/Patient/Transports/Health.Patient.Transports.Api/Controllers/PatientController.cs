@@ -96,6 +96,6 @@ public class PatientController : ControllerBase
             .GetResponse<GetAllPatientsSuccess>(new { });
 
         return Ok(response.Message.Patients.Select(res =>
-            new GetPatientApiResponse(res.Id, res.FirstName, res.LastName, res.DateOfBirth)));
+            new GetPatientApiResponse(res.Id, res.FirstName, res.LastName, res.DateOfBirth)).ToArray());
     }
 }
