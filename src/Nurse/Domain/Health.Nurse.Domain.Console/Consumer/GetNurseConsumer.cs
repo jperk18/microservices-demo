@@ -1,26 +1,36 @@
-﻿using Health.Nurse.Domain.Console.Core.Exceptions.Helpers;
+﻿using Health.Nurse.Domain.Console.Exceptions;
+using Health.Nurse.Domain.Storage.Sql;
 using Health.Shared.Domain.Exceptions;
-using Health.Shared.Domain.Mediator;
+using Health.Shared.Domain.Exceptions.Models;
+using Health.Shared.Domain.Services;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
-using GetNurseQuery = Health.Nurse.Domain.Console.Queries.GetNurseQuery.GetNurseQuery;
 
 namespace Health.Nurse.Domain.Console.Consumer;
 
 public class GetNurseConsumer : IConsumer<GetNurse>
 {
-    private readonly IMediator _mediator;
+    private readonly IValidationService<GetNurse> _validationService;
+    private readonly INurseRepository _nurseRepository;
 
-    public GetNurseConsumer(IMediator mediator)
+
+    public GetNurseConsumer(IValidationService<GetNurse> validationService, INurseRepository nurseRepository)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _nurseRepository = nurseRepository ?? throw new ArgumentNullException(nameof(nurseRepository));
+        _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
     }
 
     public async Task Consume(ConsumeContext<GetNurse> context)
     {
         try
         {
-            var result = await _mediator.SendAsync(new GetNurseQuery(context.Message.Id));
+            await _validationService.Validate(context.Message);
+            
+            var result = await _nurseRepository.Nurses.GetById(context.Message.Id);
+
+            if (result == null)
+                throw new NurseDomainValidationException($"Record does not exist for {context.Message.Id}", new DomainValidationFailureDto[]{new("0001", "Nurse does not exist")});
+
             
             await context.RespondAsync<GetNurseSuccess>(new
             {

@@ -64,7 +64,7 @@ public class CreatePatientTests
     public async Task Should_Fail_On_Any_WorkflowException()
     {
         //Arrange
-        var testPatient = new Shared.Workflow.Processes.Inner.Models.PatientDto(_faker.Random.Guid(), null,
+        var testPatient = new Shared.Workflow.Processes.Inner.Models.PatientDto(_faker.Random.Guid(), null!,
             _faker.Name.LastName(), _faker.Person.DateOfBirth);
         
         await using var provider = new ServiceCollection()

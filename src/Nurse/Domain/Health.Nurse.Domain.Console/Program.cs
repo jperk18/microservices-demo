@@ -1,6 +1,5 @@
-using Health.Nurse.Domain.Console.Core;
-using Health.Nurse.Domain.Console.Core.Configuration;
-using Health.Nurse.Domain.Storage.Sql.Core.Configuration;
+using Health.Nurse.Domain.Console.Configuration;
+using Health.Nurse.Domain.Storage.Sql.Configuration;
 using Health.Shared.Application.Broker.Configuration;
 using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;

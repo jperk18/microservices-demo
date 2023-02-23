@@ -1,11 +1,11 @@
 namespace Health.Shared.Workflow.Processes.Inner.Models;
-
-public interface Patient : PatientIdentifier, PatientInfo, PatientCardInformation
+public interface PatientCardInformation : PatientIdentifier, PatientBasicInformation
 {
 }
 
-public interface PatientCardInformation : PatientIdentifier, PatientBasicInformation
+public interface PatientIdentifier
 {
+    Guid Id { get; }
 }
 
 public interface PatientBasicInformation
@@ -19,9 +19,8 @@ public interface PatientInfo : PatientBasicInformation
     DateTime DateOfBirth { get; }
 }
 
-public interface PatientIdentifier
+public interface Patient : PatientInfo, PatientCardInformation
 {
-    Guid Id { get; }
 }
 
 public class PatientDto : Patient

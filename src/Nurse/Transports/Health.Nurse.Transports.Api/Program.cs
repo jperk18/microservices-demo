@@ -1,4 +1,4 @@
-using Health.Nurse.Transports.Api.Core.Configuration;
+using Health.Nurse.Transports.Api.Configuration;
 using Health.Nurse.Transports.Api.Middleware;
 using Health.Shared.Application;
 using Health.Shared.Application.Broker.Configuration;

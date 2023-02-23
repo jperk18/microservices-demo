@@ -1,6 +1,6 @@
+using Health.Appointment.Domain.Console.Configuration;
 using Health.Appointment.Domain.Console.Core;
-using Health.Appointment.Domain.Console.Core.Configuration;
-using Health.Appointment.Domain.Storage.Sql.Appointment.Core.Configuration;
+using Health.Appointment.Domain.Storage.Sql.Appointment.Configuration;
 using Health.Shared.Application.Broker.Configuration;
 using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;

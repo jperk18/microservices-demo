@@ -9,10 +9,17 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
-        <PackageReference Include="MassTransit.Analyzers" Version="8.0.4-develop.479" />
+        <PackageReference Include="MassTransit.Analyzers" Version="8.0.14-develop.1030">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
         <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
-        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.4-develop.479" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.14-develop.1030" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
@@ -29,21 +36,12 @@
         <ProjectReference Include="..\..\..\Shared\Domain\Health.Shared.Domain\Health.Shared.Domain.csproj" />
         <ProjectReference Include="..\..\..\Shared\Workflow\Health.Shared.Workflow.Processes\Health.Shared.Workflow.Processes.csproj" />
         <ProjectReference Include="..\Health.Appointment.Domain.Storage.Sql.Appointment\Health.Appointment.Domain.Storage.Sql.Appointment.csproj" />
-        <ProjectReference Include="..\Health.Appointment.Domain.Storage\Health.Appointment.Domain.Storage.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Core\Exceptions\AppointmentDomainExceptionMessages.resx">
+      <EmbeddedResource Update="Exceptions\AppointmentDomainExceptionMessages.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>AppointmentDomainExceptionMessages.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Core\Exceptions\AppointmentDomainExceptionMessages.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>AppointmentDomainExceptions.resx</DependentUpon>
-      </Compile>
     </ItemGroup>
 </Project>

@@ -12,12 +12,5 @@ public class AppointmentStateMap :
         entity.HasKey(e => e.CorrelationId);
         entity.Property(e => e.PatientId).IsRequired();
         entity.Property(e => e.CurrentState).HasMaxLength(64).IsRequired();
-        
-        // model.Entity<StateMachines.AppointmentState>(ent =>
-        // {
-        //     ent.HasKey(e => e.CorrelationId);
-        //     ent.Property(e => e.PatientId).IsRequired();
-        //     ent.Property(e => e.CurrentState).HasMaxLength(64).IsRequired();
-        // });
     }
 }

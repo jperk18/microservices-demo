@@ -1,4 +1,4 @@
-using Health.Appointment.Transports.Api.Core.Configuration;
+using Health.Appointment.Transports.Api.Configuration;
 using Health.Appointment.Transports.Api.Middleware;
 using Health.Shared.Application;
 using Health.Shared.Application.Broker.Configuration;

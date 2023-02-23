@@ -10,3 +10,4 @@ public class AppointmentState : SagaStateMachineInstance
     public Guid? NurseId { get; set; }
     public Guid? DoctorId { get; set; }
 }
+

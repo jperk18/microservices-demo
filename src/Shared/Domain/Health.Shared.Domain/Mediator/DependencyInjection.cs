@@ -9,14 +9,30 @@ namespace Health.Shared.Domain.Mediator;
 
 public static class DependencyInjection
 {
-    public static void AddMediatorServices(this IServiceCollection services, IEnumerable<Type> handlerTypes,
+    /*
+        //Add Core services (serialization and Transaction handling)
+        var handlerTypes = typeof(Program).Assembly.GetTypes()
+            .Where(x => x.GetInterfaces().Any(Shared.Domain.Mediator.DependencyInjection.Handlers.IsHandlerInterface))
+            .Where(x => x.Name.EndsWith("Handler"))
+            .ToList(); //This assembly Handlers
+
+        services.AddSharedDomainServices(handlerTypes, new List<PipelineConfigurationDto>()
+        {
+            new(typeof(NurseTransactionPipelineAttribute)){
+                CommandHandler = typeof(NurseTransactionCommandDecorator<,>),
+                QueryHandler = null //Transaction pipeline not supported in queries
+            }
+        }); 
+     */
+    public static void AddMediatorServices(this IServiceCollection services, IEnumerable<Type>? handlerTypes,
         IEnumerable<PipelineConfiguration>? additionalPipelinesForHandlers = null,
         IEnumerable<PipelineConfiguration>? corePipelinesForHandlersOverriders = null)
     {
-        foreach (var type in handlerTypes)
-        {
-            Handlers.AddHandler(services, type, additionalPipelinesForHandlers, corePipelinesForHandlersOverriders);
-        }
+        if (handlerTypes != null)
+            foreach (var type in handlerTypes)
+            {
+                Handlers.AddHandler(services, type, additionalPipelinesForHandlers, corePipelinesForHandlersOverriders);
+            }
 
         services.AddTransient<IMediator, Domain.Mediator.Mediator>();
     }
