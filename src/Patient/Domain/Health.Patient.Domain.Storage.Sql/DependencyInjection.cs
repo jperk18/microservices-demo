@@ -33,6 +33,6 @@ public static class DependencyInjection
         }
         
         services.AddSingleton(configuration);
-        services.AddTransient<IPatientRepository, PatientRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
     }
 }

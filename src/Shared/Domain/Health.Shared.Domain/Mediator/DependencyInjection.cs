@@ -34,7 +34,7 @@ public static class DependencyInjection
                 Handlers.AddHandler(services, type, additionalPipelinesForHandlers, corePipelinesForHandlersOverriders);
             }
 
-        services.AddTransient<IMediator, Domain.Mediator.Mediator>();
+        services.AddScoped<IMediator, Domain.Mediator.Mediator>();
     }
     
     public static class Handlers
@@ -96,7 +96,7 @@ public static class DependencyInjection
 
             Func<IServiceProvider, object> factory = BuildPipeline(pipeline, interfaceType);
 
-            services.AddTransient(interfaceType, factory);
+            services.AddScoped(interfaceType, factory);
         }
 
         private static Func<IServiceProvider, object> BuildPipeline(List<Type> pipeline, Type interfaceType)

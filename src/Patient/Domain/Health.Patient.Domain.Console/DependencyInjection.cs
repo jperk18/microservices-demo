@@ -2,7 +2,6 @@
 using FluentValidation.AspNetCore;
 using Health.Patient.Domain.Console.Configuration;
 using Health.Patient.Domain.Console.Consumer;
-using Health.Patient.Domain.Console.Filters;
 using Health.Patient.Domain.Console.Services;
 using Health.Patient.Domain.Console.Validators;
 using Health.Patient.Domain.Storage.Sql;
@@ -55,13 +54,12 @@ public static class DependencyInjection
                 
                 configurator.ReceiveEndpoint("register-patient", e =>
                 {
+                    e.UseEntityFrameworkOutbox<PatientDbContext>(context.GetService<IServiceProvider>()!);
                     e.UseTransaction(x =>
                     {
                         x.Timeout = TimeSpan.FromSeconds(90);
                         x.IsolationLevel = IsolationLevel.ReadCommitted;
                     });
-                    
-                    e.UseConsumeFilter(typeof(TransactionConsumeFilter<>), context);
                     
                     e.ConfigureConsumer<RegisterPatientConsumer>(context);
                 });

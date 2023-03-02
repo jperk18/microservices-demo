@@ -26,7 +26,7 @@ var config = new PatientApiConfigurationDto(brokerSettings);
 builder.Services.AddSingleton<PatientApiConfiguration>(config);
 
 builder.Services.AddSharedApplicationServices();
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>

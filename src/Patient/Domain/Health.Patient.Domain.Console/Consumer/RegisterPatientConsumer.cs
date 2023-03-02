@@ -48,6 +48,8 @@ public class RegisterPatientConsumer : IConsumer<RegisterPatient>
                 p.LastName,
                 p.DateOfBirth
             });
+
+            await _patientRepository.SaveChangesAsync();
         }
         catch (DomainValidationException e)
         {

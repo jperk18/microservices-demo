@@ -26,7 +26,7 @@ var config = new NurseApiConfigurationDto(brokerSettings);
 builder.Services.AddSingleton<NurseApiConfiguration>(config);
 
 builder.Services.AddSharedApplicationServices();
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 // Add Services to Domain (and storage dependant service)
 //var storageSettings = builder.Configuration.GetSection("DomainConfiguration:StorageConfiguration:PatientDatabase").Get<SqlDatabaseConfiguration>();

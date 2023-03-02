@@ -27,7 +27,7 @@ var config = new AppointmentApiConfigurationDto(brokerSettings);
 builder.Services.AddSingleton<AppointmentApiConfiguration>(config);
 
 builder.Services.AddSharedApplicationServices();
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddScoped<ExceptionHandlingMiddleware>();
 
 builder.Services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 builder.Services.AddMassTransit(cfg =>

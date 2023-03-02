@@ -1,7 +1,5 @@
-﻿using System.Transactions;
-using Health.Patient.Domain.Storage.Sql.Databases.PatientDb;
+﻿using Health.Patient.Domain.Storage.Sql.Databases.PatientDb;
 using Health.Shared.Domain.Storage.Repository;
-using Microsoft.EntityFrameworkCore;
 
 namespace Health.Patient.Domain.Storage.Sql;
 
@@ -17,14 +15,8 @@ public class PatientRepository : IPatientRepository
     }
 
     public IGenericRepository<Databases.PatientDb.Models.Patient> Patients { get; }
-
-    public Task EnlistTransaction(Transaction transaction) {
-        _context.Database.OpenConnection();
-        _context.Database.EnlistTransaction(transaction);
-        return Task.CompletedTask;
-    }
     
-    public async Task<int> Complete()
+    public async Task<int> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync();
     }
