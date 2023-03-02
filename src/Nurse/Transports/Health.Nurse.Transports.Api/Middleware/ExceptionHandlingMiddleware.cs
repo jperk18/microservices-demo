@@ -1,5 +1,5 @@
 ﻿using Health.Shared.Application.Serialization;
-using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Exceptions;
 
 namespace Health.Nurse.Transports.Api.Middleware;
 

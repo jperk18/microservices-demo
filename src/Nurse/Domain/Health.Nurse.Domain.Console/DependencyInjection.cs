@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Health.Nurse.Domain.Console.Configuration;
 using Health.Nurse.Domain.Console.Consumer;
+using Health.Nurse.Domain.Console.Services;
 using Health.Nurse.Domain.Console.Validators;
 using Health.Nurse.Domain.Storage.Sql;
 using Health.Nurse.Domain.Storage.Sql.Databases.NurseDb;
@@ -29,6 +30,8 @@ public static class DependencyInjection
 
         //Services for this application
         services.AddSingleton(config);
+        services.AddScoped(typeof(INurseValidationService<>), typeof(NurseValidationService<>));
+
 
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(cfg =>

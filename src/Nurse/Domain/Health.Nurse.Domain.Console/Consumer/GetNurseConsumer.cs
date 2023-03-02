@@ -1,8 +1,8 @@
 ﻿using Health.Nurse.Domain.Console.Exceptions;
+using Health.Nurse.Domain.Console.Services;
 using Health.Nurse.Domain.Storage.Sql;
 using Health.Shared.Domain.Exceptions;
 using Health.Shared.Domain.Exceptions.Models;
-using Health.Shared.Domain.Services;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
@@ -10,11 +10,11 @@ namespace Health.Nurse.Domain.Console.Consumer;
 
 public class GetNurseConsumer : IConsumer<GetNurse>
 {
-    private readonly IValidationService<GetNurse> _validationService;
+    private readonly INurseValidationService<GetNurse> _validationService;
     private readonly INurseRepository _nurseRepository;
 
 
-    public GetNurseConsumer(IValidationService<GetNurse> validationService, INurseRepository nurseRepository)
+    public GetNurseConsumer(INurseValidationService<GetNurse> validationService, INurseRepository nurseRepository)
     {
         _nurseRepository = nurseRepository ?? throw new ArgumentNullException(nameof(nurseRepository));
         _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));

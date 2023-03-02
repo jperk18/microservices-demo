@@ -2,7 +2,7 @@ using System.Net.Mime;
 using Health.Patient.Transports.Api.Middleware;
 using Health.Patient.Transports.Api.Models;
 using Health.Shared.Workflow.Processes.Commands;
-using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Exceptions;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;

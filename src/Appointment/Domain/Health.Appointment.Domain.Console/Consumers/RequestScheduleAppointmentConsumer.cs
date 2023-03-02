@@ -1,7 +1,7 @@
 ﻿using Health.Appointment.Domain.Console.Exceptions;
+using Health.Appointment.Domain.Console.Services;
 using Health.Appointment.Domain.Storage.Sql.Appointment;
 using Health.Shared.Domain.Exceptions;
-using Health.Shared.Domain.Services;
 using Health.Shared.Workflow.Processes.Commands;
 using Health.Shared.Workflow.Processes.Queries;
 using Health.Shared.Workflow.Processes.Sagas.Appointment;
@@ -11,11 +11,11 @@ namespace Health.Appointment.Domain.Console.Consumers;
 
 public class RequestScheduleAppointmentConsumer : IConsumer<RequestScheduleAppointment>
 {
-    private readonly IValidationService<RequestScheduleAppointment> _validationService;
+    private readonly IAppointmentValidationService<RequestScheduleAppointment> _validationService;
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IRequestClient<GetPatient> _getPatientRequestClient;
 
-    public RequestScheduleAppointmentConsumer(IValidationService<RequestScheduleAppointment> validationService, IAppointmentRepository appointmentRepository, IRequestClient<GetPatient> getPatientRequestClient)
+    public RequestScheduleAppointmentConsumer(IAppointmentValidationService<RequestScheduleAppointment> validationService, IAppointmentRepository appointmentRepository, IRequestClient<GetPatient> getPatientRequestClient)
     {
         _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
         _appointmentRepository = appointmentRepository ?? throw new ArgumentNullException(nameof(appointmentRepository));

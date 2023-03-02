@@ -1,7 +1,7 @@
-﻿using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
-using Health.Patient.Domain.Console.Queries.GetPatientQuery;
+﻿using Health.Patient.Domain.Console.Exceptions;
+using Health.Patient.Domain.Console.Services;
+using Health.Patient.Domain.Storage.Sql;
 using Health.Shared.Domain.Exceptions;
-using Health.Shared.Domain.Mediator;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
@@ -9,17 +9,25 @@ namespace Health.Patient.Domain.Console.Consumer;
 
 public class GetPatientConsumer : IConsumer<GetPatient>
 {
-    private readonly IMediator _mediator;
+    private readonly IPatientValidationService<GetPatient> _validationService;
+    private readonly IPatientRepository _patientRepository;
 
-    public GetPatientConsumer(IMediator mediator)
+    public GetPatientConsumer(IPatientValidationService<GetPatient> validationService, IPatientRepository patientRepository)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
+        _patientRepository = patientRepository ?? throw new ArgumentNullException(nameof(patientRepository));
     }
     public async Task Consume(ConsumeContext<GetPatient> context)
     {
         try
         {
-            var result = await _mediator.SendAsync(new GetPatientQuery(context.Message.Id));
+            await _validationService.Validate(context.Message);
+            
+            var result = await _patientRepository.Patients.GetById(context.Message.Id);
+
+            if (result == null)
+                throw new PatientDomainValidationException($"Patient does not exist for {context.Message.Id}");
+        
             await context.RespondAsync<GetPatientSuccess>(new
             {
                 Patient = new

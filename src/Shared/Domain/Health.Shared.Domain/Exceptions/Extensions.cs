@@ -29,4 +29,21 @@ public static class Extensions
         
         return new DomainValidationException(e.Message, errorsList);
     }
+    
+    public static FluentValidationException GetFluentValidationException(ValidationException e)
+    {
+        var errorsList = e.Errors.Select(x =>
+        {
+            var ser = GetDomainSeverity(x.Severity);
+            return (DomainValidationFailure) new DomainValidationFailureDto(x.ErrorCode, x.ErrorMessage)
+            {
+                AttemptedValue = x.AttemptedValue,
+                PropertyName = x.PropertyName,
+                Severity = ser
+            };
+        });
+        
+        return new FluentValidationException(e.Message, errorsList);
+    }
+    
 }

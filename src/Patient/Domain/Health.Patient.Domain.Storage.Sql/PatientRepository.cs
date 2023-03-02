@@ -1,0 +1,36 @@
+﻿using System.Transactions;
+using Health.Patient.Domain.Storage.Sql.Databases.PatientDb;
+using Health.Shared.Domain.Storage.Repository;
+using Microsoft.EntityFrameworkCore;
+
+namespace Health.Patient.Domain.Storage.Sql;
+
+public class PatientRepository : IPatientRepository
+{
+    private readonly PatientDbContext _context;
+
+    public PatientRepository(PatientDbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        Patients = new GenericRepository<Databases.PatientDb.Models.Patient, PatientDbContext>(context);
+        //Add additional table repos here
+    }
+
+    public IGenericRepository<Databases.PatientDb.Models.Patient> Patients { get; }
+
+    public Task EnlistTransaction(Transaction transaction) {
+        _context.Database.OpenConnection();
+        _context.Database.EnlistTransaction(transaction);
+        return Task.CompletedTask;
+    }
+    
+    public async Task<int> Complete()
+    {
+        return await _context.SaveChangesAsync();
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+}

@@ -1,6 +1,6 @@
+using Health.Patient.Domain.Console.Configuration;
 using Health.Patient.Domain.Console.Core;
-using Health.Patient.Domain.Console.Core.Configuration;
-using Health.Patient.Domain.Storage.Sql.Core.Configuration;
+using Health.Patient.Domain.Storage.Sql.Configuration;
 using Health.Shared.Application.Broker.Configuration;
 using Health.Shared.Domain.Storage.Configuration;
 using Microsoft.Extensions.Configuration;

@@ -1,4 +1,5 @@
 ﻿using Health.Appointment.Domain.Console.Exceptions;
+using Health.Appointment.Domain.Console.Services;
 using Health.Appointment.Domain.Storage.Sql.Appointment;
 using Health.Shared.Domain.Exceptions;
 using Health.Shared.Domain.Services;
@@ -10,10 +11,10 @@ namespace Health.Appointment.Domain.Console.Consumers;
 
 public class RequestPatientCheckInConsumer : IConsumer<RequestPatientCheckIn>
 {
-    private readonly IValidationService<RequestPatientCheckIn> _validator;
+    private readonly IAppointmentValidationService<RequestPatientCheckIn> _validator;
     private readonly IAppointmentRepository _appointmentRepository;
 
-    public RequestPatientCheckInConsumer(IValidationService<RequestPatientCheckIn> validator, IAppointmentRepository appointmentRepository)
+    public RequestPatientCheckInConsumer(IAppointmentValidationService<RequestPatientCheckIn> validator, IAppointmentRepository appointmentRepository)
     {
         _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         _appointmentRepository = appointmentRepository ?? throw new ArgumentNullException(nameof(appointmentRepository));

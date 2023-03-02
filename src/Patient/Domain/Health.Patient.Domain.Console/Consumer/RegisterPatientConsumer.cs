@@ -1,32 +1,52 @@
-﻿using Health.Patient.Domain.Console.Commands.CreatePatientCommand;
-using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
+﻿using Health.Patient.Domain.Console.Exceptions;
+using Health.Patient.Domain.Console.Services;
+using Health.Patient.Domain.Storage.Sql;
 using Health.Shared.Domain.Exceptions;
-using Health.Shared.Domain.Mediator;
 using Health.Shared.Workflow.Processes.Commands;
+using Health.Shared.Workflow.Processes.Events;
 using MassTransit;
 
 namespace Health.Patient.Domain.Console.Consumer;
 
 public class RegisterPatientConsumer : IConsumer<RegisterPatient>
 {
-    private readonly IMediator _mediator;
+    private readonly IPatientValidationService<RegisterPatient> _validationService;
+    private readonly IPatientRepository _patientRepository;
 
-    public RegisterPatientConsumer(IMediator mediator)
+    public RegisterPatientConsumer(IPatientValidationService<RegisterPatient> validationService, IPatientRepository patientRepository)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
+        _patientRepository = patientRepository ?? throw new ArgumentNullException(nameof(patientRepository));
     }
+
     public async Task Consume(ConsumeContext<RegisterPatient> context)
     {
         try
         {
-            var result =
-                await _mediator.SendAsync(new CreatePatientCommand(context.Message.FirstName, context.Message.LastName, context.Message.DateOfBirth));
+            await _validationService.Validate(context.Message);
+
+            var patientId = NewId.NextGuid();
+            var p = await _patientRepository.Patients.Add(new Storage.Sql.Databases.PatientDb.Models.Patient(
+                patientId, context.Message.FirstName, context.Message.LastName, context.Message.DateOfBirth
+            ));
+
+            await context.Publish<PatientCreated>(new
+            {
+                Patient = new
+                {
+                    Id = p.Id,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    DateOfBirth = p.DateOfBirth
+                }
+            });
+            
             await context.RespondAsync<RegisterPatientSuccess>(new
             {
-                result.Id,
-                result.FirstName,
-                result.LastName,
-                result.DateOfBirth
+                p.Id,
+                p.FirstName,
+                p.LastName,
+                p.DateOfBirth
             });
         }
         catch (DomainValidationException e)

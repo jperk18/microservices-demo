@@ -4,7 +4,7 @@ using Health.Patient.Transports.Api.Controllers;
 using Health.Patient.Transports.Api.Models;
 using Health.Patient.Transports.Api.UnitTests.Extensions;
 using Health.Shared.Workflow.Processes.Commands;
-using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Exceptions;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using MassTransit.Testing;

@@ -1,4 +1,4 @@
-﻿using Health.Patient.Domain.Storage.Sql.Core.Databases.PatientDb;
+﻿using Health.Patient.Domain.Storage.Sql.Databases.PatientDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 

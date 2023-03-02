@@ -1,9 +1,4 @@
-﻿using Health.Patient.Domain.Console.Core.Exceptions;
-using Health.Patient.Domain.Console.Core.Exceptions.Helpers;
-using Health.Patient.Domain.Console.Core.Models;
-using Health.Patient.Domain.Console.Queries.GetAllPatientsQuery;
-using Health.Shared.Domain.Mediator;
-using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
+﻿using Health.Patient.Domain.Storage.Sql;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 
@@ -11,17 +6,17 @@ namespace Health.Patient.Domain.Console.Consumer;
 
 public class GetAllPatientsConsumer : IConsumer<GetAllPatients>
 {
-    private readonly IMediator _mediator;
+    private readonly IPatientRepository _patientRepository;
 
-    public GetAllPatientsConsumer(IMediator mediator)
+    public GetAllPatientsConsumer(IPatientRepository patientRepository)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _patientRepository = patientRepository ?? throw new ArgumentNullException(nameof(patientRepository));
     }
 
     public async Task Consume(ConsumeContext<GetAllPatients> context)
     {
-        var r = await _mediator.SendAsync(new GetAllPatientsQuery());
-        var patientRecords = r as PatientRecord[] ?? r.ToArray();
+        var r = _patientRepository.Patients.GetAll();
+        var patientRecords = r as Storage.Sql.Databases.PatientDb.Models.Patient[] ?? r.ToArray();
 
         await context.RespondAsync<GetAllPatientsSuccess>(new
         {

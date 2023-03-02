@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Health.Appointment.Domain.Console.Configuration;
 using Health.Appointment.Domain.Console.Consumers;
+using Health.Appointment.Domain.Console.Services;
 using Health.Appointment.Domain.Console.Validators;
 using Health.Appointment.Domain.StateMachines;
 using Health.Appointment.Domain.Storage.Sql.Appointment;
@@ -25,7 +26,8 @@ public static class DependencyInjection
 
         //Services for this application
         services.AddSingleton(config);
-        
+        services.AddScoped(typeof(IAppointmentValidationService<>), typeof(AppointmentValidationService<>));
+
         services.AddSharedDomainServices();
 
         //Add Validators

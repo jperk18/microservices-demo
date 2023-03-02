@@ -1,11 +1,9 @@
 using System.Net.Mime;
 using Health.Nurse.Transports.Api.Middleware;
 using Health.Nurse.Transports.Api.Models;
-using Health.Shared.Workflow.Processes;
 using Health.Shared.Workflow.Processes.Commands;
-using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Exceptions;
 using Health.Shared.Workflow.Processes.Queries;
-using Health.Shared.Workflow.Processes.Sagas.Appointment;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 

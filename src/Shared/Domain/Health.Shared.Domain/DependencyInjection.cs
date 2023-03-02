@@ -16,7 +16,8 @@ public static class DependencyInjection
         
         //services.AddValidatorsFromAssemblyContaining<DependencyInjection>();
 
-        services.AddScoped(typeof(IValidationService<>), typeof(ValidationService<>));
+        services.AddScoped(typeof(IFluentValidationService<>), typeof(FluentValidationService<>));
+        
         services.AddMediatorServices(assemblyHandlerTypes, additionalPipelinesForHandlers, corePipelinesForHandlersOverriders);
     }
 }

@@ -4,11 +4,6 @@ namespace Health.Shared.Domain.Exceptions;
 
 public class DomainValidationException : Exception, DomainValidationResultObject
 {
-    public DomainValidationException()
-    {
-        Message = "DOMAIN_ERROR";
-        Errors = new List<DomainValidationFailure>();
-    }
     public DomainValidationException(string message)
     {
         Message = message ?? throw new ArgumentNullException(nameof(message));

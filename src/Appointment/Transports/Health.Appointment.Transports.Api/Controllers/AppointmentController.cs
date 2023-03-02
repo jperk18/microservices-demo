@@ -1,6 +1,6 @@
 using Health.Appointment.Transports.Api.Models;
 using Health.Shared.Workflow.Processes.Commands;
-using Health.Shared.Workflow.Processes.Core.Exceptions;
+using Health.Shared.Workflow.Processes.Exceptions;
 using Health.Shared.Workflow.Processes.Queries;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;

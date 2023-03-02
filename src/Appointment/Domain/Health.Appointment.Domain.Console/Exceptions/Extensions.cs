@@ -1,6 +1,6 @@
 ﻿using Health.Shared.Domain.Exceptions;
 using Health.Shared.Domain.Exceptions.Models;
-using Health.Shared.Workflow.Processes.Core.Exceptions.Models;
+using Health.Shared.Workflow.Processes.Exceptions.Models;
 
 namespace Health.Appointment.Domain.Console.Exceptions;
 
@@ -9,9 +9,9 @@ public static class Extensions
     public static WorkflowValidation ToWorkflowValidationObject(this AppointmentDomainValidationException dv)
     {
         if (dv.Errors == null)
-            return new WorkflowValidationDto(dv.Message);
+            return new WorkflowValidationDto(OriginatingService.Appointment ,dv.Message);
 
-        return new WorkflowValidationDto(dv.Message)
+        return new WorkflowValidationDto(OriginatingService.Appointment, dv.Message)
         {
             Errors = dv.Errors.Select(x => new WorkflowValidationFailureDto(x.ErrorCode)
             {
@@ -24,9 +24,9 @@ public static class Extensions
     public static WorkflowValidation ToWorkflowValidationObject(this DomainValidationException dv)
     {
         if (dv.Errors == null)
-            return new WorkflowValidationDto(dv.Message);
+            return new WorkflowValidationDto(OriginatingService.Appointment, dv.Message);
         
-        return new WorkflowValidationDto(dv.Message)
+        return new WorkflowValidationDto(OriginatingService.Appointment, dv.Message)
         {
             Errors = dv.Errors.Select(x => new WorkflowValidationFailureDto(x.ErrorCode)
             {
@@ -34,6 +34,11 @@ public static class Extensions
                 PropertyName = x.PropertyName, Severity = GetWorkflowSeverity(x.Severity)
             }).ToArray<WorkflowValidationFailure>()
         };
+    }
+    
+    public static AppointmentDomainValidationException ToAppointmentValidationException(this FluentValidationException e)
+    {
+        return new AppointmentDomainValidationException(e.Message, e.Errors);
     }
 
     private static WorkflowSeverity GetWorkflowSeverity(DomainSeverity exception) =>
